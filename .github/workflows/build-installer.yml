@@ -6,7 +6,7 @@ on:
     paths:
       - "modpack-manifest.json"
       - "scripts/**"
-      - "installer/**"
+      - "installer/**"`r`n      - ".github/workflows/**"
 
 permissions:
   contents: write
@@ -97,3 +97,4 @@ jobs:
             MajorKeyPack-Installer.zip
             build/MajorKeyPack-Installer.exe
             modpack-manifest.json
+
