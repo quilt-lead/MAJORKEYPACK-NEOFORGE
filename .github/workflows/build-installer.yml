@@ -31,7 +31,7 @@ jobs:
 
 
       # ============================================================
-      # .NET
+      # SET UP .NET
       # ============================================================
 
       - name: Setup .NET
@@ -43,10 +43,16 @@ jobs:
       # ============================================================
       # DETERMINE RELEASE VERSION
       #
-      # v1
-      # v2
-      # v3
-      # etc.
+      # Finds the highest existing v-number and increments it.
+      #
+      # No releases:
+      #   v1
+      #
+      # Existing v1:
+      #   v2
+      #
+      # Existing v1, v2:
+      #   v3
       # ============================================================
 
       - name: Determine release version
@@ -69,22 +75,19 @@ jobs:
           )
 
           if ($tags.Count -eq 0) {
-
             $next = 1
-
           }
           else {
-
             $next =
               ($tags | Measure-Object -Maximum).Maximum + 1
-
           }
 
           $version = "v$next"
 
           Write-Host ""
           Write-Host "========================================"
-          Write-Host "Release version: $version"
+          Write-Host "Major Key Pack Release"
+          Write-Host "Version: $version"
           Write-Host "========================================"
           Write-Host ""
 
@@ -93,7 +96,7 @@ jobs:
 
 
       # ============================================================
-      # BUILD INSTALLER
+      # BUILD STANDALONE EXE
       # ============================================================
 
       - name: Build standalone EXE
@@ -102,8 +105,9 @@ jobs:
 
           $ErrorActionPreference = "Stop"
 
+
           # --------------------------------------------------------
-          # Create build directories
+          # CREATE DIRECTORIES
           # --------------------------------------------------------
 
           New-Item `
@@ -120,7 +124,7 @@ jobs:
 
 
           # --------------------------------------------------------
-          # Copy PowerShell installer into build directory
+          # COPY POWERSHELL INSTALLER
           # --------------------------------------------------------
 
           Copy-Item `
@@ -129,20 +133,17 @@ jobs:
             -Force
 
 
-          # --------------------------------------------------------
-          # Create .csproj
-          # --------------------------------------------------------
+          # ========================================================
+          # CREATE C# PROJECT
+          # ========================================================
 
           @"
           <Project Sdk="Microsoft.NET.Sdk">
 
             <PropertyGroup>
-
               <OutputType>Exe</OutputType>
 
-              <TargetFramework>
-                net8.0-windows
-              </TargetFramework>
+              <TargetFramework>net8.0-windows</TargetFramework>
 
               <UseWindowsForms>true</UseWindowsForms>
 
@@ -150,45 +151,27 @@ jobs:
 
               <Nullable>enable</Nullable>
 
-              <AssemblyName>
-                MajorKeyPack-Installer
-              </AssemblyName>
+              <AssemblyName>MajorKeyPack-Installer</AssemblyName>
 
-              <Version>
-                1.0.${{ steps.version.outputs.number }}
-              </Version>
+              <Version>1.0.${{ steps.version.outputs.number }}</Version>
 
-              <AssemblyVersion>
-                1.0.${{ steps.version.outputs.number }}
-              </AssemblyVersion>
+              <AssemblyVersion>1.0.${{ steps.version.outputs.number }}</AssemblyVersion>
 
-              <FileVersion>
-                1.0.${{ steps.version.outputs.number }}
-              </FileVersion>
+              <FileVersion>1.0.${{ steps.version.outputs.number }}</FileVersion>
 
-              <RootNamespace>
-                MajorKeyPackInstaller
-              </RootNamespace>
+              <RootNamespace>MajorKeyPackInstaller</RootNamespace>
 
               <PublishSingleFile>true</PublishSingleFile>
 
               <SelfContained>true</SelfContained>
 
-              <IncludeNativeLibrariesForSelfExtract>
-                true
-              </IncludeNativeLibrariesForSelfExtract>
-
+              <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
             </PropertyGroup>
 
             <ItemGroup>
 
-              <EmbeddedResource
-                Include="Install-MajorKeyPack.ps1">
-
-                <LogicalName>
-                  MajorKeyPackInstaller.Install-MajorKeyPack.ps1
-                </LogicalName>
-
+              <EmbeddedResource Include="Install-MajorKeyPack.ps1">
+                <LogicalName>MajorKeyPackInstaller.Install-MajorKeyPack.ps1</LogicalName>
               </EmbeddedResource>
 
             </ItemGroup>
@@ -200,9 +183,9 @@ jobs:
             -Encoding UTF8
 
 
-          # --------------------------------------------------------
-          # Create Program.cs
-          # --------------------------------------------------------
+          # ========================================================
+          # CREATE PROGRAM.CS
+          # ========================================================
 
           @'
           using System;
@@ -218,7 +201,7 @@ jobs:
           internal static class Program
           {
               // ====================================================
-              // VERSION
+              // CURRENT RELEASE VERSION
               //
               // GitHub Actions replaces this with:
               //
@@ -238,10 +221,10 @@ jobs:
               // ====================================================
 
               private const string GitHubOwner =
-                  "YOUR_GITHUB_USERNAME";
+                  "quilt-lead";
 
               private const string GitHubRepository =
-                  "YOUR_REPOSITORY_NAME";
+                  "MAJORKEYPACK";
 
 
               private const string GitHubLatestReleaseUrl =
@@ -261,7 +244,7 @@ jobs:
               {
                   try
                   {
-                      // First check whether this installer is old.
+                      // Check for an updated installer first.
 
                       int updateResult =
                           CheckForUpdateAsync()
@@ -272,9 +255,7 @@ jobs:
                           return updateResult;
 
 
-                      // If we're already the newest version,
-                      // continue with the actual installation.
-
+                      // No newer installer was found.
                       return Install();
                   }
                   catch (Exception ex)
@@ -303,22 +284,26 @@ jobs:
                       using HttpClient client =
                           new HttpClient();
 
+
                       client.DefaultRequestHeaders.UserAgent.ParseAdd(
                           "MajorKeyPack-Installer");
+
 
                       client.Timeout =
                           TimeSpan.FromSeconds(10);
 
 
-                      // Ask GitHub for the latest public release.
+                      // ------------------------------------------------
+                      // GET LATEST RELEASE FROM GITHUB
+                      // ------------------------------------------------
 
                       using HttpResponseMessage response =
                           await client.GetAsync(
                               GitHubLatestReleaseUrl);
 
 
-                      // If GitHub can't be reached, don't prevent
-                      // the user from installing.
+                      // If GitHub is unavailable, simply continue
+                      // with the current installer.
 
                       if (!response.IsSuccessStatusCode)
                           return 0;
@@ -360,18 +345,9 @@ jobs:
                           latestVersion.Trim();
 
 
-                      Console.WriteLine(
-                          "Current version: " +
-                          CurrentVersion);
-
-                      Console.WriteLine(
-                          "Latest version: " +
-                          latestVersion);
-
-
-                      // =================================================
+                      // ------------------------------------------------
                       // COMPARE VERSIONS
-                      // =================================================
+                      // ------------------------------------------------
 
                       if (!IsNewerVersion(
                               latestVersion,
@@ -381,9 +357,9 @@ jobs:
                       }
 
 
-                      // =================================================
-                      // NEW VERSION EXISTS
-                      // =================================================
+                      // ------------------------------------------------
+                      // ASK USER
+                      // ------------------------------------------------
 
                       DialogResult result =
                           MessageBox.Show(
@@ -411,9 +387,9 @@ jobs:
                           return 0;
 
 
-                      // =================================================
-                      // FIND EXE IN RELEASE ASSETS
-                      // =================================================
+                      // ------------------------------------------------
+                      // FIND INSTALLER EXE
+                      // ------------------------------------------------
 
                       string? downloadUrl =
                           FindInstallerDownloadUrl(root);
@@ -423,9 +399,9 @@ jobs:
                               downloadUrl))
                       {
                           MessageBox.Show(
-                              "A newer release was found, " +
-                              "but the installer could not " +
-                              "be located in the release.",
+                              "The newer release was found, " +
+                              "but the installer EXE could not " +
+                              "be found.",
 
                               "Major Key Pack",
 
@@ -437,9 +413,9 @@ jobs:
                       }
 
 
-                      // =================================================
-                      // DOWNLOAD NEW EXE
-                      // =================================================
+                      // ------------------------------------------------
+                      // DOWNLOAD NEW INSTALLER
+                      // ------------------------------------------------
 
                       string tempDirectory =
                           Path.Combine(
@@ -486,9 +462,9 @@ jobs:
                       await output.FlushAsync();
 
 
-                      // =================================================
+                      // ------------------------------------------------
                       // START NEW INSTALLER
-                      // =================================================
+                      // ------------------------------------------------
 
                       Process.Start(
                           new ProcessStartInfo
@@ -500,21 +476,18 @@ jobs:
                           });
 
 
-                      // =================================================
+                      // ------------------------------------------------
                       // STOP OLD INSTALLER
-                      // =================================================
-
-                      // The new EXE is now responsible for
-                      // continuing the installation.
+                      // ------------------------------------------------
 
                       return 0;
                   }
                   catch
                   {
-                      // Updating is intentionally non-fatal.
+                      // Update checking is non-fatal.
                       //
-                      // If GitHub is unavailable, the user can
-                      // still install using this version.
+                      // If the internet/GitHub is unavailable,
+                      // continue using this installer.
 
                       return 0;
                   }
@@ -522,7 +495,7 @@ jobs:
 
 
               // ====================================================
-              // FIND EXE DOWNLOAD URL
+              // FIND INSTALLER EXE IN RELEASE
               // ====================================================
 
               private static string?
@@ -612,7 +585,8 @@ jobs:
                   number = 0;
 
 
-                  version = version.Trim();
+                  version =
+                      version.Trim();
 
 
                   if (version.StartsWith(
@@ -654,7 +628,7 @@ jobs:
 
 
                   // =================================================
-                  // MINECRAFT CHECK
+                  // CHECK MINECRAFT
                   // =================================================
 
                   if (!Directory.Exists(
@@ -675,7 +649,7 @@ jobs:
 
 
                   // =================================================
-                  // FORGE CHECK
+                  // CHECK FOR FORGE
                   // =================================================
 
                   string versionsDirectory =
@@ -896,7 +870,7 @@ jobs:
 
 
                   // =================================================
-                  // INSTALLATION RESULT
+                  // CHECK INSTALL RESULT
                   // =================================================
 
                   if (exitCode != 0)
@@ -936,7 +910,21 @@ jobs:
 
 
           # ==========================================================
-          # BUILD
+          # SHOW GENERATED PROJECT
+          # ==========================================================
+
+          Write-Host ""
+          Write-Host "Generated project:"
+          Write-Host ""
+
+          Get-Content `
+            "launcher-build\MajorKeyPack-Installer.csproj"
+
+          Write-Host ""
+
+
+          # ==========================================================
+          # BUILD EXE
           # ==========================================================
 
           dotnet publish `
@@ -950,14 +938,23 @@ jobs:
 
 
           # ==========================================================
-          # VERIFY
+          # VERIFY EXE
           # ==========================================================
 
-          if (!(Test-Path `
-              "build\launcher\MajorKeyPack-Installer.exe"))
+          $exePath =
+              "build\launcher\MajorKeyPack-Installer.exe"
+
+
+          if (!(Test-Path $exePath))
           {
               throw "EXE build failed."
           }
+
+
+          Write-Host ""
+          Write-Host "EXE successfully built:"
+          Write-Host $exePath
+          Write-Host ""
 
 
           # ==========================================================
@@ -965,13 +962,13 @@ jobs:
           # ==========================================================
 
           Copy-Item `
-            "build\launcher\MajorKeyPack-Installer.exe" `
+            $exePath `
             "build\MajorKeyPack-Installer.exe" `
             -Force
 
 
           # ==========================================================
-          # ZIP
+          # CREATE ZIP
           # ==========================================================
 
           Compress-Archive `
@@ -980,9 +977,13 @@ jobs:
             -Force
 
 
+          # ==========================================================
+          # DONE
+          # ==========================================================
+
           Write-Host ""
           Write-Host "========================================"
-          Write-Host "Build complete."
+          Write-Host "Build complete"
           Write-Host "Version: v${{ steps.version.outputs.number }}"
           Write-Host "========================================"
           Write-Host ""
@@ -996,17 +997,13 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
 
-          tag_name:
-            "${{ steps.version.outputs.version }}"
+          tag_name: "${{ steps.version.outputs.version }}"
 
-          name:
-            "Major Key Pack ${{ steps.version.outputs.version }}"
+          name: "Major Key Pack ${{ steps.version.outputs.version }}"
 
-          make_latest:
-            true
+          make_latest: true
 
-          generate_release_notes:
-            true
+          generate_release_notes: true
 
           files: |
             MajorKeyPack-Installer.zip
