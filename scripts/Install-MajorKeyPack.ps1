@@ -1,4 +1,4 @@
-﻿param([string]$InstallDirectory="$env:APPDATA\MajorKeyPack")
+param([string]$InstallDirectory="$env:APPDATA\MajorKeyPack")
 
 $ErrorActionPreference="Stop"
 
@@ -38,11 +38,9 @@ foreach($Mod in $Manifest.mods){
 
     $Destination=Join-Path $Mods $Mod.filename
 
-    Write-Host "Downloading $($Mod.filename)..."
+    if($Mod.filename -eq "OptiFine_1.20.1_HD_U_I6.jar" -and (Test-Path $Destination) -and (Get-Item $Destination).Length -eq $Mod.size){ Write-Host "Using existing OptiFine JAR..."; continue }; Write-Host "Downloading $($Mod.filename)..."
 
-    Invoke-WebRequest `
-        -Uri $Mod.url `
-        -OutFile $Destination
+    if($Mod.filename -eq "OptiFine_1.20.1_HD_U_I6.jar"){curl.exe -L --fail --silent --show-error --output "$Destination" "https://optifine.tommo.team/OptiFine_1.20.1_HD_U_I6.jar"}else{curl.exe -L --fail --silent --show-error --output "$Destination" "$($Mod.url)"}
 
     if(!(Test-Path $Destination)){
         throw "Download failed: $($Mod.filename)"
@@ -83,4 +81,7 @@ Write-Host ""
 Write-Host "Location: $InstallDirectory"
 Write-Host "Mods: $($Manifest.mods.Count)"
 Write-Host ""
+
+
+
 
