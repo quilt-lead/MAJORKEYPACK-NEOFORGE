@@ -21,6 +21,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/7979/379/eureka-1201-1.6.3.jar"
                  },
                  {
+                     "filename":  "ImmersiveEngineering-1.20.1-10.1.0-171.jar",
+                     "size":  12123365,
+                     "sha256":  "bbb04345b8263b1de026521500e28ceba207470e0dd78c9f022331d7fbca42d2",
+                     "url":  "https://mediafilez.forgecdn.net/files/5224/387/ImmersiveEngineering-1.20.1-10.1.0-171.jar"
+                 },
+                 {
                      "filename":  "jei-1.20.1-forge-15.58.0.209.jar",
                      "size":  1821883,
                      "sha256":  "e39f3794233d16455217984592744fa8eb350a5f898f1002ed721659b77fdd97",
