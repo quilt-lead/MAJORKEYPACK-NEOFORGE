@@ -1,4 +1,4 @@
-﻿name: Build Major Key Pack
+﻿name: Build Major Key Pack Installer
 
 on:
   workflow_dispatch:
@@ -19,38 +19,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Create mods archive
-        shell: pwsh
-        run: |
-          if (!(Test-Path "mods")) {
-            throw "mods folder is missing from the repository."
-          }
-
-          Compress-Archive `
-            -Path "mods\*.jar" `
-            -DestinationPath "mods.zip" `
-            -Force
-
       - name: Build installer package
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force build | Out-Null
 
-          Copy-Item `
-            "installer\Install-MajorKeyPack.ps1" `
-            "build\Install-MajorKeyPack.ps1"
-
-          Copy-Item `
-            "scripts\Install-MajorKeyPack.ps1" `
-            "build\Install-MajorKeyPack.ps1"
-
-          Copy-Item `
-            "modpack-manifest.json" `
-            "build\modpack-manifest.json"
-
-          Copy-Item `
-            "mods.zip" `
-            "build\mods.zip"
+          Copy-Item "installer\Install-MajorKeyPack.ps1" "build\Install-MajorKeyPack.ps1"
+          Copy-Item "scripts\Install-MajorKeyPack.ps1" "build\Install-MajorKeyPack-Core.ps1"
+          Copy-Item "modpack-manifest.json" "build\modpack-manifest.json"
 
           Compress-Archive `
             -Path "build\*" `
@@ -65,5 +41,4 @@ jobs:
           generate_release_notes: true
           files: |
             MajorKeyPack-Installer.zip
-            mods.zip
             modpack-manifest.json
