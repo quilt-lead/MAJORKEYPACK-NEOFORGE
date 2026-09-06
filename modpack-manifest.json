@@ -13,6 +13,12 @@
                      "size":  7513212,
                      "sha256":  "3ab83c53de3c0e3f9fc0d08295ea067ff456d1cff31c707a7889e6c09f8c94d0",
                      "url":  "https://mediafilez.forgecdn.net/files/4578/885/kotlinforforge-4.3.0-all.jar"
+                 },
+                 {
+                     "filename":  "valkyrienskies-120-2.4.11.jar",
+                     "size":  27752937,
+                     "sha256":  "f99f24de62015451a047f90484cf9d25970cac350105b581c22b2d5247ebfd53",
+                     "url":  "https://mediafilez.forgecdn.net/files/7906/689/valkyrienskies-120-2.4.11.jar"
                  }
              ]
 }
