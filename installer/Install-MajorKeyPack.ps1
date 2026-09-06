@@ -12,7 +12,7 @@ Write-Host ""
 if(!(Test-Path $MinecraftDirectory)){
     Write-Host "Minecraft was not found." -ForegroundColor Red
     Write-Host "Please install Minecraft Java Edition first."
-
+    exit 1`r`n
 }
 
 $Forge=Get-ChildItem "$MinecraftDirectory\versions" -Directory -ErrorAction SilentlyContinue |
@@ -54,7 +54,7 @@ if(Test-Path $InstallDirectory){
     New-Item $InstallDirectory -ItemType Directory -Force | Out-Null
 }
 
-$Script=Join-Path $PSScriptRoot "Install-MajorKeyPack.ps1"
+$Script=Join-Path $PSScriptRoot "..\scripts\Install-MajorKeyPack.ps1"
 
 if(!(Test-Path $Script)){
     throw "Install-MajorKeyPack.ps1 was not found."
@@ -77,5 +77,7 @@ Write-Host "Installed to:"
 Write-Host $InstallDirectory
 Write-Host ""
 Read-Host "Press ENTER to close"
+
+
 
 
