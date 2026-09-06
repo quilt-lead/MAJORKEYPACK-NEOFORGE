@@ -1,8 +1,4 @@
-          Copy-Item \
-            "installer\MajorKeyPackLauncher.cs" \
-            "launcher-build\Program.cs" \
-            -Force
-  Installer
+name: Installer
 
 on:
   workflow_dispatch:
@@ -37,6 +33,8 @@ jobs:
         id: version
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
+
           git fetch --tags --force
 
           $tags = @(
@@ -51,8 +49,7 @@ jobs:
             $next = 1
           }
           else {
-            $next =
-              ($tags | Measure-Object -Maximum).Maximum + 1
+            $next = ($tags | Measure-Object -Maximum).Maximum + 1
           }
 
           $version = "v$next"
@@ -70,10 +67,13 @@ jobs:
           New-Item -ItemType Directory -Force "build" | Out-Null
           New-Item -ItemType Directory -Force "launcher-build" | Out-Null
 
+          # Copy the PowerShell installer that the launcher will execute.
           Copy-Item `
             "installer\Install-MajorKeyPack.ps1" `
-            "launcher-build\Install-MajorKeyPack.ps1"
+            "launcher-build\Install-MajorKeyPack.ps1" `
+            -Force
 
+          # Create the temporary .NET project.
           @"
           <Project Sdk="Microsoft.NET.Sdk">
             <PropertyGroup>
@@ -82,10 +82,13 @@ jobs:
               <UseWindowsForms>true</UseWindowsForms>
               <ImplicitUsings>enable</ImplicitUsings>
               <Nullable>enable</Nullable>
+
               <AssemblyName>MajorKeyPack-Installer</AssemblyName>
+              <RootNamespace>MajorKeyPackInstaller</RootNamespace>
+
               <Version>1.0.${{ steps.version.outputs.number }}</Version>
               <AssemblyVersion>1.0.${{ steps.version.outputs.number }}</AssemblyVersion>
-              <RootNamespace>MajorKeyPackInstaller</RootNamespace>
+
               <PublishSingleFile>true</PublishSingleFile>
               <SelfContained>true</SelfContained>
               <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
@@ -101,14 +104,13 @@ jobs:
             "launcher-build\MajorKeyPack-Installer.csproj" `
             -Encoding UTF8
 
+          # Copy the actual launcher source.
           Copy-Item `
             "installer\MajorKeyPackLauncher.cs" `
             "launcher-build\Program.cs" `
             -Force
-          '@ | Set-Content `
-            "launcher-build\Program.cs" `
-            -Encoding UTF8
 
+          # Publish self-contained Windows x64 executable.
           dotnet publish `
             "launcher-build\MajorKeyPack-Installer.csproj" `
             --configuration Release `
@@ -118,12 +120,14 @@ jobs:
             -p:IncludeNativeLibrariesForSelfExtract=true `
             -o "build\launcher"
 
-          if (!(Test-Path "build\launcher\MajorKeyPack-Installer.exe")) {
-              throw "EXE build failed."
+          $exe = "build\launcher\MajorKeyPack-Installer.exe"
+
+          if (!(Test-Path $exe)) {
+            throw "EXE build failed: $exe was not created."
           }
 
           Copy-Item `
-            "build\launcher\MajorKeyPack-Installer.exe" `
+            $exe `
             "build\MajorKeyPack-Installer.exe" `
             -Force
 
