@@ -207,16 +207,26 @@ jobs:
             -DestinationPath "MajorKeyPack-Installer.zip" `
             -Force
 
+      - name: Determine release version
+        id: version
+        shell: pwsh
+        run: |
+          $tags = git tag --list "v*" | Where-Object { $_ -match "^v\d+$" } | ForEach-Object { [int]$_.Substring(1) }
+          $next = if ($tags) { ($tags | Measure-Object -Maximum).Maximum + 1 } else { 1 }
+          "version=v$next" >> $env:GITHUB_OUTPUT
+
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "v${{ github.run_number }}"
-          name: "Major Key Pack v${{ github.run_number }}"
+          tag_name: "${{ steps.version.outputs.version }}"
+          name: "Major Key Pack ${{ steps.version.outputs.version }}"
           generate_release_notes: true
           files: |
             MajorKeyPack-Installer.zip
             build/MajorKeyPack-Installer.exe
             modpack-manifest.json
+
+
 
 
 
