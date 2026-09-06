@@ -11,7 +11,7 @@ Write-Host ""
 
 if(!(Test-Path $MinecraftDirectory)){
     Write-Host "Minecraft was not found." -ForegroundColor Red
-    Write-Host "Please install Minecraft Java Edition first."
+    Write-Host "Please install Minecraft Java Edition first."`r`n    exit 1
     exit 1`r`n
 }
 
@@ -77,6 +77,9 @@ Write-Host "Installed to:"
 Write-Host $InstallDirectory
 Write-Host ""
 Read-Host "Press ENTER to close"
+
+
+
 
 
 
