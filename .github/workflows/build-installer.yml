@@ -1,4 +1,4 @@
-name: Build Major Key Pack Installer
+﻿name: Build Major Key Pack Installer
 
 on:
   workflow_dispatch:
@@ -323,3 +323,4 @@ jobs:
             MajorKeyPack-Installer.zip
             build/MajorKeyPack-Installer.exe
             modpack-manifest.json
+
