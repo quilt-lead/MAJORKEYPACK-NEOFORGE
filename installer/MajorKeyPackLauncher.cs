@@ -9,11 +9,8 @@ using System.Windows.Forms;
 
 internal static class Program
 {
-    private const string Repository =
-        "quilt-lead/MAJORKEYPACK";
-
-    private const string InstallerAsset =
-        "MajorKeyPack-Installer.exe";
+    private const string Repository = "quilt-lead/MAJORKEYPACK";
+    private const string InstallerAsset = "MajorKeyPack-Installer.exe";
 
     [STAThread]
     static int Main()
@@ -26,20 +23,30 @@ internal static class Program
                     .Version?
                     .ToString() ?? "0.0.0";
 
-            if (Environment.GetEnvironmentVariable(
-                    "MAJORKEYPACK_SKIP_UPDATE") != "1")
+            int currentRelease = GetReleaseNumber(currentVersion);
+
+            if (Environment.GetEnvironmentVariable("MAJORKEYPACK_SKIP_UPDATE") != "1")
             {
-                if (TryUpdate(currentVersion))
+                PrintUpdateCheck(currentRelease);
+
+                if (TryUpdate(currentRelease))
                     return 0;
             }
 
-            return RunInstaller(currentVersion);
+            return RunInstaller(currentRelease);
         }
         catch (Exception ex)
         {
+            Console.WriteLine();
+            Console.WriteLine("========================================");
+            Console.WriteLine(" INSTALLATION FAILED");
+            Console.WriteLine("========================================");
+            Console.WriteLine();
+            Console.WriteLine(ex.Message);
+            Console.WriteLine();
+
             MessageBox.Show(
-                "Major Key Pack installer failed.\n\n" +
-                ex.ToString(),
+                "Major Key Pack installer failed.\n\n" + ex,
                 "Major Key Pack",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
@@ -48,26 +55,42 @@ internal static class Program
         }
     }
 
-    private static bool TryUpdate(string currentVersion)
+    private static int GetReleaseNumber(string version)
+    {
+        string[] parts = version.Split('.');
+
+        if (parts.Length >= 3 &&
+            int.TryParse(parts[2], out int release))
+        {
+            return release;
+        }
+
+        return 0;
+    }
+
+    private static void PrintUpdateCheck(int currentRelease)
+    {
+        Console.WriteLine();
+        Console.WriteLine("========================================");
+        Console.WriteLine("        CHECKING FOR UPDATES");
+        Console.WriteLine("========================================");
+        Console.WriteLine();
+        Console.WriteLine("Checking GitHub latest release...");
+        Console.WriteLine($"Current installer: v{currentRelease}");
+        Console.WriteLine();
+    }
+
+    private static bool TryUpdate(int currentRelease)
     {
         try
         {
-            Console.WriteLine();
-            Console.WriteLine("========================================");
-            Console.WriteLine("        CHECKING FOR UPDATES");
-            Console.WriteLine("========================================");
-            Console.WriteLine();
-            Console.WriteLine("Checking GitHub latest release...");
-
             using HttpClient client = new HttpClient();
 
             client.DefaultRequestHeaders.UserAgent.ParseAdd(
                 "MajorKeyPackInstaller");
 
             string apiUrl =
-                "https://api.github.com/repos/" +
-                Repository +
-                "/releases/latest";
+                $"https://api.github.com/repos/{Repository}/releases/latest";
 
             string json =
                 client.GetStringAsync(apiUrl)
@@ -82,59 +105,36 @@ internal static class Program
                     .GetProperty("tag_name")
                     .GetString() ?? "";
 
-            int currentRelease = 0;
-
-            string[] currentParts =
-                currentVersion.Split('.');
-
-            if (currentParts.Length >= 3)
-            {
-                int.TryParse(
-                    currentParts[2],
-                    out currentRelease);
-            }
-
             if (!tag.StartsWith(
                     "v",
                     StringComparison.OrdinalIgnoreCase))
             {
                 Console.WriteLine(
-                    "GitHub latest release tag was not recognized: " +
-                    tag);
+                    $"GitHub latest release tag was not recognized: {tag}");
 
                 Console.WriteLine(
                     "Continuing with the current installer.");
-                Console.WriteLine();
 
                 return false;
             }
 
             if (!int.TryParse(
                     tag.Substring(1),
-                    out int latestVersion))
+                    out int latestRelease))
             {
                 Console.WriteLine(
-                    "GitHub latest release tag was not recognized: " +
-                    tag);
+                    $"GitHub latest release tag was not recognized: {tag}");
 
                 Console.WriteLine(
                     "Continuing with the current installer.");
-                Console.WriteLine();
 
                 return false;
             }
 
-            Console.WriteLine(
-                "Current installer: v" +
-                currentRelease);
-
-            Console.WriteLine(
-                "Latest installer:  v" +
-                latestVersion);
-
+            Console.WriteLine($"Latest installer:  v{latestRelease}");
             Console.WriteLine();
 
-            if (latestVersion <= currentRelease)
+            if (latestRelease <= currentRelease)
             {
                 Console.WriteLine(
                     "Installer is up to date.");
@@ -144,41 +144,30 @@ internal static class Program
                 return false;
             }
 
-            Console.WriteLine(
-                "========================================");
-
-            Console.WriteLine(
-                "        UPDATE AVAILABLE");
-
-            Console.WriteLine(
-                "========================================");
-
+            Console.WriteLine("========================================");
+            Console.WriteLine("        UPDATE AVAILABLE");
+            Console.WriteLine("========================================");
             Console.WriteLine();
-
             Console.WriteLine(
                 "A newer Major Key Pack installer is available.");
-
-            Console.WriteLine(
-                "Current: v" +
-                currentRelease);
-
-            Console.WriteLine(
-                "Latest:  v" +
-                latestVersion);
-
             Console.WriteLine();
-
+            Console.WriteLine(
+                $"Current: v{currentRelease}");
+            Console.WriteLine(
+                $"Latest:  v{latestRelease}");
+            Console.WriteLine();
             Console.WriteLine(
                 "Stopping current installation...");
+            Console.WriteLine(
+                "Downloading latest installer...");
+            Console.WriteLine();
 
             JsonElement assets =
-                document.RootElement
-                    .GetProperty("assets");
+                document.RootElement.GetProperty("assets");
 
             string? downloadUrl = null;
 
-            foreach (JsonElement asset in
-                     assets.EnumerateArray())
+            foreach (JsonElement asset in assets.EnumerateArray())
             {
                 string name =
                     asset.GetProperty("name")
@@ -201,18 +190,13 @@ internal static class Program
             {
                 Console.WriteLine(
                     "The latest release does not contain " +
-                    InstallerAsset + ".");
+                    InstallerAsset);
 
                 Console.WriteLine(
                     "Continuing with the current installer.");
 
-                Console.WriteLine();
-
                 return false;
             }
-
-            Console.WriteLine(
-                "Downloading latest installer...");
 
             string updateDirectory =
                 Path.Combine(
@@ -220,8 +204,7 @@ internal static class Program
                     "MajorKeyPackUpdate-" +
                     Guid.NewGuid().ToString("N"));
 
-            Directory.CreateDirectory(
-                updateDirectory);
+            Directory.CreateDirectory(updateDirectory);
 
             string newInstaller =
                 Path.Combine(
@@ -256,14 +239,6 @@ internal static class Program
 
             if (downloadedFile.Length < 1000000)
             {
-                try
-                {
-                    File.Delete(newInstaller);
-                }
-                catch
-                {
-                }
-
                 throw new Exception(
                     "The downloaded installer is invalid.");
             }
@@ -273,11 +248,9 @@ internal static class Program
                 "Latest installer downloaded successfully.");
 
             Console.WriteLine(
-                "Starting Major Key Pack v" +
-                latestVersion + "...");
+                $"Starting Major Key Pack v{latestRelease}...");
 
             Console.WriteLine();
-
             Console.WriteLine(
                 "The current installer will now close.");
 
@@ -293,10 +266,10 @@ internal static class Program
             processInfo.EnvironmentVariables[
                 "MAJORKEYPACK_SKIP_UPDATE"] = "1";
 
-            Process? newProcess =
+            Process? process =
                 Process.Start(processInfo);
 
-            if (newProcess == null)
+            if (process == null)
             {
                 throw new Exception(
                     "Could not start the updated installer.");
@@ -308,9 +281,12 @@ internal static class Program
         {
             Console.WriteLine();
             Console.WriteLine(
-                "Update check failed: " +
+                "Could not check for installer updates.");
+
+            Console.WriteLine(
                 ex.Message);
 
+            Console.WriteLine();
             Console.WriteLine(
                 "Continuing with the current installer.");
 
@@ -320,8 +296,7 @@ internal static class Program
         }
     }
 
-    private static int RunInstaller(
-        string currentVersion)
+    private static int RunInstaller(int currentRelease)
     {
         string appData =
             Environment.GetFolderPath(
@@ -337,8 +312,7 @@ internal static class Program
                 appData,
                 "MajorKeyPack");
 
-        if (!Directory.Exists(
-                minecraftDirectory))
+        if (!Directory.Exists(minecraftDirectory))
         {
             MessageBox.Show(
                 "Minecraft Java Edition was not found.\n\n" +
@@ -372,7 +346,8 @@ internal static class Program
             DialogResult result =
                 MessageBox.Show(
                     "Forge 1.20.1 was not found.\n\n" +
-                    "Please install Forge 1.20.1 before installing Major Key Pack.\n\n" +
+                    "Please install Forge 1.20.1 before installing " +
+                    "Major Key Pack.\n\n" +
                     "Click Yes to open the official Forge download page.\n" +
                     "Click No to exit.",
                     "Major Key Pack - Forge Required",
@@ -403,8 +378,7 @@ internal static class Program
 
         using Stream? resource =
             Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream(
-                    resourceName);
+                .GetManifestResourceStream(resourceName);
 
         if (resource == null)
         {
@@ -423,8 +397,7 @@ internal static class Program
                 "MajorKeyPack-" +
                 Guid.NewGuid().ToString("N"));
 
-        Directory.CreateDirectory(
-            tempDirectory);
+        Directory.CreateDirectory(tempDirectory);
 
         string scriptPath =
             Path.Combine(
@@ -453,10 +426,6 @@ internal static class Program
         psi.ArgumentList.Add(scriptPath);
         psi.ArgumentList.Add("-InstallDirectory");
         psi.ArgumentList.Add(installDirectory);
-
-        psi.EnvironmentVariables[
-            "MAJORKEYPACK_CURRENT_VERSION"] =
-            currentVersion;
 
         using Process? process =
             Process.Start(psi);
