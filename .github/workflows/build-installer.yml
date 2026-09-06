@@ -45,9 +45,8 @@ jobs:
           </Project>
           "@ | Set-Content "launcher-build\MajorKeyPack-Installer.csproj" -Encoding UTF8
 
-          @"
+          @'
           using System.Diagnostics;
-          using System.Reflection;
 
           string script = Path.Combine(AppContext.BaseDirectory, "Install-MajorKeyPack.ps1");
 
@@ -60,10 +59,15 @@ jobs:
           var psi = new ProcessStartInfo
           {
               FileName = "powershell.exe",
-              Arguments = "-NoProfile -ExecutionPolicy Bypass -File `" + script + "`"",
               UseShellExecute = true,
               WorkingDirectory = AppContext.BaseDirectory
           };
+
+          psi.ArgumentList.Add("-NoProfile");
+          psi.ArgumentList.Add("-ExecutionPolicy");
+          psi.ArgumentList.Add("Bypass");
+          psi.ArgumentList.Add("-File");
+          psi.ArgumentList.Add(script);
 
           using var process = Process.Start(psi);
 
@@ -75,7 +79,7 @@ jobs:
 
           process.WaitForExit();
           Environment.Exit(process.ExitCode);
-          "@ | Set-Content "launcher-build\Program.cs" -Encoding UTF8
+          '@ | Set-Content "launcher-build\Program.cs" -Encoding UTF8
 
           dotnet publish "launcher-build\MajorKeyPack-Installer.csproj" `
             --configuration Release `
@@ -84,6 +88,10 @@ jobs:
             -p:PublishSingleFile=true `
             -p:IncludeNativeLibrariesForSelfExtract=true `
             -o "build\launcher"
+
+          if (!(Test-Path "build\launcher\MajorKeyPack-Installer.exe")) {
+              throw "EXE build failed."
+          }
 
           Copy-Item "build\launcher\MajorKeyPack-Installer.exe" "build\MajorKeyPack-Installer.exe"
 
