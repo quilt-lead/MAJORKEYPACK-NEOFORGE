@@ -45,6 +45,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/4578/885/kotlinforforge-4.3.0-all.jar"
                  },
                  {
+                     "filename":  "Mekanism-1.20.1-10.4.16.80.jar",
+                     "size":  12558456,
+                     "sha256":  "3b0d191fa4a45e662f9725991d76a30192f30186abb2ba694b873b5f7b9358d2",
+                     "url":  "https://mediafilez.forgecdn.net/files/6552/911/Mekanism-1.20.1-10.4.16.80.jar"
+                 },
+                 {
                      "filename":  "OptiFine_1.20.1_HD_U_I6.jar",
                      "size":  7145205,
                      "sha256":  "0b67cb670aedf2e55a982f3d52b6d53e46791a0c984aa1d2ee58100fc9bfc650",
