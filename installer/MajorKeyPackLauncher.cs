@@ -33,6 +33,52 @@ internal static class Program
                 return 1;
             }
 
+            string versionsDirectory =
+                Path.Combine(minecraftDirectory, "versions");
+
+            bool forgeFound =
+                Directory.Exists(versionsDirectory) &&
+                Directory.GetDirectories(versionsDirectory)
+                    .Any(x =>
+                        Path.GetFileName(x)
+                            .StartsWith(
+                                "1.20.1-forge-",
+                                StringComparison.OrdinalIgnoreCase));
+
+            if (!forgeFound)
+            {
+                const string forgeUrl =
+                    "https://files.minecraftforge.net/net/minecraftforge/forge/index_1.20.1.html";
+
+                DialogResult result =
+                    MessageBox.Show(
+                        "Forge 1.20.1 was not found.\n\n" +
+                        "Please install Forge 1.20.1 before installing Major Key Pack.\n\n" +
+                        "Click Yes to open the official Forge download page.\n" +
+                        "Click No to exit.",
+                        "Major Key Pack - Forge Required",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning);
+
+                if (result == DialogResult.Yes)
+                {
+                    Process.Start(
+                        new ProcessStartInfo
+                        {
+                            FileName = forgeUrl,
+                            UseShellExecute = true
+                        });
+
+                    MessageBox.Show(
+                        "Install Forge 1.20.1, then run the Major Key Pack installer again.",
+                        "Major Key Pack",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+
+                return 1;
+            }
+
             const string resourceName =
                 "MajorKeyPackInstaller.Install-MajorKeyPack.ps1";
 
@@ -87,6 +133,17 @@ internal static class Program
             psi.ArgumentList.Add("-InstallDirectory");
             psi.ArgumentList.Add(installDirectory);
 
+            // Pass the EXE's actual location to PowerShell so it can
+            // determine the version of the installer that launched it.
+            string currentExe =
+                Environment.ProcessPath ?? "";
+
+            if (!string.IsNullOrWhiteSpace(currentExe))
+            {
+                psi.ArgumentList.Add("-CurrentInstallerPath");
+                psi.ArgumentList.Add(currentExe);
+            }
+
             using Process? process =
                 Process.Start(psi);
 
@@ -121,7 +178,7 @@ internal static class Program
         {
             MessageBox.Show(
                 "Major Key Pack installer failed.\n\n" +
-                ex,
+                ex.ToString(),
                 "Major Key Pack",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
