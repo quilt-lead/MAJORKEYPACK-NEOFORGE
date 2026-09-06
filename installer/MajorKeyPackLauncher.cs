@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
@@ -10,173 +9,179 @@ using System.Windows.Forms;
 
 internal static class Program
 {
-    // This is replaced by GitHub Actions when building the EXE.
-    private const string CurrentVersion = "v${{ steps.version.outputs.number }}";
+    /*
+     * GitHub Actions replaces this value when building a release.
+     *
+     * Example:
+     * v1
+     * v2
+     * v3
+     */
+    private const string CurrentVersion = "__CURRENT_VERSION__";
 
-    // CHANGE THIS to your GitHub repository.
-    private const string GitHubOwner = "YOUR_GITHUB_USERNAME";
-    private const string GitHubRepository = "YOUR_REPOSITORY_NAME";
+    private const string GitHubOwner = "quilt-lead";
+    private const string GitHubRepository = "MAJORKEYPACK";
 
-    private const string GitHubLatestReleaseUrl =
-        "https://api.github.com/repos/" +
-        GitHubOwner + "/" +
-        GitHubRepository +
-        "/releases/latest";
+    private const string InstallerScriptResource = "Install-MajorKeyPack.ps1";
+    private const string ManifestResource = "modpack-manifest.json";
 
     [STAThread]
-    static int Main()
+    private static int Main()
     {
         try
         {
-            // Check for a newer installer before doing anything else.
-            int updateResult = CheckForUpdateAsync().GetAwaiter().GetResult();
+            ApplicationConfiguration.Initialize();
 
-            if (updateResult != 0)
-                return updateResult;
+            // ---------------------------------------------------------
+            // CHECK FOR UPDATE FIRST
+            // ---------------------------------------------------------
 
-            return Install();
+            bool updateCheckSucceeded;
+
+            try
+            {
+                updateCheckSucceeded = CheckForUpdateAsync().GetAwaiter().GetResult();
+            }
+            catch
+            {
+                // GitHub being unavailable should NOT prevent installation.
+                updateCheckSucceeded = false;
+            }
+
+            if (updateCheckSucceeded)
+            {
+                return 0;
+            }
+
+            // ---------------------------------------------------------
+            // NO UPDATE NEEDED
+            // RUN INSTALLER
+            // ---------------------------------------------------------
+
+            string tempDirectory = Path.Combine(
+                Path.GetTempPath(),
+                "MajorKeyPack",
+                Guid.NewGuid().ToString("N")
+            );
+
+            Directory.CreateDirectory(tempDirectory);
+
+            string scriptPath = Path.Combine(
+                tempDirectory,
+                "Install-MajorKeyPack.ps1"
+            );
+
+            string manifestPath = Path.Combine(
+                tempDirectory,
+                "modpack-manifest.json"
+            );
+
+            ExtractResource(
+                InstallerScriptResource,
+                scriptPath
+            );
+
+            ExtractResource(
+                ManifestResource,
+                manifestPath
+            );
+
+            /*
+             * The manifest is embedded as a resource AND written beside
+             * the PowerShell script.
+             *
+             * The current PS1 contains its own embedded copy, so this
+             * file is also provided for compatibility/future changes.
+             */
+
+            string powershellArguments =
+                "-NoProfile -ExecutionPolicy Bypass -File " +
+                Quote(scriptPath);
+
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                Arguments = powershellArguments,
+                UseShellExecute = false,
+                WorkingDirectory = tempDirectory
+            };
+
+            using Process process = Process.Start(psi);
+
+            if (process == null)
+            {
+                throw new Exception("Could not start PowerShell.");
+            }
+
+            process.WaitForExit();
+
+            return process.ExitCode;
         }
         catch (Exception ex)
         {
             MessageBox.Show(
-                "Major Key Pack installer failed.\n\n" +
-                ex,
-                "Major Key Pack",
+                ex.Message,
+                "Major Key Pack Installer",
                 MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
+                MessageBoxIcon.Error
+            );
 
             return 1;
         }
     }
 
-    private static async Task<int> CheckForUpdateAsync()
+    private static async Task<bool> CheckForUpdateAsync()
     {
-        try
+        int currentVersionNumber = ParseVersion(CurrentVersion);
+
+        using HttpClient client = new HttpClient();
+
+        client.DefaultRequestHeaders.UserAgent.ParseAdd(
+            "MajorKeyPack-Installer"
+        );
+
+        string apiUrl =
+            $"https://api.github.com/repos/{GitHubOwner}/{GitHubRepository}/releases/latest";
+
+        string json = await client.GetStringAsync(apiUrl);
+
+        using JsonDocument document = JsonDocument.Parse(json);
+
+        if (!document.RootElement.TryGetProperty(
+                "tag_name",
+                out JsonElement tagElement))
         {
-            using HttpClient client = new HttpClient();
-
-            client.DefaultRequestHeaders.UserAgent.ParseAdd(
-                "MajorKeyPack-Installer");
-
-            client.Timeout = TimeSpan.FromSeconds(10);
-
-            using HttpResponseMessage response =
-                await client.GetAsync(GitHubLatestReleaseUrl);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                // If GitHub cannot be reached, don't prevent installation.
-                return 0;
-            }
-
-            string json = await response.Content.ReadAsStringAsync();
-
-            using JsonDocument document =
-                JsonDocument.Parse(json);
-
-            JsonElement root = document.RootElement;
-
-            if (!root.TryGetProperty("tag_name", out JsonElement tagElement))
-                return 0;
-
-            string? latestVersion = tagElement.GetString();
-
-            if (string.IsNullOrWhiteSpace(latestVersion))
-                return 0;
-
-            latestVersion = latestVersion.Trim();
-
-            Console.WriteLine(
-                $"Current version: {CurrentVersion}");
-
-            Console.WriteLine(
-                $"Latest version: {latestVersion}");
-
-            if (!IsNewerVersion(latestVersion, CurrentVersion))
-                return 0;
-
-            DialogResult result = MessageBox.Show(
-                "A newer version of Major Key Pack is available.\n\n" +
-                "Installed installer: " + CurrentVersion + "\n" +
-                "Latest installer: " + latestVersion + "\n\n" +
-                "Would you like to update the installer now?",
-                "Major Key Pack Update",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Information);
-
-            if (result != DialogResult.Yes)
-                return 0;
-
-            string? downloadUrl =
-                FindInstallerDownloadUrl(root);
-
-            if (string.IsNullOrWhiteSpace(downloadUrl))
-            {
-                MessageBox.Show(
-                    "A newer release was found, but the installer " +
-                    "download could not be located.\n\n" +
-                    "Please download the latest release manually.",
-                    "Major Key Pack",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-
-                return 0;
-            }
-
-            string tempDirectory = Path.Combine(
-                Path.GetTempPath(),
-                "MajorKeyPackUpdater-" +
-                Guid.NewGuid().ToString("N"));
-
-            Directory.CreateDirectory(tempDirectory);
-
-            string newInstallerPath =
-                Path.Combine(
-                    tempDirectory,
-                    "MajorKeyPack-Installer.exe");
-
-            using HttpResponseMessage downloadResponse =
-                await client.GetAsync(downloadUrl);
-
-            downloadResponse.EnsureSuccessStatusCode();
-
-            await using Stream input =
-                await downloadResponse.Content.ReadAsStreamAsync();
-
-            await using FileStream output =
-                File.Create(newInstallerPath);
-
-            await input.CopyToAsync(output);
-
-            output.Close();
-
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = newInstallerPath,
-                UseShellExecute = true
-            });
-
-            // This installer is outdated.
-            // Let the newly downloaded installer take over.
-            return 0;
+            return false;
         }
-        catch
+
+        string? latestTag = tagElement.GetString();
+
+        if (string.IsNullOrWhiteSpace(latestTag))
         {
-            // Updating is optional. If GitHub is unavailable,
-            // continue with the installer we already have.
-            return 0;
+            return false;
         }
-    }
 
-    private static string? FindInstallerDownloadUrl(
-        JsonElement release)
-    {
-        if (!release.TryGetProperty(
+        int latestVersionNumber = ParseVersion(latestTag);
+
+        /*
+         * If the release on GitHub isn't newer, continue normally.
+         */
+        if (latestVersionNumber <= currentVersionNumber)
+        {
+            return false;
+        }
+
+        /*
+         * Find the EXE in the release assets.
+         */
+        if (!document.RootElement.TryGetProperty(
                 "assets",
                 out JsonElement assets))
         {
-            return null;
+            return false;
         }
+
+        string? downloadUrl = null;
 
         foreach (JsonElement asset in assets.EnumerateArray())
         {
@@ -197,217 +202,140 @@ internal static class Program
                 continue;
             }
 
-            if (!asset.TryGetProperty(
+            if (asset.TryGetProperty(
                     "browser_download_url",
                     out JsonElement urlElement))
             {
-                continue;
+                downloadUrl = urlElement.GetString();
             }
 
-            return urlElement.GetString();
+            break;
         }
 
-        return null;
+        if (string.IsNullOrWhiteSpace(downloadUrl))
+        {
+            return false;
+        }
+
+        DialogResult result = MessageBox.Show(
+            $"A newer version of Major Key Pack is available.\n\n" +
+            $"Current version: {CurrentVersion}\n" +
+            $"Latest version:  {latestTag}\n\n" +
+            $"Would you like to update now?",
+            "Major Key Pack Update",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Information
+        );
+
+        if (result != DialogResult.Yes)
+        {
+            return false;
+        }
+
+        string tempExe = Path.Combine(
+            Path.GetTempPath(),
+            $"MajorKeyPack-Installer-{latestTag}.exe"
+        );
+
+        if (File.Exists(tempExe))
+        {
+            File.Delete(tempExe);
+        }
+
+        using HttpResponseMessage response =
+            await client.GetAsync(downloadUrl);
+
+        response.EnsureSuccessStatusCode();
+
+        await using Stream input =
+            await response.Content.ReadAsStreamAsync();
+
+        await using FileStream output =
+            File.Create(tempExe);
+
+        await input.CopyToAsync(output);
+
+        output.Close();
+
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = tempExe,
+            UseShellExecute = true
+        });
+
+        /*
+         * Returning true tells Main() not to continue with the old
+         * installer.
+         */
+        return true;
     }
 
-    private static bool IsNewerVersion(
-        string latest,
-        string current)
+    private static int ParseVersion(string version)
     {
-        if (!TryGetVersionNumber(latest, out int latestNumber))
-            return false;
-
-        if (!TryGetVersionNumber(current, out int currentNumber))
-            return false;
-
-        return latestNumber > currentNumber;
-    }
-
-    private static bool TryGetVersionNumber(
-        string version,
-        out int number)
-    {
-        number = 0;
+        if (string.IsNullOrWhiteSpace(version))
+        {
+            return 0;
+        }
 
         version = version.Trim();
 
         if (version.StartsWith("v", StringComparison.OrdinalIgnoreCase))
+        {
             version = version.Substring(1);
+        }
 
-        return int.TryParse(version, out number);
+        if (int.TryParse(version, out int result))
+        {
+            return result;
+        }
+
+        return 0;
     }
 
-    private static int Install()
+    private static void ExtractResource(
+        string resourceName,
+        string destination)
     {
-        string appData =
-            Environment.GetFolderPath(
-                Environment.SpecialFolder.ApplicationData);
+        Assembly assembly = Assembly.GetExecutingAssembly();
 
-        string minecraftDirectory =
-            Path.Combine(appData, ".minecraft");
+        string? resource = null;
 
-        string installDirectory =
-            Path.Combine(appData, "MajorKeyPack");
-
-        if (!Directory.Exists(minecraftDirectory))
+        foreach (string name in assembly.GetManifestResourceNames())
         {
-            MessageBox.Show(
-                "Minecraft Java Edition was not found.\n\n" +
-                "Please install Minecraft Java Edition first.",
-                "Major Key Pack",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
-
-            return 1;
-        }
-
-        string versionsDirectory =
-            Path.Combine(
-                minecraftDirectory,
-                "versions");
-
-        bool forgeFound =
-            Directory.Exists(versionsDirectory) &&
-            Directory.GetDirectories(versionsDirectory)
-                .Any(x =>
-                    Path.GetFileName(x)
-                        .StartsWith(
-                            "1.20.1-forge-",
-                            StringComparison.OrdinalIgnoreCase));
-
-        if (!forgeFound)
-        {
-            const string forgeUrl =
-                "https://files.minecraftforge.net/net/minecraftforge/forge/index_1.20.1.html";
-
-            DialogResult result = MessageBox.Show(
-                "Forge 1.20.1 was not found.\n\n" +
-                "Please install Forge 1.20.1 before installing Major Key Pack.\n\n" +
-                "Click Yes to open the official Forge download page.\n" +
-                "Click No to exit.",
-                "Major Key Pack - Forge Required",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
-
-            if (result == DialogResult.Yes)
+            if (name.EndsWith(
+                    resourceName,
+                    StringComparison.OrdinalIgnoreCase))
             {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = forgeUrl,
-                    UseShellExecute = true
-                });
-
-                MessageBox.Show(
-                    "Install Forge 1.20.1, then run the Major Key Pack installer again.",
-                    "Major Key Pack",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                resource = name;
+                break;
             }
-
-            return 1;
         }
-
-        const string resourceName =
-            "MajorKeyPackInstaller.Install-MajorKeyPack.ps1";
-
-        using Stream? resource =
-            Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream(resourceName);
 
         if (resource == null)
         {
-            MessageBox.Show(
-                "The installer script could not be found inside the EXE.",
-                "Major Key Pack",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
-
-            return 1;
+            throw new FileNotFoundException(
+                $"Embedded resource not found: {resourceName}"
+            );
         }
 
-        string tempDirectory =
-            Path.Combine(
-                Path.GetTempPath(),
-                "MajorKeyPack-" +
-                Guid.NewGuid().ToString("N"));
+        using Stream? input =
+            assembly.GetManifestResourceStream(resource);
 
-        Directory.CreateDirectory(tempDirectory);
-
-        string scriptPath =
-            Path.Combine(
-                tempDirectory,
-                "Install-MajorKeyPack.ps1");
-
-        using (FileStream output =
-            File.Create(scriptPath))
+        if (input == null)
         {
-            resource.CopyTo(output);
+            throw new Exception(
+                $"Could not open embedded resource: {resourceName}"
+            );
         }
 
-        ProcessStartInfo psi =
-            new ProcessStartInfo
-            {
-                FileName = "powershell.exe",
-                UseShellExecute = false,
-                CreateNoWindow = false,
-                WorkingDirectory = tempDirectory
-            };
+        using FileStream output =
+            File.Create(destination);
 
-        psi.ArgumentList.Add("-NoProfile");
-        psi.ArgumentList.Add("-ExecutionPolicy");
-        psi.ArgumentList.Add("Bypass");
-        psi.ArgumentList.Add("-File");
-        psi.ArgumentList.Add(scriptPath);
-        psi.ArgumentList.Add("-InstallDirectory");
-        psi.ArgumentList.Add(installDirectory);
+        input.CopyTo(output);
+    }
 
-        using Process? process =
-            Process.Start(psi);
-
-        if (process == null)
-        {
-            MessageBox.Show(
-                "Failed to start PowerShell.",
-                "Major Key Pack",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
-
-            return 1;
-        }
-
-        process.WaitForExit();
-
-        int exitCode = process.ExitCode;
-
-        try
-        {
-            Directory.Delete(
-                tempDirectory,
-                true);
-        }
-        catch
-        {
-        }
-
-        if (exitCode != 0)
-        {
-            MessageBox.Show(
-                "Major Key Pack installation failed.\n\n" +
-                "PowerShell exit code: " +
-                exitCode,
-                "Major Key Pack",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
-
-            return exitCode;
-        }
-
-        MessageBox.Show(
-            "Major Key Pack was installed successfully!",
-            "Major Key Pack",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Information);
-
-        return 0;
+    private static string Quote(string value)
+    {
+        return "\"" + value.Replace("\"", "\\\"") + "\"";
     }
 }
