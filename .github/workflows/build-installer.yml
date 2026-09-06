@@ -24,10 +24,9 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force build | Out-Null
+          New-Item -ItemType Directory -Force launcher-build | Out-Null
 
-          Copy-Item "installer\Install-MajorKeyPack.ps1" "build\Install-MajorKeyPack.ps1"
-
-          New-Item -ItemType Directory -Force "launcher-build" | Out-Null
+          Copy-Item "installer\Install-MajorKeyPack.ps1" "launcher-build\Install-MajorKeyPack.ps1"
 
           @"
           <Project Sdk="Microsoft.NET.Sdk">
@@ -42,42 +41,147 @@ jobs:
               <SelfContained>true</SelfContained>
               <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
             </PropertyGroup>
+
+            <ItemGroup>
+              <EmbeddedResource Include="Install-MajorKeyPack.ps1" />
+            </ItemGroup>
           </Project>
           "@ | Set-Content "launcher-build\MajorKeyPack-Installer.csproj" -Encoding UTF8
 
           @'
           using System.Diagnostics;
+          using System.Reflection;
+          using System.Windows.Forms;
 
-          string script = Path.Combine(AppContext.BaseDirectory, "Install-MajorKeyPack.ps1");
+          string minecraftDirectory = Path.Combine(
+              Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+              ".minecraft");
 
-          if (!File.Exists(script))
+          string installDirectory = Path.Combine(
+              Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+              "MajorKeyPack");
+
+          if (!Directory.Exists(minecraftDirectory))
           {
-              Console.Error.WriteLine("Install-MajorKeyPack.ps1 was not found.");
+              MessageBox.Show(
+                  "Minecraft Java Edition was not found.`n`nPlease install Minecraft Java Edition first.",
+                  "Major Key Pack",
+                  MessageBoxButtons.OK,
+                  MessageBoxIcon.Error);
+
               Environment.Exit(1);
+          }
+
+          string versionsDirectory = Path.Combine(minecraftDirectory, "versions");
+
+          bool forgeFound =
+              Directory.Exists(versionsDirectory) &&
+              Directory.GetDirectories(versionsDirectory)
+                  .Any(x => Path.GetFileName(x)
+                      .StartsWith("1.20.1-forge-", StringComparison.OrdinalIgnoreCase));
+
+          if (!forgeFound)
+          {
+              const string forgeUrl =
+                  "https://files.minecraftforge.net/net/minecraftforge/forge/index_1.20.1.html";
+
+              var result = MessageBox.Show(
+                  "Forge 1.20.1 was not found.`n`n" +
+                  "Please install Forge 1.20.1 before installing Major Key Pack.`n`n" +
+                  "Click Yes to open the official Forge download page.`n" +
+                  "Click No to exit.",
+                  "Major Key Pack - Forge Required",
+                  MessageBoxButtons.YesNo,
+                  MessageBoxIcon.Warning);
+
+              if (result == DialogResult.Yes)
+              {
+                  Process.Start(new ProcessStartInfo
+                  {
+                      FileName = forgeUrl,
+                      UseShellExecute = true
+                  });
+
+                  MessageBox.Show(
+                      "Install Forge 1.20.1, then run the Major Key Pack installer again.",
+                      "Major Key Pack",
+                      MessageBoxButtons.OK,
+                      MessageBoxIcon.Information);
+              }
+
+              Environment.Exit(1);
+          }
+
+          const string resourceName =
+              "MajorKeyPackInstaller.Install-MajorKeyPack.ps1";
+
+          string tempDirectory = Path.Combine(
+              Path.GetTempPath(),
+              "MajorKeyPack-" + Guid.NewGuid().ToString("N"));
+
+          Directory.CreateDirectory(tempDirectory);
+
+          string scriptPath =
+              Path.Combine(tempDirectory, "Install-MajorKeyPack.ps1");
+
+          using Stream? resource =
+              Assembly.GetExecutingAssembly()
+                  .GetManifestResourceStream(resourceName);
+
+          if (resource == null)
+          {
+              MessageBox.Show(
+                  "The installer script could not be found inside the EXE.",
+                  "Major Key Pack",
+                  MessageBoxButtons.OK,
+                  MessageBoxIcon.Error);
+
+              Environment.Exit(1);
+          }
+
+          using (FileStream output = File.Create(scriptPath))
+          {
+              resource.CopyTo(output);
           }
 
           var psi = new ProcessStartInfo
           {
               FileName = "powershell.exe",
               UseShellExecute = true,
-              WorkingDirectory = AppContext.BaseDirectory
+              WorkingDirectory = tempDirectory
           };
 
           psi.ArgumentList.Add("-NoProfile");
           psi.ArgumentList.Add("-ExecutionPolicy");
           psi.ArgumentList.Add("Bypass");
           psi.ArgumentList.Add("-File");
-          psi.ArgumentList.Add(script);
+          psi.ArgumentList.Add(scriptPath);
+          psi.ArgumentList.Add("-InstallDirectory");
+          psi.ArgumentList.Add(installDirectory);
 
-          using var process = Process.Start(psi);
+          using Process? process = Process.Start(psi);
 
           if (process == null)
           {
-              Console.Error.WriteLine("Failed to start PowerShell.");
+              MessageBox.Show(
+                  "Failed to start the installer.",
+                  "Major Key Pack",
+                  MessageBoxButtons.OK,
+                  MessageBoxIcon.Error);
+
               Environment.Exit(1);
           }
 
           process.WaitForExit();
+
+          try
+          {
+              Directory.Delete(tempDirectory, true);
+          }
+          catch
+          {
+          }
+
           Environment.Exit(process.ExitCode);
           '@ | Set-Content "launcher-build\Program.cs" -Encoding UTF8
 
@@ -93,7 +197,9 @@ jobs:
               throw "EXE build failed."
           }
 
-          Copy-Item "build\launcher\MajorKeyPack-Installer.exe" "build\MajorKeyPack-Installer.exe"
+          Copy-Item `
+            "build\launcher\MajorKeyPack-Installer.exe" `
+            "build\MajorKeyPack-Installer.exe"
 
           Compress-Archive `
             -Path "build\*" `
