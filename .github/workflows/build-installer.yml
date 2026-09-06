@@ -37,7 +37,7 @@ jobs:
           @"
           <Project Sdk="Microsoft.NET.Sdk">
             <PropertyGroup>
-              <OutputType>WinExe</OutputType>
+              <OutputType>Exe</OutputType>
               <TargetFramework>net8.0-windows</TargetFramework>
               <UseWindowsForms>true</UseWindowsForms>
               <ImplicitUsings>enable</ImplicitUsings>
@@ -272,5 +272,6 @@ jobs:
             MajorKeyPack-Installer.zip
             build/MajorKeyPack-Installer.exe
             modpack-manifest.json
+
 
 
