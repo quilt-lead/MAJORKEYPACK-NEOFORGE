@@ -1,173 +1,125 @@
-﻿$ErrorActionPreference="Stop"`r`n`r`n$ErrorActionPreference = "Stop"`r`ntrap {`r`n    Write-Host ""`r`n    Write-Host "========================================" -ForegroundColor Red`r`n    Write-Host " INSTALLATION FAILED" -ForegroundColor Red`r`n    Write-Host "========================================" -ForegroundColor Red`r`n    Write-Host ""`r`n    Write-Host $ErrorActionPreference="Stop"
+﻿param(
+    [string]$InstallDirectory="$env:APPDATA\MajorKeyPack"
+)
 
-$InstallDirectory="$env:APPDATA\MajorKeyPack"
-$MinecraftDirectory="$env:APPDATA\.minecraft"
+$ErrorActionPreference="Stop"
 
-Write-Host ""
-Write-Host "========================================"
-Write-Host "        MAJOR KEY PACK INSTALLER"
-Write-Host "========================================"
-Write-Host ""
+try {
 
-if(!(Test-Path $MinecraftDirectory)){
-    Write-Host "Minecraft was not found." -ForegroundColor Red
-    Write-Host "Please install Minecraft Java Edition first."`r`n    exit 1
-    exit 1`r`n
-}
+    $Raw="https://raw.githubusercontent.com/quilt-lead/MAJORKEYPACK/main"
+    $Temp=Join-Path $env:TEMP "MajorKeyPack"
+    $MinecraftDirectory=Join-Path $env:APPDATA ".minecraft"
+    $Mods=Join-Path $MinecraftDirectory "mods"
 
-$Forge=Get-ChildItem "$MinecraftDirectory\versions" -Directory -ErrorAction SilentlyContinue |
-    Where-Object {$_.Name -like "1.20.1-forge-*"} |
-    Select-Object -First 1
-
-if(!$Forge){
-    Add-Type -AssemblyName System.Windows.Forms
-
-    $ForgeUrl = "https://files.minecraftforge.net/net/minecraftforge/forge/index_1.20.1.html"
-
-    $result = [System.Windows.Forms.MessageBox]::Show(
-        "Forge 1.20.1 was not found.`n`nPlease install Forge 1.20.1 before installing Major Key Pack.`n`nClick Yes to open the official Forge download page.`nClick No to exit.",
-        "Major Key Pack - Forge Required",
-        [System.Windows.Forms.MessageBoxButtons]::YesNo,
-        [System.Windows.Forms.MessageBoxIcon]::Warning
-    )
-
-    if ($result -eq [System.Windows.Forms.DialogResult]::Yes) {
-        Start-Process $ForgeUrl
-
-        [System.Windows.Forms.MessageBox]::Show(
-            "Install Forge 1.20.1, then run the Major Key Pack installer again.",
-            "Major Key Pack",
-            [System.Windows.Forms.MessageBoxButtons]::OK,
-            [System.Windows.Forms.MessageBoxIcon]::Information
-        )
+    if(!(Test-Path $MinecraftDirectory)){
+        throw "Minecraft Java Edition was not found. Please install Minecraft Java Edition first."
     }
 
-    throw "Forge 1.20.1 is required."
-
-}
-
-Write-Host "Forge detected: $($Forge.Name)" -ForegroundColor Green
-
-if(Test-Path $InstallDirectory){
-    Write-Host "Existing Major Key Pack installation found."
-}else{
-    New-Item $InstallDirectory -ItemType Directory -Force | Out-Null
-}
-
-$Script=Join-Path $PSScriptRoot "..\scripts\Install-MajorKeyPack.ps1"
-
-if(!(Test-Path $Script)){
-    throw "Install-MajorKeyPack.ps1 was not found."
-}
-
-& powershell.exe `
-    -NoProfile `
-    -ExecutionPolicy Bypass `
-    -File $Script `
-    -InstallDirectory $InstallDirectory
-
-if($LASTEXITCODE -ne 0){
-    throw "Major Key Pack installation failed."
-}
-
-Write-Host ""
-Write-Host "Installation complete!" -ForegroundColor Green
-Write-Host ""
-Write-Host "Installed to:"
-Write-Host $InstallDirectory
-Write-Host ""
-Read-Host "Press ENTER to close"
-
-
-
-
-
-
-
-.Exception.Message -ForegroundColor Red`r`n    Write-Host ""`r`n    Read-Host "Press ENTER to close"`r`n    exit 1`r`n}
-
-$InstallDirectory="$env:APPDATA\MajorKeyPack"
-$MinecraftDirectory="$env:APPDATA\.minecraft"
-
-Write-Host ""
-Write-Host "========================================"
-Write-Host "        MAJOR KEY PACK INSTALLER"
-Write-Host "========================================"
-Write-Host ""
-
-if(!(Test-Path $MinecraftDirectory)){
-    Write-Host "Minecraft was not found." -ForegroundColor Red
-    Write-Host "Please install Minecraft Java Edition first."`r`n    exit 1
-    exit 1`r`n
-}
-
-$Forge=Get-ChildItem "$MinecraftDirectory\versions" -Directory -ErrorAction SilentlyContinue |
-    Where-Object {$_.Name -like "1.20.1-forge-*"} |
-    Select-Object -First 1
-
-if(!$Forge){
-    Add-Type -AssemblyName System.Windows.Forms
-
-    $ForgeUrl = "https://files.minecraftforge.net/net/minecraftforge/forge/index_1.20.1.html"
-
-    $result = [System.Windows.Forms.MessageBox]::Show(
-        "Forge 1.20.1 was not found.`n`nPlease install Forge 1.20.1 before installing Major Key Pack.`n`nClick Yes to open the official Forge download page.`nClick No to exit.",
-        "Major Key Pack - Forge Required",
-        [System.Windows.Forms.MessageBoxButtons]::YesNo,
-        [System.Windows.Forms.MessageBoxIcon]::Warning
-    )
-
-    if ($result -eq [System.Windows.Forms.DialogResult]::Yes) {
-        Start-Process $ForgeUrl
-
-        [System.Windows.Forms.MessageBox]::Show(
-            "Install Forge 1.20.1, then run the Major Key Pack installer again.",
-            "Major Key Pack",
-            [System.Windows.Forms.MessageBoxButtons]::OK,
-            [System.Windows.Forms.MessageBoxIcon]::Information
-        )
+    if(Test-Path $Temp){
+        Remove-Item $Temp -Recurse -Force
     }
 
-    throw "Forge 1.20.1 is required."
-
-}
-
-Write-Host "Forge detected: $($Forge.Name)" -ForegroundColor Green
-
-if(Test-Path $InstallDirectory){
-    Write-Host "Existing Major Key Pack installation found."
-}else{
+    New-Item $Temp -ItemType Directory -Force | Out-Null
+    New-Item $Mods -ItemType Directory -Force | Out-Null
     New-Item $InstallDirectory -ItemType Directory -Force | Out-Null
+
+    Write-Host ""
+    Write-Host "========================================"
+    Write-Host "        MAJOR KEY PACK INSTALLER"
+    Write-Host "========================================"
+    Write-Host ""
+
+    Write-Host "Downloading Major Key Pack manifest..."
+
+    $ManifestPath=Join-Path $Temp "manifest.json"
+
+    Invoke-WebRequest `
+        -Uri "$Raw/modpack-manifest.json" `
+        -OutFile $ManifestPath
+
+    if(!(Test-Path $ManifestPath)){
+        throw "Failed to download modpack manifest."
+    }
+
+    $Manifest=Get-Content $ManifestPath -Raw | ConvertFrom-Json
+
+    if($Manifest.minecraft -ne "1.20.1"){
+        throw "Minecraft 1.20.1 is required."
+    }
+
+    if($Manifest.loader -ne "Forge"){
+        throw "Forge is required."
+    }
+
+    Write-Host ""
+    Write-Host "Major Key Pack"
+    Write-Host "Minecraft: $($Manifest.minecraft)"
+    Write-Host "Loader: $($Manifest.loader)"
+    Write-Host "Mods: $($Manifest.mods.Count)"
+    Write-Host ""
+
+    foreach($Mod in $Manifest.mods){
+
+        $Destination=Join-Path $Mods $Mod.filename
+
+        Write-Host "Downloading $($Mod.filename)..."
+
+        Invoke-WebRequest `
+            -Uri $Mod.url `
+            -OutFile $Destination
+
+        if(!(Test-Path $Destination)){
+            throw "Download failed: $($Mod.filename)"
+        }
+
+        $File=Get-Item $Destination
+
+        if($File.Length -ne [long]$Mod.size){
+            Remove-Item $Destination -Force
+            throw "Size mismatch: $($Mod.filename)`nExpected: $($Mod.size)`nActual: $($File.Length)"
+        }
+
+        $Hash=(Get-FileHash $Destination -Algorithm SHA256).Hash.ToLower()
+
+        if($Hash -ne $Mod.sha256.ToLower()){
+            Remove-Item $Destination -Force
+            throw "SHA256 mismatch: $($Mod.filename)`nExpected: $($Mod.sha256)`nActual: $Hash"
+        }
+
+        Write-Host "OK: $($Mod.filename)" -ForegroundColor Green
+    }
+
+    [PSCustomObject]@{
+        name=$Manifest.name
+        version=$Manifest.version
+        minecraft=$Manifest.minecraft
+        loader=$Manifest.loader
+        installed=(Get-Date).ToString("o")
+    } |
+        ConvertTo-Json |
+        Set-Content `
+            (Join-Path $InstallDirectory "major-key-pack.json") `
+            -Encoding UTF8
+
+    Write-Host ""
+    Write-Host "========================================" -ForegroundColor Green
+    Write-Host " MAJOR KEY PACK INSTALLED" -ForegroundColor Green
+    Write-Host "========================================" -ForegroundColor Green
+    Write-Host ""
+    Write-Host "Location: $InstallDirectory"
+    Write-Host "Mods: $($Manifest.mods.Count)"
+    Write-Host ""
+
 }
+catch {
 
-$Script=Join-Path $PSScriptRoot "..\scripts\Install-MajorKeyPack.ps1"
+    Write-Host ""
+    Write-Host "========================================" -ForegroundColor Red
+    Write-Host " INSTALLATION FAILED" -ForegroundColor Red
+    Write-Host "========================================" -ForegroundColor Red
+    Write-Host ""
+    Write-Host $_.Exception.Message -ForegroundColor Red
+    Write-Host ""
 
-if(!(Test-Path $Script)){
-    throw "Install-MajorKeyPack.ps1 was not found."
+    exit 1
 }
-
-& powershell.exe `
-    -NoProfile `
-    -ExecutionPolicy Bypass `
-    -File $Script `
-    -InstallDirectory $InstallDirectory
-
-if($LASTEXITCODE -ne 0){
-    throw "Major Key Pack installation failed."
-}
-
-Write-Host ""
-Write-Host "Installation complete!" -ForegroundColor Green
-Write-Host ""
-Write-Host "Installed to:"
-Write-Host $InstallDirectory
-Write-Host ""
-Read-Host "Press ENTER to close"
-
-
-
-
-
-
-
-
