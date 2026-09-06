@@ -27,6 +27,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/4578/885/kotlinforforge-4.3.0-all.jar"
                  },
                  {
+                     "filename":  "ritchiesprojectilelib-2.1.1-mc.1.20.1-forge.jar",
+                     "size":  78625,
+                     "sha256":  "5531ec454792f98993fa29d55f8810444ba3e9ef8f04331c5811b84ec8d0c3dc",
+                     "url":  "https://mediafilez.forgecdn.net/files/7292/523/ritchiesprojectilelib-2.1.1-mc.1.20.1-forge.jar"
+                 },
+                 {
                      "filename":  "valkyrienskies-120-2.4.11.jar",
                      "size":  27752937,
                      "sha256":  "f99f24de62015451a047f90484cf9d25970cac350105b581c22b2d5247ebfd53",
