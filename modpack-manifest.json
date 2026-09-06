@@ -69,6 +69,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/8411/196/pneumaticcraft-repressurized-6.0.23%2Bmc1.20.1.jar"
                  },
                  {
+                     "filename":  "railcraft-reborn-1.20.1-1.1.11.jar",
+                     "size":  5255381,
+                     "sha256":  "a859a6f75069097dc052a74fdba0624571a23a429ba3ec4624168b33716bc1f2",
+                     "url":  "https://mediafilez.forgecdn.net/files/8044/82/railcraft-reborn-1.20.1-1.1.11.jar"
+                 },
+                 {
                      "filename":  "ritchiesprojectilelib-2.1.1-mc.1.20.1-forge.jar",
                      "size":  78625,
                      "sha256":  "5531ec454792f98993fa29d55f8810444ba3e9ef8f04331c5811b84ec8d0c3dc",
