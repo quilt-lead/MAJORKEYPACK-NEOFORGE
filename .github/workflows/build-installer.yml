@@ -1,4 +1,8 @@
-name: Build Major Key Pack Installer
+          Copy-Item \
+            "installer\MajorKeyPackLauncher.cs" \
+            "launcher-build\Program.cs" \
+            -Force
+  Installer
 
 on:
   workflow_dispatch:
