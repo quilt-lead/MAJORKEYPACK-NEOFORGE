@@ -18,265 +18,270 @@ jobs:
     runs-on: windows-latest
 
     steps:
+
+      # ============================================================
+      # CHECKOUT
+      # ============================================================
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           fetch-tags: true
 
+
+      # ============================================================
+      # .NET
+      # ============================================================
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
 
+
+      # ============================================================
+      # DETERMINE RELEASE VERSION
+      #
+      # v1
+      # v2
+      # v3
+      # etc.
+      # ============================================================
+
       - name: Determine release version
         id: version
         shell: pwsh
         run: |
+
+          $ErrorActionPreference = "Stop"
+
           git fetch --tags --force
 
           $tags = @(
             git tag --list "v*" |
-              Where-Object { $_ -match "^v\d+$" } |
+              Where-Object {
+                $_ -match "^v\d+$"
+              } |
               ForEach-Object {
                 [int]$_.Substring(1)
               }
           )
 
           if ($tags.Count -eq 0) {
+
             $next = 1
+
           }
           else {
+
             $next =
               ($tags | Measure-Object -Maximum).Maximum + 1
+
           }
 
           $version = "v$next"
 
-          Write-Host "Next release: $version"
+          Write-Host ""
+          Write-Host "========================================"
+          Write-Host "Release version: $version"
+          Write-Host "========================================"
+          Write-Host ""
 
           "version=$version" >> $env:GITHUB_OUTPUT
           "number=$next" >> $env:GITHUB_OUTPUT
 
+
+      # ============================================================
+      # BUILD INSTALLER
+      # ============================================================
+
       - name: Build standalone EXE
         shell: pwsh
         run: |
+
           $ErrorActionPreference = "Stop"
 
-          New-Item -ItemType Directory -Force "build" | Out-Null
-          New-Item -ItemType Directory -Force "launcher-build" | Out-Null
+          # --------------------------------------------------------
+          # Create build directories
+          # --------------------------------------------------------
+
+          New-Item `
+            -ItemType Directory `
+            -Force `
+            "build" |
+            Out-Null
+
+          New-Item `
+            -ItemType Directory `
+            -Force `
+            "launcher-build" |
+            Out-Null
+
+
+          # --------------------------------------------------------
+          # Copy PowerShell installer into build directory
+          # --------------------------------------------------------
 
           Copy-Item `
             "installer\Install-MajorKeyPack.ps1" `
-            "launcher-build\Install-MajorKeyPack.ps1"
+            "launcher-build\Install-MajorKeyPack.ps1" `
+            -Force
+
+
+          # --------------------------------------------------------
+          # Create .csproj
+          # --------------------------------------------------------
 
           @"
           <Project Sdk="Microsoft.NET.Sdk">
+
             <PropertyGroup>
+
               <OutputType>Exe</OutputType>
-              <TargetFramework>net8.0-windows</TargetFramework>
+
+              <TargetFramework>
+                net8.0-windows
+              </TargetFramework>
+
               <UseWindowsForms>true</UseWindowsForms>
+
               <ImplicitUsings>enable</ImplicitUsings>
+
               <Nullable>enable</Nullable>
-              <AssemblyName>MajorKeyPack-Installer</AssemblyName>
-              <Version>1.0.${{ steps.version.outputs.number }}</Version>
-              <AssemblyVersion>1.0.${{ steps.version.outputs.number }}</AssemblyVersion>
-              <RootNamespace>MajorKeyPackInstaller</RootNamespace>
+
+              <AssemblyName>
+                MajorKeyPack-Installer
+              </AssemblyName>
+
+              <Version>
+                1.0.${{ steps.version.outputs.number }}
+              </Version>
+
+              <AssemblyVersion>
+                1.0.${{ steps.version.outputs.number }}
+              </AssemblyVersion>
+
+              <FileVersion>
+                1.0.${{ steps.version.outputs.number }}
+              </FileVersion>
+
+              <RootNamespace>
+                MajorKeyPackInstaller
+              </RootNamespace>
+
               <PublishSingleFile>true</PublishSingleFile>
+
               <SelfContained>true</SelfContained>
-              <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+
+              <IncludeNativeLibrariesForSelfExtract>
+                true
+              </IncludeNativeLibrariesForSelfExtract>
+
             </PropertyGroup>
 
             <ItemGroup>
-              <EmbeddedResource Include="Install-MajorKeyPack.ps1">
-                <LogicalName>MajorKeyPackInstaller.Install-MajorKeyPack.ps1</LogicalName>
+
+              <EmbeddedResource
+                Include="Install-MajorKeyPack.ps1">
+
+                <LogicalName>
+                  MajorKeyPackInstaller.Install-MajorKeyPack.ps1
+                </LogicalName>
+
               </EmbeddedResource>
+
             </ItemGroup>
+
           </Project>
-          "@ | Set-Content `
+          "@ |
+          Set-Content `
             "launcher-build\MajorKeyPack-Installer.csproj" `
             -Encoding UTF8
+
+
+          # --------------------------------------------------------
+          # Create Program.cs
+          # --------------------------------------------------------
 
           @'
           using System;
           using System.Diagnostics;
           using System.IO;
           using System.Linq;
+          using System.Net.Http;
           using System.Reflection;
+          using System.Text.Json;
+          using System.Threading.Tasks;
           using System.Windows.Forms;
 
           internal static class Program
           {
+              // ====================================================
+              // VERSION
+              //
+              // GitHub Actions replaces this with:
+              //
+              // v1
+              // v2
+              // v3
+              //
+              // etc.
+              // ====================================================
+
+              private const string CurrentVersion =
+                  "v${{ steps.version.outputs.number }}";
+
+
+              // ====================================================
+              // GITHUB REPOSITORY
+              // ====================================================
+
+              private const string GitHubOwner =
+                  "YOUR_GITHUB_USERNAME";
+
+              private const string GitHubRepository =
+                  "YOUR_REPOSITORY_NAME";
+
+
+              private const string GitHubLatestReleaseUrl =
+                  "https://api.github.com/repos/" +
+                  GitHubOwner +
+                  "/" +
+                  GitHubRepository +
+                  "/releases/latest";
+
+
+              // ====================================================
+              // MAIN
+              // ====================================================
+
               [STAThread]
               static int Main()
               {
                   try
                   {
-                      string appData = Environment.GetFolderPath(
-                          Environment.SpecialFolder.ApplicationData);
+                      // First check whether this installer is old.
 
-                      string minecraftDirectory =
-                          Path.Combine(appData, ".minecraft");
+                      int updateResult =
+                          CheckForUpdateAsync()
+                              .GetAwaiter()
+                              .GetResult();
 
-                      string installDirectory =
-                          Path.Combine(appData, "MajorKeyPack");
+                      if (updateResult != 0)
+                          return updateResult;
 
-                      if (!Directory.Exists(minecraftDirectory))
-                      {
-                          MessageBox.Show(
-                              "Minecraft Java Edition was not found.\n\n" +
-                              "Please install Minecraft Java Edition first.",
-                              "Major Key Pack",
-                              MessageBoxButtons.OK,
-                              MessageBoxIcon.Error);
 
-                          return 1;
-                      }
+                      // If we're already the newest version,
+                      // continue with the actual installation.
 
-                      string versionsDirectory =
-                          Path.Combine(minecraftDirectory, "versions");
-
-                      bool forgeFound =
-                          Directory.Exists(versionsDirectory) &&
-                          Directory.GetDirectories(versionsDirectory)
-                              .Any(x =>
-                                  Path.GetFileName(x)
-                                      .StartsWith(
-                                          "1.20.1-forge-",
-                                          StringComparison.OrdinalIgnoreCase));
-
-                      if (!forgeFound)
-                      {
-                          const string forgeUrl =
-                              "https://files.minecraftforge.net/net/minecraftforge/forge/index_1.20.1.html";
-
-                          DialogResult result = MessageBox.Show(
-                              "Forge 1.20.1 was not found.\n\n" +
-                              "Please install Forge 1.20.1 before installing Major Key Pack.\n\n" +
-                              "Click Yes to open the official Forge download page.\n" +
-                              "Click No to exit.",
-                              "Major Key Pack - Forge Required",
-                              MessageBoxButtons.YesNo,
-                              MessageBoxIcon.Warning);
-
-                          if (result == DialogResult.Yes)
-                          {
-                              Process.Start(new ProcessStartInfo
-                              {
-                                  FileName = forgeUrl,
-                                  UseShellExecute = true
-                              });
-
-                              MessageBox.Show(
-                                  "Install Forge 1.20.1, then run the Major Key Pack installer again.",
-                                  "Major Key Pack",
-                                  MessageBoxButtons.OK,
-                                  MessageBoxIcon.Information);
-                          }
-
-                          return 1;
-                      }
-
-                      const string resourceName =
-                          "MajorKeyPackInstaller.Install-MajorKeyPack.ps1";
-
-                      using Stream? resource =
-                          Assembly.GetExecutingAssembly()
-                              .GetManifestResourceStream(resourceName);
-
-                      if (resource == null)
-                      {
-                          MessageBox.Show(
-                              "The installer script could not be found inside the EXE.",
-                              "Major Key Pack",
-                              MessageBoxButtons.OK,
-                              MessageBoxIcon.Error);
-
-                          return 1;
-                      }
-
-                      string tempDirectory = Path.Combine(
-                          Path.GetTempPath(),
-                          "MajorKeyPack-" + Guid.NewGuid().ToString("N"));
-
-                      Directory.CreateDirectory(tempDirectory);
-
-                      string scriptPath =
-                          Path.Combine(
-                              tempDirectory,
-                              "Install-MajorKeyPack.ps1");
-
-                      using (FileStream output = File.Create(scriptPath))
-                      {
-                          resource.CopyTo(output);
-                      }
-
-                      ProcessStartInfo psi = new ProcessStartInfo
-                      {
-                          FileName = "powershell.exe",
-                          UseShellExecute = false,
-                          CreateNoWindow = false,
-                          WorkingDirectory = tempDirectory
-                      };
-
-                      psi.ArgumentList.Add("-NoProfile");
-                      psi.ArgumentList.Add("-ExecutionPolicy");
-                      psi.ArgumentList.Add("Bypass");
-                      psi.ArgumentList.Add("-File");
-                      psi.ArgumentList.Add(scriptPath);
-                      psi.ArgumentList.Add("-InstallDirectory");
-                      psi.ArgumentList.Add(installDirectory);
-
-                      using Process? process = Process.Start(psi);
-
-                      if (process == null)
-                      {
-                          MessageBox.Show(
-                              "Failed to start PowerShell.",
-                              "Major Key Pack",
-                              MessageBoxButtons.OK,
-                              MessageBoxIcon.Error);
-
-                          return 1;
-                      }
-
-                      process.WaitForExit();
-
-                      int exitCode = process.ExitCode;
-
-                      try
-                      {
-                          Directory.Delete(tempDirectory, true);
-                      }
-                      catch
-                      {
-                      }
-
-                      if (exitCode != 0)
-                      {
-                          MessageBox.Show(
-                              "Major Key Pack installation failed.\n\n" +
-                              "PowerShell exit code: " + exitCode,
-                              "Major Key Pack",
-                              MessageBoxButtons.OK,
-                              MessageBoxIcon.Error);
-
-                          return exitCode;
-                      }
-
-                      MessageBox.Show(
-                          "Major Key Pack was installed successfully!",
-                          "Major Key Pack",
-                          MessageBoxButtons.OK,
-                          MessageBoxIcon.Information);
-
-                      return 0;
+                      return Install();
                   }
                   catch (Exception ex)
                   {
                       MessageBox.Show(
                           "Major Key Pack installer failed.\n\n" +
-                          ex.ToString(),
+                          ex,
                           "Major Key Pack",
                           MessageBoxButtons.OK,
                           MessageBoxIcon.Error);
@@ -284,10 +289,655 @@ jobs:
                       return 1;
                   }
               }
+
+
+              // ====================================================
+              // CHECK FOR NEW RELEASE
+              // ====================================================
+
+              private static async Task<int>
+                  CheckForUpdateAsync()
+              {
+                  try
+                  {
+                      using HttpClient client =
+                          new HttpClient();
+
+                      client.DefaultRequestHeaders.UserAgent.ParseAdd(
+                          "MajorKeyPack-Installer");
+
+                      client.Timeout =
+                          TimeSpan.FromSeconds(10);
+
+
+                      // Ask GitHub for the latest public release.
+
+                      using HttpResponseMessage response =
+                          await client.GetAsync(
+                              GitHubLatestReleaseUrl);
+
+
+                      // If GitHub can't be reached, don't prevent
+                      // the user from installing.
+
+                      if (!response.IsSuccessStatusCode)
+                          return 0;
+
+
+                      string json =
+                          await response.Content
+                              .ReadAsStringAsync();
+
+
+                      using JsonDocument document =
+                          JsonDocument.Parse(json);
+
+
+                      JsonElement root =
+                          document.RootElement;
+
+
+                      if (!root.TryGetProperty(
+                              "tag_name",
+                              out JsonElement tagElement))
+                      {
+                          return 0;
+                      }
+
+
+                      string? latestVersion =
+                          tagElement.GetString();
+
+
+                      if (string.IsNullOrWhiteSpace(
+                              latestVersion))
+                      {
+                          return 0;
+                      }
+
+
+                      latestVersion =
+                          latestVersion.Trim();
+
+
+                      Console.WriteLine(
+                          "Current version: " +
+                          CurrentVersion);
+
+                      Console.WriteLine(
+                          "Latest version: " +
+                          latestVersion);
+
+
+                      // =================================================
+                      // COMPARE VERSIONS
+                      // =================================================
+
+                      if (!IsNewerVersion(
+                              latestVersion,
+                              CurrentVersion))
+                      {
+                          return 0;
+                      }
+
+
+                      // =================================================
+                      // NEW VERSION EXISTS
+                      // =================================================
+
+                      DialogResult result =
+                          MessageBox.Show(
+                              "A newer version of Major Key Pack " +
+                              "is available.\n\n" +
+
+                              "Current installer: " +
+                              CurrentVersion +
+                              "\n" +
+
+                              "Latest installer: " +
+                              latestVersion +
+                              "\n\n" +
+
+                              "Would you like to update now?",
+
+                              "Major Key Pack Update",
+
+                              MessageBoxButtons.YesNo,
+
+                              MessageBoxIcon.Information);
+
+
+                      if (result != DialogResult.Yes)
+                          return 0;
+
+
+                      // =================================================
+                      // FIND EXE IN RELEASE ASSETS
+                      // =================================================
+
+                      string? downloadUrl =
+                          FindInstallerDownloadUrl(root);
+
+
+                      if (string.IsNullOrWhiteSpace(
+                              downloadUrl))
+                      {
+                          MessageBox.Show(
+                              "A newer release was found, " +
+                              "but the installer could not " +
+                              "be located in the release.",
+
+                              "Major Key Pack",
+
+                              MessageBoxButtons.OK,
+
+                              MessageBoxIcon.Warning);
+
+                          return 0;
+                      }
+
+
+                      // =================================================
+                      // DOWNLOAD NEW EXE
+                      // =================================================
+
+                      string tempDirectory =
+                          Path.Combine(
+                              Path.GetTempPath(),
+                              "MajorKeyPackUpdater-" +
+                              Guid.NewGuid()
+                                  .ToString("N"));
+
+
+                      Directory.CreateDirectory(
+                          tempDirectory);
+
+
+                      string newInstallerPath =
+                          Path.Combine(
+                              tempDirectory,
+                              "MajorKeyPack-Installer.exe");
+
+
+                      using HttpResponseMessage
+                          downloadResponse =
+                          await client.GetAsync(
+                              downloadUrl);
+
+
+                      downloadResponse
+                          .EnsureSuccessStatusCode();
+
+
+                      await using Stream input =
+                          await downloadResponse.Content
+                              .ReadAsStreamAsync();
+
+
+                      await using FileStream output =
+                          File.Create(
+                              newInstallerPath);
+
+
+                      await input.CopyToAsync(
+                          output);
+
+
+                      await output.FlushAsync();
+
+
+                      // =================================================
+                      // START NEW INSTALLER
+                      // =================================================
+
+                      Process.Start(
+                          new ProcessStartInfo
+                          {
+                              FileName =
+                                  newInstallerPath,
+
+                              UseShellExecute = true
+                          });
+
+
+                      // =================================================
+                      // STOP OLD INSTALLER
+                      // =================================================
+
+                      // The new EXE is now responsible for
+                      // continuing the installation.
+
+                      return 0;
+                  }
+                  catch
+                  {
+                      // Updating is intentionally non-fatal.
+                      //
+                      // If GitHub is unavailable, the user can
+                      // still install using this version.
+
+                      return 0;
+                  }
+              }
+
+
+              // ====================================================
+              // FIND EXE DOWNLOAD URL
+              // ====================================================
+
+              private static string?
+                  FindInstallerDownloadUrl(
+                      JsonElement release)
+              {
+                  if (!release.TryGetProperty(
+                          "assets",
+                          out JsonElement assets))
+                  {
+                      return null;
+                  }
+
+
+                  foreach (JsonElement asset
+                      in assets.EnumerateArray())
+                  {
+                      if (!asset.TryGetProperty(
+                              "name",
+                              out JsonElement nameElement))
+                      {
+                          continue;
+                      }
+
+
+                      string? name =
+                          nameElement.GetString();
+
+
+                      if (!string.Equals(
+                              name,
+                              "MajorKeyPack-Installer.exe",
+                              StringComparison.OrdinalIgnoreCase))
+                      {
+                          continue;
+                      }
+
+
+                      if (!asset.TryGetProperty(
+                              "browser_download_url",
+                              out JsonElement urlElement))
+                      {
+                          continue;
+                      }
+
+
+                      return urlElement.GetString();
+                  }
+
+
+                  return null;
+              }
+
+
+              // ====================================================
+              // VERSION COMPARISON
+              // ====================================================
+
+              private static bool IsNewerVersion(
+                  string latest,
+                  string current)
+              {
+                  if (!TryGetVersionNumber(
+                          latest,
+                          out int latestNumber))
+                  {
+                      return false;
+                  }
+
+
+                  if (!TryGetVersionNumber(
+                          current,
+                          out int currentNumber))
+                  {
+                      return false;
+                  }
+
+
+                  return latestNumber > currentNumber;
+              }
+
+
+              private static bool TryGetVersionNumber(
+                  string version,
+                  out int number)
+              {
+                  number = 0;
+
+
+                  version = version.Trim();
+
+
+                  if (version.StartsWith(
+                          "v",
+                          StringComparison.OrdinalIgnoreCase))
+                  {
+                      version =
+                          version.Substring(1);
+                  }
+
+
+                  return int.TryParse(
+                      version,
+                      out number);
+              }
+
+
+              // ====================================================
+              // ACTUAL INSTALLATION
+              // ====================================================
+
+              private static int Install()
+              {
+                  string appData =
+                      Environment.GetFolderPath(
+                          Environment.SpecialFolder.ApplicationData);
+
+
+                  string minecraftDirectory =
+                      Path.Combine(
+                          appData,
+                          ".minecraft");
+
+
+                  string installDirectory =
+                      Path.Combine(
+                          appData,
+                          "MajorKeyPack");
+
+
+                  // =================================================
+                  // MINECRAFT CHECK
+                  // =================================================
+
+                  if (!Directory.Exists(
+                          minecraftDirectory))
+                  {
+                      MessageBox.Show(
+                          "Minecraft Java Edition was not found.\n\n" +
+                          "Please install Minecraft Java Edition first.",
+
+                          "Major Key Pack",
+
+                          MessageBoxButtons.OK,
+
+                          MessageBoxIcon.Error);
+
+                      return 1;
+                  }
+
+
+                  // =================================================
+                  // FORGE CHECK
+                  // =================================================
+
+                  string versionsDirectory =
+                      Path.Combine(
+                          minecraftDirectory,
+                          "versions");
+
+
+                  bool forgeFound =
+                      Directory.Exists(
+                          versionsDirectory) &&
+
+                      Directory.GetDirectories(
+                          versionsDirectory)
+                          .Any(x =>
+                              Path.GetFileName(x)
+                                  .StartsWith(
+                                      "1.20.1-forge-",
+                                      StringComparison
+                                          .OrdinalIgnoreCase));
+
+
+                  if (!forgeFound)
+                  {
+                      const string forgeUrl =
+                          "https://files.minecraftforge.net/net/minecraftforge/forge/index_1.20.1.html";
+
+
+                      DialogResult result =
+                          MessageBox.Show(
+                              "Forge 1.20.1 was not found.\n\n" +
+
+                              "Please install Forge 1.20.1 " +
+                              "before installing Major Key Pack.\n\n" +
+
+                              "Click Yes to open the official " +
+                              "Forge download page.\n" +
+
+                              "Click No to exit.",
+
+                              "Major Key Pack - Forge Required",
+
+                              MessageBoxButtons.YesNo,
+
+                              MessageBoxIcon.Warning);
+
+
+                      if (result == DialogResult.Yes)
+                      {
+                          Process.Start(
+                              new ProcessStartInfo
+                              {
+                                  FileName = forgeUrl,
+                                  UseShellExecute = true
+                              });
+
+
+                          MessageBox.Show(
+                              "Install Forge 1.20.1, " +
+                              "then run the Major Key Pack " +
+                              "installer again.",
+
+                              "Major Key Pack",
+
+                              MessageBoxButtons.OK,
+
+                              MessageBoxIcon.Information);
+                      }
+
+
+                      return 1;
+                  }
+
+
+                  // =================================================
+                  // EXTRACT POWERSHELL SCRIPT
+                  // =================================================
+
+                  const string resourceName =
+                      "MajorKeyPackInstaller.Install-MajorKeyPack.ps1";
+
+
+                  using Stream? resource =
+                      Assembly.GetExecutingAssembly()
+                          .GetManifestResourceStream(
+                              resourceName);
+
+
+                  if (resource == null)
+                  {
+                      MessageBox.Show(
+                          "The installer script could not " +
+                          "be found inside the EXE.",
+
+                          "Major Key Pack",
+
+                          MessageBoxButtons.OK,
+
+                          MessageBoxIcon.Error);
+
+                      return 1;
+                  }
+
+
+                  string tempDirectory =
+                      Path.Combine(
+                          Path.GetTempPath(),
+                          "MajorKeyPack-" +
+                          Guid.NewGuid()
+                              .ToString("N"));
+
+
+                  Directory.CreateDirectory(
+                      tempDirectory);
+
+
+                  string scriptPath =
+                      Path.Combine(
+                          tempDirectory,
+                          "Install-MajorKeyPack.ps1");
+
+
+                  using (FileStream output =
+                      File.Create(scriptPath))
+                  {
+                      resource.CopyTo(output);
+                  }
+
+
+                  // =================================================
+                  // START POWERSHELL
+                  // =================================================
+
+                  ProcessStartInfo psi =
+                      new ProcessStartInfo
+                      {
+                          FileName =
+                              "powershell.exe",
+
+                          UseShellExecute =
+                              false,
+
+                          CreateNoWindow =
+                              false,
+
+                          WorkingDirectory =
+                              tempDirectory
+                      };
+
+
+                  psi.ArgumentList.Add(
+                      "-NoProfile");
+
+
+                  psi.ArgumentList.Add(
+                      "-ExecutionPolicy");
+
+
+                  psi.ArgumentList.Add(
+                      "Bypass");
+
+
+                  psi.ArgumentList.Add(
+                      "-File");
+
+
+                  psi.ArgumentList.Add(
+                      scriptPath);
+
+
+                  psi.ArgumentList.Add(
+                      "-InstallDirectory");
+
+
+                  psi.ArgumentList.Add(
+                      installDirectory);
+
+
+                  using Process? process =
+                      Process.Start(psi);
+
+
+                  if (process == null)
+                  {
+                      MessageBox.Show(
+                          "Failed to start PowerShell.",
+
+                          "Major Key Pack",
+
+                          MessageBoxButtons.OK,
+
+                          MessageBoxIcon.Error);
+
+                      return 1;
+                  }
+
+
+                  process.WaitForExit();
+
+
+                  int exitCode =
+                      process.ExitCode;
+
+
+                  // =================================================
+                  // CLEAN UP
+                  // =================================================
+
+                  try
+                  {
+                      Directory.Delete(
+                          tempDirectory,
+                          true);
+                  }
+                  catch
+                  {
+                  }
+
+
+                  // =================================================
+                  // INSTALLATION RESULT
+                  // =================================================
+
+                  if (exitCode != 0)
+                  {
+                      MessageBox.Show(
+                          "Major Key Pack installation failed.\n\n" +
+                          "PowerShell exit code: " +
+                          exitCode,
+
+                          "Major Key Pack",
+
+                          MessageBoxButtons.OK,
+
+                          MessageBoxIcon.Error);
+
+                      return exitCode;
+                  }
+
+
+                  MessageBox.Show(
+                      "Major Key Pack was installed successfully!",
+
+                      "Major Key Pack",
+
+                      MessageBoxButtons.OK,
+
+                      MessageBoxIcon.Information);
+
+
+                  return 0;
+              }
           }
-          '@ | Set-Content `
+          '@ |
+          Set-Content `
             "launcher-build\Program.cs" `
             -Encoding UTF8
+
+
+          # ==========================================================
+          # BUILD
+          # ==========================================================
 
           dotnet publish `
             "launcher-build\MajorKeyPack-Installer.csproj" `
@@ -298,27 +948,66 @@ jobs:
             -p:IncludeNativeLibrariesForSelfExtract=true `
             -o "build\launcher"
 
-          if (!(Test-Path "build\launcher\MajorKeyPack-Installer.exe")) {
+
+          # ==========================================================
+          # VERIFY
+          # ==========================================================
+
+          if (!(Test-Path `
+              "build\launcher\MajorKeyPack-Installer.exe"))
+          {
               throw "EXE build failed."
           }
+
+
+          # ==========================================================
+          # COPY EXE
+          # ==========================================================
 
           Copy-Item `
             "build\launcher\MajorKeyPack-Installer.exe" `
             "build\MajorKeyPack-Installer.exe" `
             -Force
 
+
+          # ==========================================================
+          # ZIP
+          # ==========================================================
+
           Compress-Archive `
             -Path "build\MajorKeyPack-Installer.exe" `
             -DestinationPath "MajorKeyPack-Installer.zip" `
             -Force
 
+
+          Write-Host ""
+          Write-Host "========================================"
+          Write-Host "Build complete."
+          Write-Host "Version: v${{ steps.version.outputs.number }}"
+          Write-Host "========================================"
+          Write-Host ""
+
+
+      # ============================================================
+      # PUBLISH RELEASE
+      # ============================================================
+
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "${{ steps.version.outputs.version }}"
-          name: "Major Key Pack ${{ steps.version.outputs.version }}"
-          make_latest: true
-          generate_release_notes: true
+
+          tag_name:
+            "${{ steps.version.outputs.version }}"
+
+          name:
+            "Major Key Pack ${{ steps.version.outputs.version }}"
+
+          make_latest:
+            true
+
+          generate_release_notes:
+            true
+
           files: |
             MajorKeyPack-Installer.zip
             build/MajorKeyPack-Installer.exe

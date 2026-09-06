@@ -1,376 +1,190 @@
 ﻿param(
-    [string]$InstallDirectory="$env:APPDATA\MajorKeyPack",
-    [string]$CurrentInstallerPath=""
+    [Parameter(Mandatory = $true)]
+    [string]$InstallDirectory
 )
 
-$ErrorActionPreference="Stop"
+$ErrorActionPreference = "Stop"
 
 try {
 
-    $Raw="https://raw.githubusercontent.com/quilt-lead/MAJORKEYPACK/main"
-    $Repository="quilt-lead/MAJORKEYPACK"
-
-    $Temp=Join-Path $env:TEMP "MajorKeyPack"
-    $MinecraftDirectory=Join-Path $env:APPDATA ".minecraft"
-    $Mods=Join-Path $MinecraftDirectory "mods"
-
-    # ========================================
-    # CHECK FOR INSTALLER UPDATES
-    # ========================================
-
     Write-Host ""
     Write-Host "========================================"
-    Write-Host "        CHECKING FOR UPDATES"
+    Write-Host "       Major Key Pack Installer"
     Write-Host "========================================"
     Write-Host ""
 
-    Write-Host "Checking GitHub latest release..."
-
-    $Headers=@{
-        "User-Agent"="MajorKeyPackInstaller"
-        "Accept"="application/vnd.github+json"
-    }
-
-    $LatestReleaseUrl=
-        "https://api.github.com/repos/$Repository/releases/latest"
-
-    $Release=Invoke-RestMethod `
-        -Uri $LatestReleaseUrl `
-        -Headers $Headers `
-        -UseBasicParsing
-
-    $LatestTag=[string]$Release.tag_name
-
-    if($LatestTag -notmatch '^v(\d+)$'){
-        throw "GitHub latest release tag was not recognized: $LatestTag"
-    }
-
-    $LatestVersion=[int]$Matches[1]
-
-    # ========================================
-    # DETERMINE CURRENT INSTALLER VERSION
-    # ========================================
-
-    $CurrentVersion=0
-
-    if(
-        [string]::IsNullOrWhiteSpace($CurrentInstallerPath) -eq $false `
-        -and `
-        (Test-Path $CurrentInstallerPath)
-    ){
-
-        $VersionInfo=
-            [System.Diagnostics.FileVersionInfo]::GetVersionInfo(
-                $CurrentInstallerPath
-            )
-
-        $ProductVersion=[string]$VersionInfo.ProductVersion
-        $FileVersion=[string]$VersionInfo.FileVersion
-
-        if($ProductVersion -match '^1\.0\.(\d+)'){
-            $CurrentVersion=[int]$Matches[1]
-        }
-        elseif($FileVersion -match '^1\.0\.(\d+)'){
-            $CurrentVersion=[int]$Matches[1]
-        }
-    }
-
-    Write-Host "Current installer: v$CurrentVersion"
-    Write-Host "Latest installer:  v$LatestVersion"
+    Write-Host "Install directory:"
+    Write-Host $InstallDirectory
     Write-Host ""
 
-    # ========================================
-    # UPDATE IF NECESSARY
-    # ========================================
+    # ------------------------------------------------------------
+    # Locate the Minecraft directory
+    # ------------------------------------------------------------
 
-    if($LatestVersion -gt $CurrentVersion){
+    $appData = [Environment]::GetFolderPath(
+        [Environment+SpecialFolder]::ApplicationData
+    )
 
-        Write-Host "========================================" -ForegroundColor Yellow
-        Write-Host "        UPDATE AVAILABLE" -ForegroundColor Yellow
-        Write-Host "========================================" -ForegroundColor Yellow
-        Write-Host ""
+    $minecraftDirectory = Join-Path `
+        $appData `
+        ".minecraft"
 
-        Write-Host "A newer installer is available."
-        Write-Host ""
-        Write-Host "Current: v$CurrentVersion"
-        Write-Host "Latest:  v$LatestVersion"
-        Write-Host ""
+    if (!(Test-Path $minecraftDirectory)) {
+        throw "Minecraft directory was not found: $minecraftDirectory"
+    }
 
-        Write-Host "Stopping current installation..."
-        Write-Host "Downloading latest installer..."
-        Write-Host ""
+    Write-Host "Minecraft directory:"
+    Write-Host $minecraftDirectory
+    Write-Host ""
 
-        $InstallerAsset=
-            $Release.assets |
-            Where-Object {
-                $_.name -ieq "MajorKeyPack-Installer.exe"
-            } |
-            Select-Object -First 1
+    # ------------------------------------------------------------
+    # Create Major Key Pack installation directory
+    # ------------------------------------------------------------
 
-        if(!$InstallerAsset){
-            throw `
-                "The latest GitHub release does not contain MajorKeyPack-Installer.exe."
-        }
-
-        $UpdateDirectory=
-            Join-Path `
-                $env:TEMP `
-                ("MajorKeyPackUpdate-" +
-                 [guid]::NewGuid().ToString("N"))
-
+    if (!(Test-Path $InstallDirectory)) {
         New-Item `
             -ItemType Directory `
-            -Path $UpdateDirectory `
+            -Path $InstallDirectory `
             -Force | Out-Null
-
-        $NewInstaller=
-            Join-Path `
-                $UpdateDirectory `
-                "MajorKeyPack-Installer.exe"
-
-        Invoke-WebRequest `
-            -Uri $InstallerAsset.browser_download_url `
-            -OutFile $NewInstaller `
-            -UseBasicParsing
-
-        if(!(Test-Path $NewInstaller)){
-            throw "The updated installer could not be downloaded."
-        }
-
-        $DownloadedFile=Get-Item $NewInstaller
-
-        if($DownloadedFile.Length -lt 1000000){
-            Remove-Item `
-                $NewInstaller `
-                -Force `
-                -ErrorAction SilentlyContinue
-
-            throw "The downloaded installer is invalid."
-        }
-
-        # Verify the downloaded EXE reports the release version.
-        $NewVersionInfo=
-            [System.Diagnostics.FileVersionInfo]::GetVersionInfo(
-                $NewInstaller
-            )
-
-        $NewProductVersion=
-            [string]$NewVersionInfo.ProductVersion
-
-        if($NewProductVersion -notmatch '^1\.0\.(\d+)'){
-            throw `
-                "The downloaded installer does not contain a valid version."
-        }
-
-        $DownloadedVersion=[int]$Matches[1]
-
-        if($DownloadedVersion -ne $LatestVersion){
-            throw `
-                "Downloaded installer version mismatch. " +
-                "Expected v$LatestVersion but received v$DownloadedVersion."
-        }
-
-        Write-Host ""
-        Write-Host `
-            "Latest installer downloaded successfully." `
-            -ForegroundColor Green
-
-        Write-Host "Starting Major Key Pack v$LatestVersion..."
-        Write-Host ""
-        Write-Host "The current installer will now close."
-        Write-Host ""
-
-        # Start the latest installer first.
-        $ProcessInfo=
-            New-Object System.Diagnostics.ProcessStartInfo
-
-        $ProcessInfo.FileName=$NewInstaller
-        $ProcessInfo.UseShellExecute=$true
-        $ProcessInfo.WorkingDirectory=$UpdateDirectory
-
-        $NewProcess=
-            [System.Diagnostics.Process]::Start($ProcessInfo)
-
-        if(!$NewProcess){
-            throw "Could not start the updated installer."
-        }
-
-        # Give Windows a moment to start the new process,
-        # then immediately terminate this old installer.
-        Start-Sleep -Milliseconds 500
-
-        exit 0
     }
 
-    Write-Host `
-        "Installer is up to date." `
-        -ForegroundColor Green
+    # ------------------------------------------------------------
+    # Locate the manifest
+    #
+    # IMPORTANT:
+    # This assumes your manifest is available from the
+    # Major Key Pack repository.
+    # ------------------------------------------------------------
 
-    Write-Host ""
+    $manifestUrl =
+        "https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPOSITORY_NAME/main/modpack-manifest.json"
 
-    # ========================================
-    # NORMAL INSTALLATION
-    # ========================================
-
-    if(!(Test-Path $MinecraftDirectory)){
-        throw `
-            "Minecraft Java Edition was not found. " +
-            "Please install Minecraft Java Edition first."
-    }
-
-    if(Test-Path $Temp){
-        Remove-Item `
-            $Temp `
-            -Recurse `
-            -Force
-    }
-
-    New-Item `
-        $Temp `
-        -ItemType Directory `
-        -Force | Out-Null
-
-    New-Item `
-        $Mods `
-        -ItemType Directory `
-        -Force | Out-Null
-
-    New-Item `
-        $InstallDirectory `
-        -ItemType Directory `
-        -Force | Out-Null
-
-    Write-Host ""
-    Write-Host "========================================"
-    Write-Host "        MAJOR KEY PACK INSTALLER"
-    Write-Host "========================================"
-    Write-Host ""
-
-    Write-Host "Downloading Major Key Pack manifest..."
-
-    $ManifestPath=
+    $manifestPath =
         Join-Path `
-            $Temp `
-            "manifest.json"
+            $InstallDirectory `
+            "modpack-manifest.json"
+
+    Write-Host "Downloading modpack manifest..."
 
     Invoke-WebRequest `
-        -Uri "$Raw/modpack-manifest.json" `
-        -OutFile $ManifestPath `
-        -UseBasicParsing
+        -Uri $manifestUrl `
+        -OutFile $manifestPath
 
-    if(!(Test-Path $ManifestPath)){
-        throw "Failed to download modpack manifest."
-    }
+    Write-Host "Manifest downloaded."
+    Write-Host ""
 
-    $Manifest=
+    # ------------------------------------------------------------
+    # Parse manifest
+    # ------------------------------------------------------------
+
+    $manifest =
         Get-Content `
-            $ManifestPath `
+            $manifestPath `
             -Raw |
         ConvertFrom-Json
 
-    if($Manifest.minecraft -ne "1.20.1"){
-        throw "Minecraft 1.20.1 is required."
+    # ------------------------------------------------------------
+    # Example manifest information
+    # ------------------------------------------------------------
+
+    if ($manifest.version) {
+        Write-Host "Modpack version:"
+        Write-Host $manifest.version
+        Write-Host ""
     }
 
-    if($Manifest.loader -ne "Forge"){
-        throw "Forge is required."
+    # ------------------------------------------------------------
+    # Create mods directory
+    # ------------------------------------------------------------
+
+    $modsDirectory =
+        Join-Path `
+            $minecraftDirectory `
+            "mods"
+
+    if (!(Test-Path $modsDirectory)) {
+        New-Item `
+            -ItemType Directory `
+            -Path $modsDirectory `
+            -Force | Out-Null
+    }
+
+    # ------------------------------------------------------------
+    # Install mods
+    #
+    # This section assumes your manifest has a "mods" array
+    # containing objects with:
+    #
+    # {
+    #   "name": "Example Mod",
+    #   "url": "https://..."
+    # }
+    #
+    # If your actual manifest structure is different, this
+    # section needs to match that structure.
+    # ------------------------------------------------------------
+
+    if ($manifest.mods) {
+
+        foreach ($mod in $manifest.mods) {
+
+            if (!$mod.url) {
+                Write-Warning `
+                    "Skipping $($mod.name): no URL specified."
+                continue
+            }
+
+            $fileName =
+                Split-Path `
+                    $mod.url `
+                    -Leaf
+
+            if ([string]::IsNullOrWhiteSpace($fileName)) {
+                Write-Warning `
+                    "Could not determine filename for $($mod.name)."
+                continue
+            }
+
+            $destination =
+                Join-Path `
+                    $modsDirectory `
+                    $fileName
+
+            Write-Host ""
+            Write-Host "Installing:"
+            Write-Host $mod.name
+            Write-Host $mod.url
+
+            Invoke-WebRequest `
+                -Uri $mod.url `
+                -OutFile $destination
+
+            Write-Host "Installed: $fileName"
+        }
     }
 
     Write-Host ""
-    Write-Host "Major Key Pack"
-    Write-Host "Minecraft: $($Manifest.minecraft)"
-    Write-Host "Loader: $($Manifest.loader)"
-    Write-Host "Mods: $($Manifest.mods.Count)"
+    Write-Host "========================================"
+    Write-Host "       Installation Complete"
+    Write-Host "========================================"
     Write-Host ""
 
-    foreach($Mod in $Manifest.mods){
-
-        $Destination=
-            Join-Path `
-                $Mods `
-                $Mod.filename
-
-        Write-Host "Downloading $($Mod.filename)..."
-
-        Invoke-WebRequest `
-            -Uri $Mod.url `
-            -OutFile $Destination `
-            -UseBasicParsing
-
-        if(!(Test-Path $Destination)){
-            throw `
-                "Download failed: $($Mod.filename)"
-        }
-
-        $File=Get-Item $Destination
-
-        if($File.Length -ne [long]$Mod.size){
-
-            Remove-Item `
-                $Destination `
-                -Force
-
-            throw `
-                "Size mismatch: $($Mod.filename)`n" +
-                "Expected: $($Mod.size)`n" +
-                "Actual: $($File.Length)"
-        }
-
-        $Hash=
-            (Get-FileHash `
-                $Destination `
-                -Algorithm SHA256).Hash.ToLower()
-
-        if($Hash -ne $Mod.sha256.ToLower()){
-
-            Remove-Item `
-                $Destination `
-                -Force
-
-            throw `
-                "SHA256 mismatch: $($Mod.filename)`n" +
-                "Expected: $($Mod.sha256)`n" +
-                "Actual: $Hash"
-        }
-
-        Write-Host `
-            "OK: $($Mod.filename)" `
-            -ForegroundColor Green
-    }
-
-    [PSCustomObject]@{
-        name=$Manifest.name
-        version=$Manifest.version
-        minecraft=$Manifest.minecraft
-        loader=$Manifest.loader
-        installed=(Get-Date).ToString("o")
-    } |
-        ConvertTo-Json |
-        Set-Content `
-            (Join-Path `
-                $InstallDirectory `
-                "major-key-pack.json") `
-            -Encoding UTF8
-
-    Write-Host ""
-    Write-Host "========================================" -ForegroundColor Green
-    Write-Host " MAJOR KEY PACK INSTALLED" -ForegroundColor Green
-    Write-Host "========================================" -ForegroundColor Green
-    Write-Host ""
-    Write-Host "Location: $InstallDirectory"
-    Write-Host "Mods: $($Manifest.mods.Count)"
-    Write-Host ""
-
+    exit 0
 }
 catch {
 
     Write-Host ""
-    Write-Host "========================================" -ForegroundColor Red
-    Write-Host " INSTALLATION FAILED" -ForegroundColor Red
-    Write-Host "========================================" -ForegroundColor Red
+    Write-Host "========================================"
+    Write-Host "       INSTALLATION FAILED"
+    Write-Host "========================================"
     Write-Host ""
-    Write-Host $_.Exception.Message -ForegroundColor Red
+
+    Write-Host $_.Exception.Message
+
     Write-Host ""
+    Write-Host "Press Enter to close..."
+
+    Read-Host
 
     exit 1
 }
