@@ -4,7 +4,7 @@ $ErrorActionPreference="Stop"
 
 $Raw="https://raw.githubusercontent.com/quilt-lead/MAJORKEYPACK/main"
 $Temp=Join-Path $env:TEMP "MajorKeyPack"
-$Mods=Join-Path $InstallDirectory "mods"
+$Mods=Join-Path (Join-Path $env:APPDATA ".minecraft") "mods"
 
 if(Test-Path $Temp){Remove-Item $Temp -Recurse -Force}
 New-Item $Temp -ItemType Directory -Force | Out-Null
@@ -83,3 +83,4 @@ Write-Host ""
 Write-Host "Location: $InstallDirectory"
 Write-Host "Mods: $($Manifest.mods.Count)"
 Write-Host ""
+
