@@ -265,10 +265,12 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "${{ steps.version.outputs.version }}"
-          name: "Major Key Pack ${{ steps.version.outputs.version }}"`r`n          make_latest: true
+          name: "Major Key Pack ${{ steps.version.outputs.version }}"
+          make_latest: true
           generate_release_notes: true
           files: |
             MajorKeyPack-Installer.zip
             build/MajorKeyPack-Installer.exe
             modpack-manifest.json
+
 
