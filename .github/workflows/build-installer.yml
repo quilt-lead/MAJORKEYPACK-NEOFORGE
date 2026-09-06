@@ -1,4 +1,4 @@
-﻿name: Build Major Key Pack Installer
+name: Build Major Key Pack Installer
 
 on:
   workflow_dispatch:
@@ -29,6 +29,35 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
+      - name: Determine release version
+        id: version
+        shell: pwsh
+        run: |
+          git fetch --tags --force
+
+          $tags = @(
+            git tag --list "v*" |
+              Where-Object { $_ -match "^v\d+$" } |
+              ForEach-Object {
+                [int]$_.Substring(1)
+              }
+          )
+
+          if ($tags.Count -eq 0) {
+            $next = 1
+          }
+          else {
+            $next =
+              ($tags | Measure-Object -Maximum).Maximum + 1
+          }
+
+          $version = "v$next"
+
+          Write-Host "Next release: $version"
+
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "number=$next" >> $env:GITHUB_OUTPUT
+
       - name: Build standalone EXE
         shell: pwsh
         run: |
@@ -50,6 +79,8 @@ jobs:
               <ImplicitUsings>enable</ImplicitUsings>
               <Nullable>enable</Nullable>
               <AssemblyName>MajorKeyPack-Installer</AssemblyName>
+              <Version>1.0.${{ steps.version.outputs.number }}</Version>
+              <AssemblyVersion>1.0.${{ steps.version.outputs.number }}</AssemblyVersion>
               <RootNamespace>MajorKeyPackInstaller</RootNamespace>
               <PublishSingleFile>true</PublishSingleFile>
               <SelfContained>true</SelfContained>
@@ -280,34 +311,6 @@ jobs:
             -Path "build\MajorKeyPack-Installer.exe" `
             -DestinationPath "MajorKeyPack-Installer.zip" `
             -Force
-
-      - name: Determine release version
-        id: version
-        shell: pwsh
-        run: |
-          git fetch --tags --force
-
-          $tags = @(
-            git tag --list "v*" |
-              Where-Object { $_ -match "^v\d+$" } |
-              ForEach-Object {
-                [int]$_.Substring(1)
-              }
-          )
-
-          if ($tags.Count -eq 0) {
-            $next = 1
-          }
-          else {
-            $next =
-              ($tags | Measure-Object -Maximum).Maximum + 1
-          }
-
-          $version = "v$next"
-
-          Write-Host "Next release: $version"
-
-          "version=$version" >> $env:GITHUB_OUTPUT
 
       - name: Publish release
         uses: softprops/action-gh-release@v2
