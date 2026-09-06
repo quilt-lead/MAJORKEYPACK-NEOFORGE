@@ -1,7 +1,8 @@
-name: Build Major Key Pack Installer
+﻿name: Build Major Key Pack Installer
 
 on:
   workflow_dispatch:
+
   push:
     paths:
       - "modpack-manifest.json"
@@ -19,6 +20,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Build standalone EXE
         shell: pwsh
@@ -211,9 +215,26 @@ jobs:
         id: version
         shell: pwsh
         run: |
-          $tags = git tag --list "v*" | Where-Object { $_ -match "^v\d+$" } | ForEach-Object { [int]$_.Substring(1) }
-          $next = if ($tags) { ($tags | Measure-Object -Maximum).Maximum + 1 } else { 1 }
-          "version=v$next" >> $env:GITHUB_OUTPUT
+          git fetch --tags --force
+
+          $tags = @(
+            git tag --list "v*" |
+              Where-Object { $_ -match "^v\d+$" } |
+              ForEach-Object { [int]$_.Substring(1) }
+          )
+
+          if ($tags.Count -eq 0) {
+            $next = 1
+          }
+          else {
+            $next = ($tags | Measure-Object -Maximum).Maximum + 1
+          }
+
+          $version = "v$next"
+
+          Write-Host "Creating release: $version"
+
+          "version=$version" >> $env:GITHUB_OUTPUT
 
       - name: Publish release
         uses: softprops/action-gh-release@v2
@@ -225,8 +246,3 @@ jobs:
             MajorKeyPack-Installer.zip
             build/MajorKeyPack-Installer.exe
             modpack-manifest.json
-
-
-
-
-
