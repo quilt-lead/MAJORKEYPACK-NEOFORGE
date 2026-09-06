@@ -6,7 +6,8 @@ on:
     paths:
       - "modpack-manifest.json"
       - "scripts/**"
-      - "installer/**"`r`n      - ".github/workflows/**"
+      - "installer/**"
+      - ".github/workflows/**"
 
 permissions:
   contents: write
@@ -30,7 +31,7 @@ jobs:
 
           New-Item -ItemType Directory -Force "launcher-build" | Out-Null
 
-          @'
+          @"
           <Project Sdk="Microsoft.NET.Sdk">
             <PropertyGroup>
               <OutputType>WinExe</OutputType>
@@ -43,20 +44,16 @@ jobs:
               <SelfContained>false</SelfContained>
             </PropertyGroup>
           </Project>
-          '@ | Set-Content "launcher-build\MajorKeyPack-Installer.csproj" -Encoding UTF8
+          "@ | Set-Content "launcher-build\MajorKeyPack-Installer.csproj" -Encoding UTF8
 
-          @'
+          @"
           using System.Diagnostics;
 
           string script = Path.Combine(AppContext.BaseDirectory, "Install-MajorKeyPack.ps1");
 
           if (!File.Exists(script))
           {
-              System.Windows.Forms.MessageBox.Show(
-                  "Install-MajorKeyPack.ps1 was not found.",
-                  "Major Key Pack",
-                  System.Windows.Forms.MessageBoxButtons.OK,
-                  System.Windows.Forms.MessageBoxIcon.Error);
+              Console.Error.WriteLine("Install-MajorKeyPack.ps1 was not found.");
               return;
           }
 
@@ -70,14 +67,13 @@ jobs:
 
           using var process = Process.Start(psi);
           process?.WaitForExit();
-          '@ | Set-Content "launcher-build\Program.cs" -Encoding UTF8
+          "@ | Set-Content "launcher-build\Program.cs" -Encoding UTF8
 
           dotnet publish "launcher-build\MajorKeyPack-Installer.csproj" `
             --configuration Release `
             --runtime win-x64 `
             --self-contained false `
             -p:PublishSingleFile=true `
-            -p:IncludeNativeLibrariesForSelfExtract=true `
             -o "build\launcher"
 
           Copy-Item "build\launcher\MajorKeyPack-Installer.exe" "build\MajorKeyPack-Installer.exe"
@@ -97,4 +93,3 @@ jobs:
             MajorKeyPack-Installer.zip
             build/MajorKeyPack-Installer.exe
             modpack-manifest.json
-
