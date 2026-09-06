@@ -32,7 +32,8 @@ jobs:
           <Project Sdk="Microsoft.NET.Sdk">
             <PropertyGroup>
               <OutputType>WinExe</OutputType>
-              <TargetFramework>net8.0-windows</TargetFramework>`r\n              <UseWindowsForms>true</UseWindowsForms>
+              <TargetFramework>net8.0-windows</TargetFramework>
+              <UseWindowsForms>true</UseWindowsForms>
               <ImplicitUsings>enable</ImplicitUsings>
               <Nullable>enable</Nullable>
               <AssemblyName>MajorKeyPack-Installer</AssemblyName>
@@ -216,5 +217,6 @@ jobs:
             MajorKeyPack-Installer.zip
             build/MajorKeyPack-Installer.exe
             modpack-manifest.json
+
 
 
