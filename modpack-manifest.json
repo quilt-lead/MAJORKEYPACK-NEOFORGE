@@ -27,12 +27,6 @@
                      "url":  "https://mediafilez.forgecdn.net/files/4578/885/kotlinforforge-4.3.0-all.jar"
                  },
                  {
-                     "filename":  "OptiFine_1.20.1_HD_U_I6.jar",
-                     "size":  7145205,
-                     "sha256":  "0b67cb670aedf2e55a982f3d52b6d53e46791a0c984aa1d2ee58100fc9bfc650",
-                     "url":  "https://optifine.net/downloadx?f=OptiFine_1.20.1_HD_U_I6.jar\u0026x=20927206238b790181555c4e5092e59b"
-                 },
-                 {
                      "filename":  "ritchiesprojectilelib-2.1.1-mc.1.20.1-forge.jar",
                      "size":  78625,
                      "sha256":  "5531ec454792f98993fa29d55f8810444ba3e9ef8f04331c5811b84ec8d0c3dc",
@@ -46,7 +40,3 @@
                  }
              ]
 }
-
-
-
-
