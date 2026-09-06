@@ -27,6 +27,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/5224/387/ImmersiveEngineering-1.20.1-10.1.0-171.jar"
                  },
                  {
+                     "filename":  "ImmersivePetroleum-1.20.1-4.3.1-36b.jar",
+                     "size":  1975671,
+                     "sha256":  "cec000b892ae56452c54471a6411ee8f7afcec9b37eb7a3fb0319cf015983173",
+                     "url":  "https://mediafilez.forgecdn.net/files/8499/79/ImmersivePetroleum-1.20.1-4.3.1-36b.jar"
+                 },
+                 {
                      "filename":  "immersive_aircraft-1.3.3+1.20.1-forge.jar",
                      "size":  2391382,
                      "sha256":  "d1f7cfeed3ac2cf69472ae756eb9189dad04ab21b8afbd443c82f40e51bbf065",
@@ -55,6 +61,12 @@
                      "size":  7145205,
                      "sha256":  "0b67cb670aedf2e55a982f3d52b6d53e46791a0c984aa1d2ee58100fc9bfc650",
                      "url":  "https://optifine.tommo.team/OptiFine_1.20.1_HD_U_I6.jar"
+                 },
+                 {
+                     "filename":  "pneumaticcraft-repressurized-6.0.23+mc1.20.1.jar",
+                     "size":  10790934,
+                     "sha256":  "8d5117f18a3f80eb6670cfb04f0a42a103195972bfdf429d2181587958ec4c38",
+                     "url":  "https://mediafilez.forgecdn.net/files/8411/196/pneumaticcraft-repressurized-6.0.23%2Bmc1.20.1.jar"
                  },
                  {
                      "filename":  "ritchiesprojectilelib-2.1.1-mc.1.20.1-forge.jar",
