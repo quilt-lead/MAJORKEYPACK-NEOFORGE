@@ -32,7 +32,7 @@ jobs:
           <Project Sdk="Microsoft.NET.Sdk">
             <PropertyGroup>
               <OutputType>WinExe</OutputType>
-              <TargetFramework>net8.0-windows</TargetFramework>`r`n              <UseWindowsForms>true</UseWindowsForms>
+              <TargetFramework>net8.0-windows</TargetFramework>`r\n              <UseWindowsForms>true</UseWindowsForms>
               <ImplicitUsings>enable</ImplicitUsings>
               <Nullable>enable</Nullable>
               <AssemblyName>MajorKeyPack-Installer</AssemblyName>
@@ -64,7 +64,7 @@ jobs:
           if (!Directory.Exists(minecraftDirectory))
           {
               MessageBox.Show(
-                  "Minecraft Java Edition was not found.`n`nPlease install Minecraft Java Edition first.",
+                  "Minecraft Java Edition was not found.\n\nPlease install Minecraft Java Edition first.",
                   "Major Key Pack",
                   MessageBoxButtons.OK,
                   MessageBoxIcon.Error);
@@ -86,9 +86,9 @@ jobs:
                   "https://files.minecraftforge.net/net/minecraftforge/forge/index_1.20.1.html";
 
               var result = MessageBox.Show(
-                  "Forge 1.20.1 was not found.`n`n" +
-                  "Please install Forge 1.20.1 before installing Major Key Pack.`n`n" +
-                  "Click Yes to open the official Forge download page.`n" +
+                  "Forge 1.20.1 was not found.\n\n" +
+                  "Please install Forge 1.20.1 before installing Major Key Pack.\n\n" +
+                  "Click Yes to open the official Forge download page.\n" +
                   "Click No to exit.",
                   "Major Key Pack - Forge Required",
                   MessageBoxButtons.YesNo,
@@ -216,4 +216,5 @@ jobs:
             MajorKeyPack-Installer.zip
             build/MajorKeyPack-Installer.exe
             modpack-manifest.json
+
 
