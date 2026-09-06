@@ -50,7 +50,7 @@ internal static class Program
         }
     }
 
-    private static bool TryUpdate(string currentVersion)
+    /* OLD UPDATE METHOD REMOVED */`r`n/* private static bool TryUpdate(string currentVersion)
     {
         try
         {
