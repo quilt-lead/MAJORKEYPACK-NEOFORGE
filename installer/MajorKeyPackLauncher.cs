@@ -205,10 +205,15 @@ internal static class Program
 
             return true;
         }
-        catch
+        catch (Exception ex)
         {
-            // If GitHub is unavailable, continue with
-            // the currently installed installer.
+            MessageBox.Show(
+                "Could not check for installer updates.`n`n" +
+                ex.Message,
+                "Major Key Pack - Update Check",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+
             return false;
         }
     }
