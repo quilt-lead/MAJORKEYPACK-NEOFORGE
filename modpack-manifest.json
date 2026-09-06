@@ -21,6 +21,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/7979/379/eureka-1201-1.6.3.jar"
                  },
                  {
+                     "filename":  "jei-1.20.1-forge-15.58.0.209.jar",
+                     "size":  1821883,
+                     "sha256":  "e39f3794233d16455217984592744fa8eb350a5f898f1002ed721659b77fdd97",
+                     "url":  "https://mediafilez.forgecdn.net/files/8820/520/jei-1.20.1-forge-15.58.0.209.jar"
+                 },
+                 {
                      "filename":  "kotlinforforge-4.3.0-all.jar",
                      "size":  7513212,
                      "sha256":  "3ab83c53de3c0e3f9fc0d08295ea067ff456d1cff31c707a7889e6c09f8c94d0",
