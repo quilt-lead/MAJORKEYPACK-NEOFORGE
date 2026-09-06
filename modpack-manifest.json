@@ -61,6 +61,12 @@
                      "size":  27752937,
                      "sha256":  "f99f24de62015451a047f90484cf9d25970cac350105b581c22b2d5247ebfd53",
                      "url":  "https://mediafilez.forgecdn.net/files/7906/689/valkyrienskies-120-2.4.11.jar"
+                 },
+                 {
+                     "filename":  "[1.20.1] SecurityCraft v1.10.0.1.jar",
+                     "size":  4648724,
+                     "sha256":  "f99f24de62015451a047f90484cf9d25970cac350105b581c22b2d5247ebfd53",
+                     "url":  "https://mediafilez.forgecdn.net/files/6490/260/%5B1.20.1%5D%20SecurityCraft%20v1.10.0.1.jar"
                  }
              ]
 }
