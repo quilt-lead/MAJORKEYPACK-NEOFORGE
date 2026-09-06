@@ -54,7 +54,10 @@ internal static class Program
     {
         try
         {
-            Console.WriteLine("Checking for updates..."); Console.WriteLine("GitHub: https://github.com/quilt-lead/MAJORKEYPACK/releases/latest");`r`n`r`n    using HttpClient client = new HttpClient();
+            Console.WriteLine("Checking for updates..."); Console.WriteLine("GitHub: https://github.com/quilt-lead/MAJORKEYPACK/releases/latest");`r`n`r`n    Console.WriteLine("Checking for updates...");
+Console.WriteLine("Checking GitHub latest release...");
+
+using HttpClient client = new HttpClient();
 
             client.DefaultRequestHeaders.UserAgent.ParseAdd(
                 "MajorKeyPackInstaller");
@@ -386,4 +389,5 @@ internal static class Program
         return 0;
     }
 }
+
 
