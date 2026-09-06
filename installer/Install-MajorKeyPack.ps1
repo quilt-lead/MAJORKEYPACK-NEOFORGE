@@ -12,7 +12,7 @@ Write-Host ""
 if(!(Test-Path $MinecraftDirectory)){
     Write-Host "Minecraft was not found." -ForegroundColor Red
     Write-Host "Please install Minecraft Java Edition first."
-    exit 1
+
 }
 
 $Forge=Get-ChildItem "$MinecraftDirectory\versions" -Directory -ErrorAction SilentlyContinue |
@@ -20,9 +20,30 @@ $Forge=Get-ChildItem "$MinecraftDirectory\versions" -Directory -ErrorAction Sile
     Select-Object -First 1
 
 if(!$Forge){
-    Write-Host "Forge 1.20.1 was not found." -ForegroundColor Red
-    Write-Host "Please install Forge 1.20.1 using the Minecraft Launcher first."
-    exit 1
+    Add-Type -AssemblyName System.Windows.Forms
+
+    $ForgeUrl = "https://files.minecraftforge.net/net/minecraftforge/forge/index_1.20.1.html"
+
+    $result = [System.Windows.Forms.MessageBox]::Show(
+        "Forge 1.20.1 was not found.`n`nPlease install Forge 1.20.1 before installing Major Key Pack.`n`nClick Yes to open the official Forge download page.`nClick No to exit.",
+        "Major Key Pack - Forge Required",
+        [System.Windows.Forms.MessageBoxButtons]::YesNo,
+        [System.Windows.Forms.MessageBoxIcon]::Warning
+    )
+
+    if ($result -eq [System.Windows.Forms.DialogResult]::Yes) {
+        Start-Process $ForgeUrl
+
+        [System.Windows.Forms.MessageBox]::Show(
+            "Install Forge 1.20.1, then run the Major Key Pack installer again.",
+            "Major Key Pack",
+            [System.Windows.Forms.MessageBoxButtons]::OK,
+            [System.Windows.Forms.MessageBoxIcon]::Information
+        )
+    }
+
+    throw "Forge 1.20.1 is required."
+
 }
 
 Write-Host "Forge detected: $($Forge.Name)" -ForegroundColor Green
@@ -56,3 +77,5 @@ Write-Host "Installed to:"
 Write-Host $InstallDirectory
 Write-Host ""
 Read-Host "Press ENTER to close"
+
+
