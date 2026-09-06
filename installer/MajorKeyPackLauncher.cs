@@ -1,4 +1,5 @@
-﻿using System;
+﻿ChatGPT said:
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -37,10 +38,6 @@ internal static class Program
         }
         catch (Exception ex)
         {
-            Console.WriteLine();
-            Console.WriteLine("Installer error:");
-            Console.WriteLine(ex);
-
             MessageBox.Show(
                 "Major Key Pack installer failed.\n\n" +
                 ex.ToString(),
@@ -58,7 +55,7 @@ internal static class Program
         {
             Console.WriteLine();
             Console.WriteLine("========================================");
-            Console.WriteLine(" Major Key Pack Installer");
+            Console.WriteLine("        MAJOR KEY PACK INSTALLER");
             Console.WriteLine("========================================");
             Console.WriteLine();
             Console.WriteLine("Checking for updates...");
@@ -92,7 +89,7 @@ internal static class Program
                     StringComparison.OrdinalIgnoreCase))
             {
                 Console.WriteLine(
-                    "Latest GitHub release does not have a valid version tag.");
+                    "Latest release does not have a valid version tag.");
 
                 return false;
             }
@@ -102,7 +99,7 @@ internal static class Program
                     out int latestVersion))
             {
                 Console.WriteLine(
-                    "Could not determine the latest release version.");
+                    "Could not determine latest release version.");
 
                 return false;
             }
@@ -112,18 +109,18 @@ internal static class Program
             string[] currentParts =
                 currentVersion.Split('.');
 
-            if (currentParts.Length > 0)
+            if (currentParts.Length >= 3)
             {
                 int.TryParse(
-                    currentParts[0],
+                    currentParts[2],
                     out currentRelease);
             }
 
             Console.WriteLine(
-                "Current version: v" + currentRelease);
+                "Current installer: v" + currentRelease);
 
             Console.WriteLine(
-                "Latest version: v" + latestVersion);
+                "Latest installer:  v" + latestVersion);
 
             if (latestVersion <= currentRelease)
             {
@@ -137,14 +134,16 @@ internal static class Program
 
             Console.WriteLine();
             Console.WriteLine("========================================");
-            Console.WriteLine(" UPDATE AVAILABLE");
+            Console.WriteLine("        UPDATE AVAILABLE");
             Console.WriteLine("========================================");
             Console.WriteLine();
             Console.WriteLine(
-                "A newer installer is available: v" +
-                latestVersion);
+                "A newer Major Key Pack installer is available.");
+            Console.WriteLine(
+                "Current version: v" + currentRelease);
+            Console.WriteLine(
+                "Latest version:  v" + latestVersion);
             Console.WriteLine();
-            Console.WriteLine("Stopping current installation.");
             Console.WriteLine("Downloading latest installer...");
 
             JsonElement assets =
@@ -188,8 +187,7 @@ internal static class Program
                     "MajorKeyPackUpdate-" +
                     Guid.NewGuid().ToString("N"));
 
-            Directory.CreateDirectory(
-                tempDirectory);
+            Directory.CreateDirectory(tempDirectory);
 
             string newExe =
                 Path.Combine(
@@ -229,7 +227,7 @@ internal static class Program
                 latestVersion + "...");
 
             Console.WriteLine(
-                "The current installer will now close.");
+                "Stopping current installer...");
 
             Console.WriteLine();
 
@@ -239,6 +237,8 @@ internal static class Program
                     FileName = newExe,
                     UseShellExecute = true
                 };
+
+            psi.Environment["MAJORKEYPACK_SKIP_UPDATE"] = "1";
 
             Process? process =
                 Process.Start(psi);
@@ -255,14 +255,11 @@ internal static class Program
         {
             Console.WriteLine();
             Console.WriteLine(
-                "Update check failed.");
-
+                "Could not check for installer updates.");
             Console.WriteLine(
                 ex.Message);
-
             Console.WriteLine(
                 "Continuing with the current installer.");
-
             Console.WriteLine();
 
             return false;
@@ -337,6 +334,12 @@ internal static class Program
                         FileName = forgeUrl,
                         UseShellExecute = true
                     });
+
+                MessageBox.Show(
+                    "Install Forge 1.20.1, then run the Major Key Pack installer again.",
+                    "Major Key Pack",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             }
 
             return 1;
