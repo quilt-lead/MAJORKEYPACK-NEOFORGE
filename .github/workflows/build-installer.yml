@@ -20,14 +20,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build EXE installer
+      - name: Build standalone EXE
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force build | Out-Null
 
           Copy-Item "installer\Install-MajorKeyPack.ps1" "build\Install-MajorKeyPack.ps1"
-          Copy-Item "scripts\Install-MajorKeyPack.ps1" "build\Install-MajorKeyPack-Core.ps1"
-          Copy-Item "modpack-manifest.json" "build\modpack-manifest.json"
 
           New-Item -ItemType Directory -Force "launcher-build" | Out-Null
 
@@ -41,39 +39,50 @@ jobs:
               <AssemblyName>MajorKeyPack-Installer</AssemblyName>
               <RootNamespace>MajorKeyPackInstaller</RootNamespace>
               <PublishSingleFile>true</PublishSingleFile>
-              <SelfContained>false</SelfContained>
+              <SelfContained>true</SelfContained>
+              <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
             </PropertyGroup>
           </Project>
           "@ | Set-Content "launcher-build\MajorKeyPack-Installer.csproj" -Encoding UTF8
 
           @"
           using System.Diagnostics;
+          using System.Reflection;
 
           string script = Path.Combine(AppContext.BaseDirectory, "Install-MajorKeyPack.ps1");
 
           if (!File.Exists(script))
           {
               Console.Error.WriteLine("Install-MajorKeyPack.ps1 was not found.");
-              return;
+              Environment.Exit(1);
           }
 
           var psi = new ProcessStartInfo
           {
               FileName = "powershell.exe",
-              Arguments = "-NoProfile -ExecutionPolicy Bypass -File \"" + script + "\"",
+              Arguments = "-NoProfile -ExecutionPolicy Bypass -File `" + script + "`"",
               UseShellExecute = true,
               WorkingDirectory = AppContext.BaseDirectory
           };
 
           using var process = Process.Start(psi);
-          process?.WaitForExit();
+
+          if (process == null)
+          {
+              Console.Error.WriteLine("Failed to start PowerShell.");
+              Environment.Exit(1);
+          }
+
+          process.WaitForExit();
+          Environment.Exit(process.ExitCode);
           "@ | Set-Content "launcher-build\Program.cs" -Encoding UTF8
 
           dotnet publish "launcher-build\MajorKeyPack-Installer.csproj" `
             --configuration Release `
             --runtime win-x64 `
-            --self-contained false `
+            --self-contained true `
             -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
             -o "build\launcher"
 
           Copy-Item "build\launcher\MajorKeyPack-Installer.exe" "build\MajorKeyPack-Installer.exe"
