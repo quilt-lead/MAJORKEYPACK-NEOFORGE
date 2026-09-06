@@ -30,7 +30,9 @@ jobs:
           New-Item -ItemType Directory -Force build | Out-Null
           New-Item -ItemType Directory -Force launcher-build | Out-Null
 
-          Copy-Item "installer\Install-MajorKeyPack.ps1" "launcher-build\Install-MajorKeyPack.ps1"
+          Copy-Item `
+            "installer\Install-MajorKeyPack.ps1" `
+            "launcher-build\Install-MajorKeyPack.ps1"
 
           @"
           <Project Sdk="Microsoft.NET.Sdk">
@@ -51,7 +53,9 @@ jobs:
               <EmbeddedResource Include="Install-MajorKeyPack.ps1" />
             </ItemGroup>
           </Project>
-          "@ | Set-Content "launcher-build\MajorKeyPack-Installer.csproj" -Encoding UTF8
+          "@ | Set-Content `
+            "launcher-build\MajorKeyPack-Installer.csproj" `
+            -Encoding UTF8
 
           @'
           using System.Diagnostics;
@@ -69,7 +73,7 @@ jobs:
           if (!Directory.Exists(minecraftDirectory))
           {
               MessageBox.Show(
-                  "Minecraft Java Edition was not found.\n\nPlease install Minecraft Java Edition first.",
+                  "Minecraft Java Edition was not found.`n`nPlease install Minecraft Java Edition first.",
                   "Major Key Pack",
                   MessageBoxButtons.OK,
                   MessageBoxIcon.Error);
@@ -77,13 +81,17 @@ jobs:
               Environment.Exit(1);
           }
 
-          string versionsDirectory = Path.Combine(minecraftDirectory, "versions");
+          string versionsDirectory =
+              Path.Combine(minecraftDirectory, "versions");
 
           bool forgeFound =
               Directory.Exists(versionsDirectory) &&
               Directory.GetDirectories(versionsDirectory)
-                  .Any(x => Path.GetFileName(x)
-                      .StartsWith("1.20.1-forge-", StringComparison.OrdinalIgnoreCase));
+                  .Any(x =>
+                      Path.GetFileName(x)
+                          .StartsWith(
+                              "1.20.1-forge-",
+                              StringComparison.OrdinalIgnoreCase));
 
           if (!forgeFound)
           {
@@ -91,9 +99,9 @@ jobs:
                   "https://files.minecraftforge.net/net/minecraftforge/forge/index_1.20.1.html";
 
               var result = MessageBox.Show(
-                  "Forge 1.20.1 was not found.\n\n" +
-                  "Please install Forge 1.20.1 before installing Major Key Pack.\n\n" +
-                  "Click Yes to open the official Forge download page.\n" +
+                  "Forge 1.20.1 was not found.`n`n" +
+                  "Please install Forge 1.20.1 before installing Major Key Pack.`n`n" +
+                  "Click Yes to open the official Forge download page.`n" +
                   "Click No to exit.",
                   "Major Key Pack - Forge Required",
                   MessageBoxButtons.YesNo,
@@ -122,12 +130,15 @@ jobs:
 
           string tempDirectory = Path.Combine(
               Path.GetTempPath(),
-              "MajorKeyPack-" + Guid.NewGuid().ToString("N"));
+              "MajorKeyPack-" +
+              Guid.NewGuid().ToString("N"));
 
           Directory.CreateDirectory(tempDirectory);
 
           string scriptPath =
-              Path.Combine(tempDirectory, "Install-MajorKeyPack.ps1");
+              Path.Combine(
+                  tempDirectory,
+                  "Install-MajorKeyPack.ps1");
 
           using Stream? resource =
               Assembly.GetExecutingAssembly()
@@ -188,9 +199,12 @@ jobs:
           }
 
           Environment.Exit(process.ExitCode);
-          '@ | Set-Content "launcher-build\Program.cs" -Encoding UTF8
+          '@ | Set-Content `
+            "launcher-build\Program.cs" `
+            -Encoding UTF8
 
-          dotnet publish "launcher-build\MajorKeyPack-Installer.csproj" `
+          dotnet publish `
+            "launcher-build\MajorKeyPack-Installer.csproj" `
             --configuration Release `
             --runtime win-x64 `
             --self-contained true `
@@ -220,19 +234,30 @@ jobs:
           $tags = @(
             git tag --list "v*" |
               Where-Object { $_ -match "^v\d+$" } |
-              ForEach-Object { [int]$_.Substring(1) }
+              ForEach-Object {
+                [int]$_.Substring(1)
+              }
           )
 
           if ($tags.Count -eq 0) {
             $next = 1
           }
           else {
-            $next = ($tags | Measure-Object -Maximum).Maximum + 1
+            $next =
+              ($tags | Measure-Object -Maximum).Maximum + 1
           }
 
           $version = "v$next"
 
-          Write-Host "Creating release: $version"
+          Write-Host "Existing numeric tags:"
+          $tags |
+            Sort-Object |
+            ForEach-Object {
+              Write-Host "  v$_"
+            }
+
+          Write-Host ""
+          Write-Host "Next release: $version"
 
           "version=$version" >> $env:GITHUB_OUTPUT
 
