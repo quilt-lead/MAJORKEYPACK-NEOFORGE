@@ -3,10 +3,10 @@
     "loader":  "Forge",
     "mods":  [
                  {
-                     "filename":  "BiomesOPlenty-fabric-1.20.1-19.0.0.96.jar",
-                     "size":  22317969,
-                     "sha256":  "5da394d30ef3783908c6a771c833e4c00e589f65c4b9ece55a398cb3c9b47fbe",
-                     "url":  "https://mediafilez.forgecdn.net/files/6364/66/BiomesOPlenty-fabric-1.20.1-19.0.0.96.jar"
+                     "filename":  "BiomesOPlenty-forge-1.20.1-19.0.0.96.jar",
+                     "size":  22381010,
+                     "sha256":  "330f482487ac3135557b6e898d7e1ae5330321e9cfd5ba63e13a16cf2e8d8b98",
+                     "url":  "https://mediafilez.forgecdn.net/files/6364/65/BiomesOPlenty-forge-1.20.1-19.0.0.96.jar"
                  },
                  {
                      "filename":  "clockwork-0.5.6.jar",
