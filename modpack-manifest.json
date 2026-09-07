@@ -267,6 +267,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/7292/523/ritchiesprojectilelib-2.1.1-mc.1.20.1-forge.jar"
                  },
                  {
+                     "filename":  "stack-to-nearby-chests-mc1.21.11-0.5.17.jar",
+                     "size":  581239,
+                     "sha256":  "eb7910a4605f610c11d9ef3d2846f2c0ceb8d191ab891e9bda283f5ec85f9888",
+                     "url":  "https://mediafilez.forgecdn.net/files/7996/189/stack-to-nearby-chests-mc1.21.11-0.5.17.jar"
+                 },
+                 {
                      "filename":  "Steam_Rails-1.7.3+forge-mc1.20.1.jar",
                      "size":  17042037,
                      "sha256":  "0e98b72472ff78464f6e69025bb47f942e7f66a976382fbb87ceff765a8b00cf",
