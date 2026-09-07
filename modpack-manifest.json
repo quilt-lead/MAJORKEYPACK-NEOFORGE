@@ -9,6 +9,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/6364/66/BiomesOPlenty-fabric-1.20.1-19.0.0.96.jar"
                  },
                  {
+                     "filename":  "clockwork-0.5.6.jar",
+                     "size":  11021061,
+                     "sha256":  "a7a7f946eb9edbe63d281a47b710c8958cd4b6b8dbbb73165fcc73d53fa07093",
+                     "url":  "https://mediafilez.forgecdn.net/files/8017/5/clockwork-0.5.6.jar"
+                 },
+                 {
                      "filename":  "create-1.20.1-6.0.8.jar",
                      "size":  19170905,
                      "sha256":  "6fbb910c367dbce8e4fc7e5bf64b6edd4de980906ed00af8e47e4af843c0d9b0",
@@ -55,6 +61,12 @@
                      "size":  2391382,
                      "sha256":  "d1f7cfeed3ac2cf69472ae756eb9189dad04ab21b8afbd443c82f40e51bbf065",
                      "url":  "https://mediafilez.forgecdn.net/files/6742/170/immersive_aircraft-1.3.3%2B1.20.1-forge.jar"
+                 },
+                 {
+                     "filename":  "immersive_machinery-0.2.0+1.20.1-forge.jar",
+                     "size":  899304,
+                     "sha256":  "b19dbe62974f70891704ee418feb40cc259ff0ff63c943a4657d09d5b4b06344",
+                     "url":  "https://mediafilez.forgecdn.net/files/6492/547/immersive_machinery-0.2.0%2B1.20.1-forge.jar"
                  },
                  {
                      "filename":  "irons_lib-1.20.1-2.1.0.jar",
