@@ -195,6 +195,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/8680/180/irons_spellbooks-1.20.1-3.16.3.jar"
                  },
                  {
+                     "filename":  "jacks-backpacks-forge-1.20.1-1.0.0.jar",
+                     "size":  38145,
+                     "sha256":  "5fa11ab9d0c58bbf254eaab188bf7b4bac203a41e141cc980fc18cebd0d1cb1c",
+                     "url":  "https://mediafilez.forgecdn.net/files/8555/81/jacks-backpacks-forge-1.20.1-1.0.0.jar"
+                 },
+                 {
                      "filename":  "jacks-gravestones-neoforge-1.20.1-1.0.1.jar",
                      "size":  15287,
                      "sha256":  "a8f9ffe05e818fd82238feb65b46f3aaff07734bef65ac126b3c8bc4654a72dc",
