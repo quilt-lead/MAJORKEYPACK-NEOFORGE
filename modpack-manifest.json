@@ -21,10 +21,22 @@
                      "url":  "https://mediafilez.forgecdn.net/files/6641/603/create-1.20.1-6.0.6.jar"
                  },
                  {
+                     "filename":  "create-gunsmithing-1.20.1-1.4.4.jar",
+                     "size":  1833188,
+                     "sha256":  "f4b314b496c662451ce6c526af386c7070116b25e740dbeebe70cdbc8c94330d",
+                     "url":  "https://mediafilez.forgecdn.net/files/8371/323/create-gunsmithing-1.20.1-1.4.4.jar"
+                 },
+                 {
                      "filename":  "createbigcannons-5.11.4-mc.1.20.1-forge.jar",
                      "size":  4058306,
                      "sha256":  "11845f0d79a9014977f667a57b14d0527928bee8b66bc6b50bedcc29ee81878a",
                      "url":  "https://mediafilez.forgecdn.net/files/8169/547/createbigcannons-5.11.4-mc.1.20.1-forge.jar"
+                 },
+                 {
+                     "filename":  "create_central_kitchen-1.20.1-for-create-6.0.8-1.5.1.jar",
+                     "size":  1499795,
+                     "sha256":  "133492121aaf465c3ac965ecbf22586f6f6056a7ff066a54f74b68bff9b5bff4",
+                     "url":  "https://mediafilez.forgecdn.net/files/8760/859/create_central_kitchen-1.20.1-for-create-6.0.8-1.5.1.jar"
                  },
                  {
                      "filename":  "curios-forge-5.14.1+1.20.1.jar",
@@ -33,16 +45,34 @@
                      "url":  "https://mediafilez.forgecdn.net/files/6418/456/curios-forge-5.14.1%2B1.20.1.jar"
                  },
                  {
+                     "filename":  "delightfulcreators-1.1.9.jar",
+                     "size":  414596,
+                     "sha256":  "a3420dbe5c0863fcb264795e94bbfbbd4eb945e05da342121c30e003e530fbc2",
+                     "url":  "https://mediafilez.forgecdn.net/files/8530/749/delightfulcreators-1.1.9.jar"
+                 },
+                 {
                      "filename":  "eureka-1201-1.6.3.jar",
                      "size":  462827,
                      "sha256":  "1d59778581a533d2bb7702a3d403fb37eaddb94aa786ebf3f4ab889dded82c55",
                      "url":  "https://mediafilez.forgecdn.net/files/7979/379/eureka-1201-1.6.3.jar"
                  },
                  {
+                     "filename":  "FarmersDelight-1.20.1-1.3.4.jar",
+                     "size":  3311051,
+                     "sha256":  "34f03eb671ea1ca579b00c98e4541404cb96d1a292014aed9cc5eb45ad8afbce",
+                     "url":  "https://mediafilez.forgecdn.net/files/8765/179/FarmersDelight-1.20.1-1.3.4.jar"
+                 },
+                 {
                      "filename":  "geckolib-forge-1.20.1-4.8.4.jar",
                      "size":  1038209,
                      "sha256":  "c04abba4fd354dd8c0e8a732f1f05f4dca893d2e1d962b2ab128bbd411478747",
                      "url":  "https://mediafilez.forgecdn.net/files/8285/794/geckolib-forge-1.20.1-4.8.4.jar"
+                 },
+                 {
+                     "filename":  "hourglass-1.20-1.2.1.1.jar",
+                     "size":  235134,
+                     "sha256":  "29d3c6813792b2733fa1264a4a732aead67741b7fe9555d7a5e229717d9ffa3c",
+                     "url":  "https://mediafilez.forgecdn.net/files/4834/578/hourglass-1.20-1.2.1.1.jar"
                  },
                  {
                      "filename":  "ImmersiveEngineering-1.20.1-10.1.0-171.jar",
@@ -99,6 +129,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/6742/615/lithostitched-forge-1.20.1-1.4.11.jar"
                  },
                  {
+                     "filename":  "LW 0.42-1.20.1-Create-6.0.8-ALPHA.jar",
+                     "size":  3677857,
+                     "sha256":  "5a85cf382f5c72ca7442195e5f1b4814c3a822c109d6c3d42aec17eab7f3948a",
+                     "url":  "https://mediafilez.forgecdn.net/files/7221/835/LW%200.42-1.20.1-Create-6.0.8-ALPHA.jar"
+                 },
+                 {
                      "filename":  "Mekanism-1.20.1-10.4.16.80.jar",
                      "size":  12558456,
                      "sha256":  "3b0d191fa4a45e662f9725991d76a30192f30186abb2ba694b873b5f7b9358d2",
@@ -133,6 +169,12 @@
                      "size":  78625,
                      "sha256":  "5531ec454792f98993fa29d55f8810444ba3e9ef8f04331c5811b84ec8d0c3dc",
                      "url":  "https://mediafilez.forgecdn.net/files/7292/523/ritchiesprojectilelib-2.1.1-mc.1.20.1-forge.jar"
+                 },
+                 {
+                     "filename":  "steampowered-1.20.1-3.0.2.jar",
+                     "size":  270782,
+                     "sha256":  "8f997ebf56de62843a0ab8df0b97f901e7b582e9901ae3b95420b5fdbb8b406b",
+                     "url":  "https://mediafilez.forgecdn.net/files/5778/650/steampowered-1.20.1-3.0.2.jar"
                  },
                  {
                      "filename":  "Steam_Rails-1.7.3+forge-mc1.20.1.jar",
