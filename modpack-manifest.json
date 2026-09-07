@@ -63,6 +63,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/7932/785/createdieselgenerators-1.20.1-1.3.12.jar"
                  },
                  {
+                     "filename":  "CreateDragonsPlus-1.11.8.jar",
+                     "size":  953963,
+                     "sha256":  "7ba069b7a70070112fff519d60308a4f2176238175941365be61472e0a2779e0",
+                     "url":  "https://mediafilez.forgecdn.net/files/8810/578/CreateDragonsPlus-1.11.8.jar"
+                 },
+                 {
                      "filename":  "create_central_kitchen-1.20.1-for-create-6.0.8-1.5.1.jar",
                      "size":  1499795,
                      "sha256":  "133492121aaf465c3ac965ecbf22586f6f6056a7ff066a54f74b68bff9b5bff4",
@@ -93,6 +99,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/8530/749/delightfulcreators-1.1.9.jar"
                  },
                  {
+                     "filename":  "dragonlib-forge-1.20.1-beta-3.0.28.jar",
+                     "size":  2619695,
+                     "sha256":  "1894e875a248e8b5527c3e6806af75cbb797ab8888ed0b0c7a5b186fe661c7bb",
+                     "url":  "https://mediafilez.forgecdn.net/files/8176/492/dragonlib-forge-1.20.1-beta-3.0.28.jar"
+                 },
+                 {
                      "filename":  "eureka-1201-1.6.3.jar",
                      "size":  462827,
                      "sha256":  "1d59778581a533d2bb7702a3d403fb37eaddb94aa786ebf3f4ab889dded82c55",
@@ -115,6 +127,12 @@
                      "size":  1038209,
                      "sha256":  "c04abba4fd354dd8c0e8a732f1f05f4dca893d2e1d962b2ab128bbd411478747",
                      "url":  "https://mediafilez.forgecdn.net/files/8285/794/geckolib-forge-1.20.1-4.8.4.jar"
+                 },
+                 {
+                     "filename":  "GlitchCore-forge-1.20.1-0.0.1.1.jar",
+                     "size":  87550,
+                     "sha256":  "e42a8b513da08a910c133caeafad9fc2fcc22fdaaa2eb3e2516e9112a5a0db61",
+                     "url":  "https://mediafilez.forgecdn.net/files/5787/839/GlitchCore-forge-1.20.1-0.0.1.1.jar"
                  },
                  {
                      "filename":  "hourglass-1.20-1.2.1.1.jar",
@@ -241,6 +259,12 @@
                      "size":  322575,
                      "sha256":  "c6de479b27cf090510de3f029918afc9fe17226981bd703e0002f7a25f4d8969",
                      "url":  "https://mediafilez.forgecdn.net/files/7197/834/tectonic-3.0.17-forge-1.20.1.jar"
+                 },
+                 {
+                     "filename":  "TerraBlender-forge-1.20.1-3.0.1.10.jar",
+                     "size":  107532,
+                     "sha256":  "c109016f46ca9bdae69976bf080bbf2e8e5968cb66c0a78845f8ca6af5dbbeb1",
+                     "url":  "https://mediafilez.forgecdn.net/files/6290/448/TerraBlender-forge-1.20.1-3.0.1.10.jar"
                  },
                  {
                      "filename":  "tfmg-1.0.2f.jar",
