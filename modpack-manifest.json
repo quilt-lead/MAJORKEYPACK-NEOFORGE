@@ -219,6 +219,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/8371/299/ntgl-1.20.1-3.1.2.jar"
                  },
                  {
+                     "filename":  "oculus-mc1.20.1-1.8.0.jar",
+                     "size":  2851119,
+                     "sha256":  "0945df0cba0f62b3901dd80c3268e5311b770ece78c78037a45db12ac0425fef",
+                     "url":  "https://mediafilez.forgecdn.net/files/6020/952/oculus-mc1.20.1-1.8.0.jar"
+                 },
+                 {
                      "filename":  "pantographsandwires-forge-1.20.1-beta-0.2.3-C6.jar",
                      "size":  2433556,
                      "sha256":  "9818e37178d7dec656e1aaecb03d675aaaa6c01b0c12f0cd3d0e9e02fb7f47f4",
