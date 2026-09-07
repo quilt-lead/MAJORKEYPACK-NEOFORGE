@@ -29,12 +29,12 @@ try {
 
     $manifestPath = Join-Path $PSScriptRoot "modpack-manifest.json"
 
-    if (-not (Test-Path $manifestPath)) {
+    if (-not (Test-Path -LiteralPath $manifestPath)) {
         throw "Modpack manifest was not found:`n$manifestPath"
     }
 
     $manifestJson = Get-Content `
-        -Path $manifestPath `
+        -LiteralPath $manifestPath `
         -Raw `
         -Encoding UTF8
 
@@ -44,7 +44,7 @@ try {
     # Verify Minecraft directory
     # ----------------------------------------------------------------
 
-    if (-not (Test-Path $minecraftDirectory)) {
+    if (-not (Test-Path -LiteralPath $minecraftDirectory)) {
         throw "Minecraft directory was not found:`n$minecraftDirectory"
     }
 
@@ -55,12 +55,12 @@ try {
     Write-Host "Checking for Forge 1.20.1..."
     Write-Host ""
 
-    if (-not (Test-Path $versionsDirectory)) {
+    if (-not (Test-Path -LiteralPath $versionsDirectory)) {
         throw "Minecraft versions directory was not found:`n$versionsDirectory"
     }
 
     $forgeDirectories = Get-ChildItem `
-        $versionsDirectory `
+        -LiteralPath $versionsDirectory `
         -Directory `
         -ErrorAction SilentlyContinue |
         Where-Object {
@@ -87,14 +87,14 @@ try {
     # Create directories
     # ----------------------------------------------------------------
 
-    if (-not (Test-Path $installDirectory)) {
+    if (-not (Test-Path -LiteralPath $installDirectory)) {
         New-Item `
             -ItemType Directory `
             -Path $installDirectory `
             -Force | Out-Null
     }
 
-    if (-not (Test-Path $modsDirectory)) {
+    if (-not (Test-Path -LiteralPath $modsDirectory)) {
         New-Item `
             -ItemType Directory `
             -Path $modsDirectory `
@@ -126,11 +126,11 @@ try {
         # Check existing mod
         # ------------------------------------------------------------
 
-        if (Test-Path $destination) {
+        if (Test-Path -LiteralPath $destination) {
 
             $existingHash = (
                 Get-FileHash `
-                    -Path $destination `
+                    -LiteralPath $destination `
                     -Algorithm SHA256
             ).Hash.ToLowerInvariant()
 
@@ -155,9 +155,9 @@ try {
 
             $tempFile = "$destination.download"
 
-            if (Test-Path $tempFile) {
+            if (Test-Path -LiteralPath $tempFile) {
                 Remove-Item `
-                    $tempFile `
+                    -LiteralPath $tempFile `
                     -Force
             }
 
@@ -168,7 +168,7 @@ try {
                 $tempFile
             )
 
-            if (-not (Test-Path $tempFile)) {
+            if (-not (Test-Path -LiteralPath $tempFile)) {
                 throw "Download failed: $($mod.filename)"
             }
 
@@ -177,13 +177,14 @@ try {
             # --------------------------------------------------------
 
             $actualSize = (
-                Get-Item $tempFile
+                Get-Item `
+                    -LiteralPath $tempFile
             ).Length
 
             if ([int64]$actualSize -ne [int64]$mod.size) {
 
                 Remove-Item `
-                    $tempFile `
+                    -LiteralPath $tempFile `
                     -Force
 
                 throw @"
@@ -206,14 +207,14 @@ $actualSize bytes
 
             $actualHash = (
                 Get-FileHash `
-                    -Path $tempFile `
+                    -LiteralPath $tempFile `
                     -Algorithm SHA256
             ).Hash.ToLowerInvariant()
 
             if ($actualHash -ne $mod.sha256.ToLowerInvariant()) {
 
                 Remove-Item `
-                    $tempFile `
+                    -LiteralPath $tempFile `
                     -Force
 
                 throw @"
@@ -235,7 +236,7 @@ $actualHash
             # --------------------------------------------------------
 
             Move-Item `
-                -Path $tempFile `
+                -LiteralPath $tempFile `
                 -Destination $destination `
                 -Force
 
