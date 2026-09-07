@@ -255,12 +255,6 @@
                      "url":  "https://mediafilez.forgecdn.net/files/8411/196/pneumaticcraft-repressurized-6.0.23%2Bmc1.20.1.jar"
                  },
                  {
-                     "filename":  "quickstack-1.0.1-beta1+1.20.1.jar",
-                     "size":  276444,
-                     "sha256":  "5be0b8a0349c6e733c6796dd25f7cffcf21cb7b713bf298a093c2f22d5de739f",
-                     "url":  "https://mediafilez.forgecdn.net/files/4597/744/quickstack-1.0.1-beta1%2B1.20.1.jar"
-                 },
-                 {
                      "filename":  "railcraft-reborn-1.20.1-1.1.11.jar",
                      "size":  5255381,
                      "sha256":  "a859a6f75069097dc052a74fdba0624571a23a429ba3ec4624168b33716bc1f2",
@@ -271,6 +265,12 @@
                      "size":  78625,
                      "sha256":  "5531ec454792f98993fa29d55f8810444ba3e9ef8f04331c5811b84ec8d0c3dc",
                      "url":  "https://mediafilez.forgecdn.net/files/7292/523/ritchiesprojectilelib-2.1.1-mc.1.20.1-forge.jar"
+                 },
+                 {
+                     "filename":  "sorttochests-1.0.4.jar",
+                     "size":  37774,
+                     "sha256":  "76c5489aaf90f96a283c4dab85949cabd0326201ec7e2258d10e08981c285763",
+                     "url":  "https://mediafilez.forgecdn.net/files/8485/325/sorttochests-1.0.4.jar"
                  },
                  {
                      "filename":  "Steam_Rails-1.7.3+forge-mc1.20.1.jar",
