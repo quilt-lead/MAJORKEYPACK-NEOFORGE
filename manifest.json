@@ -2,6 +2,10 @@
     "minecraft":  "1.21.1",
     "loader":  "NeoForge",
     "mods":  [
-
+                 {
+                     "filename":  "create-1.21.1-6.0.10.jar",
+                     "size":  19123767,
+                     "sha256":  "ef87fe5709f1ba1f5b8bb20a2925b5afb4669e178fd6d8bf10c167759eefe37a"
+                 }
              ]
 }
