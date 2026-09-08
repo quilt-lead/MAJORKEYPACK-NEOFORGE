@@ -1,7 +1,8 @@
-﻿# ========================================
-# LOCAL MINECRAFT SERVER - NEVER UPLOAD
-# ========================================
+﻿# ============================================================
+# MAJOR KEY PACK - LOCAL SERVER FILES
+# ============================================================
 
+# Minecraft / NeoForge server
 mods/
 libraries/
 logs/
@@ -11,17 +12,36 @@ world/
 world_nether/
 world_the_end/
 
+config/
+
+eula.txt
+server.properties
+
+banned-ips.json
+banned-players.json
+ops.json
+usercache.json
+whitelist.json
+
+user_jvm_args.txt
+
 *.jar
 *.log
 *.tmp
 
-user_jvm_args.txt
+run.bat
+run.sh
+start-server.bat
+scan_mods.ps1
+update-github.ps1
 
-# NeoForge runtime/generated files
-server.jar
-
-# IDE / OS
-.idea/
-.vscode/
-Thumbs.db
-.DS_Store
+# ============================================================
+# DISTRIBUTION FILES
+# ============================================================
+# These remain tracked:
+#
+# manifest.json
+# .github/
+# installer/
+# README.md
+#
