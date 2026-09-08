@@ -27,7 +27,7 @@ try {
     # Load manifest from the JSON file next to this script
     # ----------------------------------------------------------------
 
-    $manifestPath = Join-Path $PSScriptRoot "manifest.json"
+    $manifestPath = Join-Path (Split-Path $PSScriptRoot -Parent) "modpack-manifest.json"
 
     if (-not (Test-Path -LiteralPath $manifestPath)) {
         throw "Modpack manifest was not found:`n$manifestPath"
@@ -278,3 +278,5 @@ catch {
 }
 
 Read-Host "Press Enter to close"
+
+
