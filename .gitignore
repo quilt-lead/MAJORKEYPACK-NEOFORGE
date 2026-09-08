@@ -1,24 +1,32 @@
-﻿# NeoForge libraries
-libraries/
+﻿# ========================================
+# LOCAL SERVER FILES - NEVER UPLOAD
+# ========================================
 
-# Runtime logs
+mods/
+libraries/
 logs/
 crash-reports/
 run/
-
-# Minecraft worlds
 world/
 world_nether/
 world_the_end/
 
-# Temporary files
+*.jar
 *.log
 *.tmp
 
-# IDE files
+# NeoForge generated/runtime files
+user_jvm_args.txt
+
+# IDE / OS
 .idea/
 .vscode/
-
-# Operating system files
 Thumbs.db
 .DS_Store
+
+# ========================================
+# KEEP THESE IN GITHUB
+# ========================================
+# manifest.json
+# installer files
+# GitHub workflow
