@@ -1,17 +1,24 @@
-﻿libraries/
+﻿# NeoForge libraries
+libraries/
+
+# Runtime logs
 logs/
 crash-reports/
 run/
 
+# Minecraft worlds
 world/
 world_nether/
 world_the_end/
 
+# Temporary files
 *.log
 *.tmp
 
+# IDE files
 .idea/
 .vscode/
 
+# Operating system files
 Thumbs.db
 .DS_Store

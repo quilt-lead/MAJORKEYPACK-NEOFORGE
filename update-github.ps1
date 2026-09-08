@@ -4,14 +4,10 @@ $RepoFolder = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $RepoFolder
 
 # ========================================
-# NEW NEOFORGE GITHUB REPOSITORY
+# MAJOR KEY PACK - NEOFORGE GITHUB
 # ========================================
 
-$GitHubRepo = "YOUR_NEW_REPO_URL"
-
-# ========================================
-# HEADER
-# ========================================
+$GitHubRepo = "https://github.com/quilt-lead/MAJORKEYPACK-NEOFORGE.git"
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
@@ -20,12 +16,12 @@ Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
 # ========================================
-# INITIALIZE REPOSITORY
+# INITIALIZE GIT REPOSITORY
 # ========================================
 
 if (-not (Test-Path ".git")) {
 
-    Write-Host "Initializing new Git repository..." -ForegroundColor Yellow
+    Write-Host "Initializing Git repository..." -ForegroundColor Yellow
 
     git init
 
@@ -58,7 +54,7 @@ if ($Remotes -contains "origin") {
 }
 else {
 
-    Write-Host "Adding NEW NeoForge GitHub repository..." -ForegroundColor Yellow
+    Write-Host "Adding NeoForge GitHub repository..." -ForegroundColor Yellow
 
     git remote add origin $GitHubRepo
 
@@ -77,21 +73,28 @@ Write-Host ""
 # ========================================
 
 $GitIgnore = @"
+# NeoForge libraries
 libraries/
+
+# Runtime logs
 logs/
 crash-reports/
 run/
 
+# Minecraft worlds
 world/
 world_nether/
 world_the_end/
 
+# Temporary files
 *.log
 *.tmp
 
+# IDE files
 .idea/
 .vscode/
 
+# Operating system files
 Thumbs.db
 .DS_Store
 "@
@@ -154,12 +157,16 @@ if ($LASTEXITCODE -ne 0) {
 
 git branch -M main
 
+if ($LASTEXITCODE -ne 0) {
+    throw "Failed to set main branch."
+}
+
 # ========================================
-# PUSH
+# PUSH TO GITHUB
 # ========================================
 
 Write-Host ""
-Write-Host "Pushing to NEW GitHub repository..." -ForegroundColor Cyan
+Write-Host "Pushing to GitHub..." -ForegroundColor Cyan
 
 git push -u origin main
 
