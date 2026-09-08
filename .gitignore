@@ -1,5 +1,5 @@
 ﻿# ========================================
-# LOCAL SERVER FILES - NEVER UPLOAD
+# LOCAL MINECRAFT SERVER - NEVER UPLOAD
 # ========================================
 
 mods/
@@ -15,18 +15,13 @@ world_the_end/
 *.log
 *.tmp
 
-# NeoForge generated/runtime files
 user_jvm_args.txt
+
+# NeoForge runtime/generated files
+server.jar
 
 # IDE / OS
 .idea/
 .vscode/
 Thumbs.db
 .DS_Store
-
-# ========================================
-# KEEP THESE IN GITHUB
-# ========================================
-# manifest.json
-# installer files
-# GitHub workflow

@@ -1,6 +1,7 @@
 {
     "minecraft":  "1.21.1",
     "loader":  "NeoForge",
+    "neoforge":  "21.1.250",
     "mods":  [
                  {
                      "filename":  "create-1.21.1-6.0.10.jar",
