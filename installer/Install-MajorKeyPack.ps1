@@ -27,7 +27,7 @@ try {
     # Load manifest from the JSON file next to this script
     # ----------------------------------------------------------------
 
-    $manifestPath = Join-Path $PSScriptRoot "modpack-manifest.json"
+    $manifestPath = Join-Path $PSScriptRoot "manifest.json"
 
     if (-not (Test-Path -LiteralPath $manifestPath)) {
         throw "Modpack manifest was not found:`n$manifestPath"
@@ -49,38 +49,38 @@ try {
     }
 
     # ----------------------------------------------------------------
-    # Find Forge 1.20.1
+    # Find NeoForge 1.21.1
     # ----------------------------------------------------------------
 
-    Write-Host "Checking for Forge 1.20.1..."
+    Write-Host "Checking for NeoForge 1.21.1..."
     Write-Host ""
 
     if (-not (Test-Path -LiteralPath $versionsDirectory)) {
         throw "Minecraft versions directory was not found:`n$versionsDirectory"
     }
 
-    $forgeDirectories = Get-ChildItem `
+    $NeoForgeDirectories = Get-ChildItem `
         -LiteralPath $versionsDirectory `
         -Directory `
         -ErrorAction SilentlyContinue |
         Where-Object {
-            $_.Name -like "1.20.1-forge-*"
+            $_.Name -like "1.21.1-NeoForge-*"
         }
 
-    if (-not $forgeDirectories) {
+    if (-not $NeoForgeDirectories) {
 
-        Write-Host "Forge 1.20.1 was not found."
+        Write-Host "NeoForge 1.21.1 was not found."
         Write-Host ""
-        Write-Host "Opening the official Forge download page..."
+        Write-Host "Opening the official NeoForge download page..."
         Write-Host ""
 
         Start-Process `
-            "https://files.minecraftforge.net/net/minecraftforge/forge/index_1.20.1.html"
+            "https://neoforged.net/"
 
-        throw "Forge 1.20.1 is required. Install Forge 1.20.1 and run this installer again."
+        throw "NeoForge 1.21.1 is required. Install NeoForge 1.21.1 and run this installer again."
     }
 
-    Write-Host "Forge 1.20.1 found."
+    Write-Host "NeoForge 1.21.1 found."
     Write-Host ""
 
     # ----------------------------------------------------------------
