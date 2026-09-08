@@ -1,0 +1,17 @@
+﻿libraries/
+logs/
+crash-reports/
+run/
+
+world/
+world_nether/
+world_the_end/
+
+*.log
+*.tmp
+
+.idea/
+.vscode/
+
+Thumbs.db
+.DS_Store
