@@ -1,10 +1,11 @@
-﻿$ErrorActionPreference = "Stop"
+﻿```powershell
+$ErrorActionPreference = "Stop"
 
-$Host.UI.RawUI.WindowTitle = "Major Key Pack Installer"
+$Host.UI.RawUI.WindowTitle = "Major Key Pack NeoForge Installer"
 
 Write-Host ""
 Write-Host "========================================"
-Write-Host "       Major Key Pack Installer"
+Write-Host "    Major Key Pack NeoForge Installer"
 Write-Host "========================================"
 Write-Host ""
 
@@ -41,6 +42,18 @@ try {
     $manifest = $manifestJson | ConvertFrom-Json
 
     # ----------------------------------------------------------------
+    # Verify manifest
+    # ----------------------------------------------------------------
+
+    if ($manifest.minecraft -ne "1.21.1") {
+        throw "Minecraft 1.21.1 is required.`nDetected: $($manifest.minecraft)"
+    }
+
+    if ($manifest.loader -ne "NeoForge") {
+        throw "NeoForge is required.`nDetected: $($manifest.loader)"
+    }
+
+    # ----------------------------------------------------------------
     # Verify Minecraft directory
     # ----------------------------------------------------------------
 
@@ -49,38 +62,38 @@ try {
     }
 
     # ----------------------------------------------------------------
-    # Find Forge 1.20.1
+    # Find NeoForge 1.21.1
     # ----------------------------------------------------------------
 
-    Write-Host "Checking for Forge 1.20.1..."
+    Write-Host "Checking for NeoForge 1.21.1..."
     Write-Host ""
 
     if (-not (Test-Path -LiteralPath $versionsDirectory)) {
         throw "Minecraft versions directory was not found:`n$versionsDirectory"
     }
 
-    $forgeDirectories = Get-ChildItem `
+    $neoforgeDirectories = Get-ChildItem `
         -LiteralPath $versionsDirectory `
         -Directory `
         -ErrorAction SilentlyContinue |
         Where-Object {
-            $_.Name -like "1.20.1-forge-*"
+            $_.Name -like "1.21.1-neoforge-*"
         }
 
-    if (-not $forgeDirectories) {
+    if (-not $neoforgeDirectories) {
 
-        Write-Host "Forge 1.20.1 was not found."
+        Write-Host "NeoForge 1.21.1 was not found."
         Write-Host ""
-        Write-Host "Opening the official Forge download page..."
+        Write-Host "Opening the official NeoForge download page..."
         Write-Host ""
 
         Start-Process `
-            "https://files.minecraftforge.net/net/minecraftforge/forge/index_1.20.1.html"
+            "https://neoforged.net/"
 
-        throw "Forge 1.20.1 is required. Install Forge 1.20.1 and run this installer again."
+        throw "NeoForge 1.21.1 is required. Install NeoForge 1.21.1 and run this installer again."
     }
 
-    Write-Host "Forge 1.20.1 found."
+    Write-Host "NeoForge 1.21.1 found."
     Write-Host ""
 
     # ----------------------------------------------------------------
@@ -105,89 +118,91 @@ try {
     # Download mods
     # ----------------------------------------------------------------
 
-    Write-Host "Installing mods..."
+    Write-Host "Installing NeoForge mods..."
     Write-Host ""
 
     $webClient = New-Object System.Net.WebClient
 
-    foreach ($mod in $manifest.mods) {
+    try {
 
-        $destination = Join-Path `
-            $modsDirectory `
-            $mod.filename
+        foreach ($mod in $manifest.mods) {
 
-        Write-Host "----------------------------------------"
-        Write-Host $mod.filename
-        Write-Host ""
+            $destination = Join-Path `
+                $modsDirectory `
+                $mod.filename
 
-        $needsDownload = $true
+            Write-Host "----------------------------------------"
+            Write-Host $mod.filename
+            Write-Host ""
 
-        # ------------------------------------------------------------
-        # Check existing mod
-        # ------------------------------------------------------------
+            $needsDownload = $true
 
-        if (Test-Path -LiteralPath $destination) {
+            # --------------------------------------------------------
+            # Check existing mod
+            # --------------------------------------------------------
 
-            $existingHash = (
-                Get-FileHash `
-                    -LiteralPath $destination `
-                    -Algorithm SHA256
-            ).Hash.ToLowerInvariant()
+            if (Test-Path -LiteralPath $destination) {
 
-            if ($existingHash -eq $mod.sha256.ToLowerInvariant()) {
+                $existingHash = (
+                    Get-FileHash `
+                        -LiteralPath $destination `
+                        -Algorithm SHA256
+                ).Hash.ToLowerInvariant()
 
-                Write-Host "Already installed and verified."
+                if ($existingHash -eq $mod.sha256.ToLowerInvariant()) {
 
-                $needsDownload = $false
-            }
-            else {
+                    Write-Host "Already installed and verified."
 
-                Write-Host "Existing file failed verification."
-                Write-Host "Downloading a fresh copy..."
-            }
-        }
+                    $needsDownload = $false
+                }
+                else {
 
-        # ------------------------------------------------------------
-        # Download mod
-        # ------------------------------------------------------------
-
-        if ($needsDownload) {
-
-            $tempFile = "$destination.download"
-
-            if (Test-Path -LiteralPath $tempFile) {
-                Remove-Item `
-                    -LiteralPath $tempFile `
-                    -Force
-            }
-
-            Write-Host "Downloading..."
-
-            $webClient.DownloadFile(
-                $mod.url,
-                $tempFile
-            )
-
-            if (-not (Test-Path -LiteralPath $tempFile)) {
-                throw "Download failed: $($mod.filename)"
+                    Write-Host "Existing file failed verification."
+                    Write-Host "Downloading a fresh copy..."
+                }
             }
 
             # --------------------------------------------------------
-            # Verify file size
+            # Download mod
             # --------------------------------------------------------
 
-            $actualSize = (
-                Get-Item `
-                    -LiteralPath $tempFile
-            ).Length
+            if ($needsDownload) {
 
-            if ([int64]$actualSize -ne [int64]$mod.size) {
+                $tempFile = "$destination.download"
 
-                Remove-Item `
-                    -LiteralPath $tempFile `
-                    -Force
+                if (Test-Path -LiteralPath $tempFile) {
+                    Remove-Item `
+                        -LiteralPath $tempFile `
+                        -Force
+                }
 
-                throw @"
+                Write-Host "Downloading..."
+
+                $webClient.DownloadFile(
+                    $mod.url,
+                    $tempFile
+                )
+
+                if (-not (Test-Path -LiteralPath $tempFile)) {
+                    throw "Download failed: $($mod.filename)"
+                }
+
+                # ----------------------------------------------------
+                # Verify file size
+                # ----------------------------------------------------
+
+                $actualSize = (
+                    Get-Item `
+                        -LiteralPath $tempFile
+                ).Length
+
+                if ([int64]$actualSize -ne [int64]$mod.size) {
+
+                    Remove-Item `
+                        -LiteralPath $tempFile `
+                        -Force
+
+                    throw @"
 File size verification failed.
 
 File:
@@ -199,25 +214,25 @@ $($mod.size) bytes
 Received:
 $actualSize bytes
 "@
-            }
+                }
 
-            # --------------------------------------------------------
-            # Verify SHA-256
-            # --------------------------------------------------------
+                # ----------------------------------------------------
+                # Verify SHA-256
+                # ----------------------------------------------------
 
-            $actualHash = (
-                Get-FileHash `
-                    -LiteralPath $tempFile `
-                    -Algorithm SHA256
-            ).Hash.ToLowerInvariant()
+                $actualHash = (
+                    Get-FileHash `
+                        -LiteralPath $tempFile `
+                        -Algorithm SHA256
+                ).Hash.ToLowerInvariant()
 
-            if ($actualHash -ne $mod.sha256.ToLowerInvariant()) {
+                if ($actualHash -ne $mod.sha256.ToLowerInvariant()) {
 
-                Remove-Item `
-                    -LiteralPath $tempFile `
-                    -Force
+                    Remove-Item `
+                        -LiteralPath $tempFile `
+                        -Force
 
-                throw @"
+                    throw @"
 SHA-256 verification failed.
 
 File:
@@ -229,22 +244,45 @@ $($mod.sha256)
 Received:
 $actualHash
 "@
+                }
+
+                # ----------------------------------------------------
+                # Install verified file
+                # ----------------------------------------------------
+
+                Move-Item `
+                    -LiteralPath $tempFile `
+                    -Destination $destination `
+                    -Force
+
+                Write-Host "Downloaded and verified." -ForegroundColor Green
             }
 
-            # --------------------------------------------------------
-            # Install verified file
-            # --------------------------------------------------------
-
-            Move-Item `
-                -LiteralPath $tempFile `
-                -Destination $destination `
-                -Force
-
-            Write-Host "Downloaded and verified."
+            Write-Host ""
         }
 
-        Write-Host ""
     }
+    finally {
+
+        $webClient.Dispose()
+    }
+
+    # ----------------------------------------------------------------
+    # Write installation information
+    # ----------------------------------------------------------------
+
+    [PSCustomObject]@{
+        name       = $manifest.name
+        version    = $manifest.version
+        minecraft  = $manifest.minecraft
+        loader     = $manifest.loader
+        installed  = (Get-Date).ToString("o")
+        mods       = $manifest.mods.Count
+    } |
+        ConvertTo-Json |
+        Set-Content `
+            -LiteralPath (Join-Path $installDirectory "major-key-pack.json") `
+            -Encoding UTF8
 
     # ----------------------------------------------------------------
     # Finished
@@ -278,3 +316,4 @@ catch {
 }
 
 Read-Host "Press Enter to close"
+```

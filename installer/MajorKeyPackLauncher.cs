@@ -1,4 +1,5 @@
-﻿using System;
+﻿```csharp
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
@@ -20,7 +21,7 @@ internal static class Program
     private const string CurrentVersion = "__CURRENT_VERSION__";
 
     private const string GitHubOwner = "quilt-lead";
-    private const string GitHubRepository = "MAJORKEYPACK";
+    private const string GitHubRepository = "MAJORKEYPACK-NEOFORGE";
 
     private const string InstallerScriptResource = "Install-MajorKeyPack.ps1";
     private const string ManifestResource = "modpack-manifest.json";
@@ -40,7 +41,9 @@ internal static class Program
 
             try
             {
-                updateCheckSucceeded = CheckForUpdateAsync().GetAwaiter().GetResult();
+                updateCheckSucceeded = CheckForUpdateAsync()
+                    .GetAwaiter()
+                    .GetResult();
             }
             catch
             {
@@ -121,7 +124,7 @@ internal static class Program
         {
             MessageBox.Show(
                 ex.Message,
-                "Major Key Pack Installer",
+                "Major Key Pack NeoForge Installer",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error
             );
@@ -137,7 +140,7 @@ internal static class Program
         using HttpClient client = new HttpClient();
 
         client.DefaultRequestHeaders.UserAgent.ParseAdd(
-            "MajorKeyPack-Installer"
+            "MajorKeyPack-NeoForge-Installer"
         );
 
         string apiUrl =
@@ -218,11 +221,11 @@ internal static class Program
         }
 
         DialogResult result = MessageBox.Show(
-            $"A newer version of Major Key Pack is available.\n\n" +
+            $"A newer version of Major Key Pack NeoForge is available.\n\n" +
             $"Current version: {CurrentVersion}\n" +
             $"Latest version:  {latestTag}\n\n" +
             $"Would you like to update now?",
-            "Major Key Pack Update",
+            "Major Key Pack NeoForge Update",
             MessageBoxButtons.YesNo,
             MessageBoxIcon.Information
         );
@@ -279,12 +282,16 @@ internal static class Program
 
         version = version.Trim();
 
-        if (version.StartsWith("v", StringComparison.OrdinalIgnoreCase))
+        if (version.StartsWith(
+                "v",
+                StringComparison.OrdinalIgnoreCase))
         {
             version = version.Substring(1);
         }
 
-        if (int.TryParse(version, out int result))
+        if (int.TryParse(
+                version,
+                out int result))
         {
             return result;
         }
@@ -296,11 +303,13 @@ internal static class Program
         string resourceName,
         string destination)
     {
-        Assembly assembly = Assembly.GetExecutingAssembly();
+        Assembly assembly =
+            Assembly.GetExecutingAssembly();
 
         string? resource = null;
 
-        foreach (string name in assembly.GetManifestResourceNames())
+        foreach (string name in
+                 assembly.GetManifestResourceNames())
         {
             if (name.EndsWith(
                     resourceName,
@@ -336,6 +345,9 @@ internal static class Program
 
     private static string Quote(string value)
     {
-        return "\"" + value.Replace("\"", "\\\"") + "\"";
+        return "\"" +
+               value.Replace("\"", "\\\"") +
+               "\"";
     }
 }
+```

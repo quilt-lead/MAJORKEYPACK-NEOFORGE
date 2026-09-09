@@ -1,17 +1,24 @@
-param([string]$InstallDirectory="$env:APPDATA\MajorKeyPack")
+```powershell
+param(
+    [string]$InstallDirectory="$env:APPDATA\MajorKeyPack"
+)
 
 $ErrorActionPreference="Stop"
 
-$Raw="https://raw.githubusercontent.com/quilt-lead/MAJORKEYPACK/main"
+$Raw="https://raw.githubusercontent.com/quilt-lead/MAJORKEYPACK-NEOFORGE/main"
 $Temp=Join-Path $env:TEMP "MajorKeyPack"
 $Mods=Join-Path (Join-Path $env:APPDATA ".minecraft") "mods"
 
-if(Test-Path $Temp){Remove-Item $Temp -Recurse -Force}
+if(Test-Path $Temp){
+    Remove-Item $Temp -Recurse -Force
+}
+
 New-Item $Temp -ItemType Directory -Force | Out-Null
 New-Item $Mods -ItemType Directory -Force | Out-Null
+New-Item $InstallDirectory -ItemType Directory -Force | Out-Null
 
 Write-Host ""
-Write-Host "Downloading Major Key Pack manifest..."
+Write-Host "Downloading Major Key Pack NeoForge manifest..." -ForegroundColor Cyan
 
 Invoke-WebRequest `
     "$Raw/modpack-manifest.json" `
@@ -19,12 +26,12 @@ Invoke-WebRequest `
 
 $Manifest=Get-Content "$Temp\manifest.json" -Raw | ConvertFrom-Json
 
-if($Manifest.minecraft -ne "1.20.1"){
-    throw "Minecraft 1.20.1 is required."
+if($Manifest.minecraft -ne "1.21.1"){
+    throw "Minecraft 1.21.1 is required."
 }
 
-if($Manifest.loader -ne "Forge"){
-    throw "Forge is required."
+if($Manifest.loader -ne "NeoForge"){
+    throw "NeoForge is required."
 }
 
 Write-Host ""
@@ -38,9 +45,15 @@ foreach($Mod in $Manifest.mods){
 
     $Destination=Join-Path $Mods $Mod.filename
 
-    if($Mod.filename -eq "OptiFine_1.20.1_HD_U_I6.jar" -and (Test-Path $Destination) -and (Get-Item $Destination).Length -eq $Mod.size){ Write-Host "Using existing OptiFine JAR..."; continue }; Write-Host "Downloading $($Mod.filename)..."
+    Write-Host "Downloading $($Mod.filename)..."
 
-    if($Mod.filename -eq "OptiFine_1.20.1_HD_U_I6.jar"){curl.exe -L --fail --silent --show-error --output "$Destination" "https://optifine.tommo.team/OptiFine_1.20.1_HD_U_I6.jar"}else{curl.exe -L --fail --silent --show-error --output "$Destination" "$($Mod.url)"}
+    curl.exe `
+        -L `
+        --fail `
+        --silent `
+        --show-error `
+        --output "$Destination" `
+        "$($Mod.url)"
 
     if(!(Test-Path $Destination)){
         throw "Download failed: $($Mod.filename)"
@@ -74,14 +87,13 @@ foreach($Mod in $Manifest.mods){
     -Encoding UTF8
 
 Write-Host ""
-Write-Host "========================================"
-Write-Host " MAJOR KEY PACK INSTALLED"
-Write-Host "========================================"
+Write-Host "========================================" -ForegroundColor Green
+Write-Host " MAJOR KEY PACK INSTALLED" -ForegroundColor Green
+Write-Host "========================================" -ForegroundColor Green
 Write-Host ""
+Write-Host "Minecraft: $($Manifest.minecraft)"
+Write-Host "Loader: $($Manifest.loader)"
 Write-Host "Location: $InstallDirectory"
 Write-Host "Mods: $($Manifest.mods.Count)"
 Write-Host ""
-
-
-
-
+```

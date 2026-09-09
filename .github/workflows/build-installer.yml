@@ -1,4 +1,5 @@
-﻿name: Build Major Key Pack Installer
+﻿```yaml
+name: Build Major Key Pack NeoForge Installer
 
 on:
   push:
@@ -162,10 +163,14 @@ jobs:
 
           internal static class Program
           {
-              private const string CurrentVersion = "__CURRENT_VERSION__";
+              private const string CurrentVersion =
+                  "__CURRENT_VERSION__";
 
-              private const string GitHubOwner = "quilt-lead";
-              private const string GitHubRepository = "MAJORKEYPACK";
+              private const string GitHubOwner =
+                  "quilt-lead";
+
+              private const string GitHubRepository =
+                  "MAJORKEYPACK-NEOFORGE";
 
               private const string InstallerScriptResource =
                   "Install-MajorKeyPack.ps1";
@@ -264,7 +269,7 @@ jobs:
                   {
                       MessageBox.Show(
                           ex.Message,
-                          "Major Key Pack Installer",
+                          "Major Key Pack NeoForge Installer",
                           MessageBoxButtons.OK,
                           MessageBoxIcon.Error
                       );
@@ -283,7 +288,7 @@ jobs:
                       new HttpClient();
 
                   client.DefaultRequestHeaders.UserAgent.ParseAdd(
-                      "MajorKeyPack-Installer"
+                      "MajorKeyPack-NeoForge-Installer"
                   );
 
                   string apiUrl =
@@ -369,11 +374,11 @@ jobs:
                   DialogResult result =
                       MessageBox.Show(
                           $"A newer version of Major Key Pack " +
-                          $"is available.\n\n" +
+                          $"NeoForge is available.\n\n" +
                           $"Current version: {CurrentVersion}\n" +
                           $"Latest version:  {latestTag}\n\n" +
                           $"Would you like to update now?",
-                          "Major Key Pack Update",
+                          "Major Key Pack NeoForge Update",
                           MessageBoxButtons.YesNo,
                           MessageBoxIcon.Information
                       );
@@ -587,10 +592,11 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "${{ steps.version.outputs.version }}"
-          name: "Major Key Pack ${{ steps.version.outputs.version }}"
+          name: "Major Key Pack NeoForge ${{ steps.version.outputs.version }}"
           generate_release_notes: true
           make_latest: true
           files: |
             MajorKeyPack-Installer.zip
             build/MajorKeyPack-Installer.exe
             modpack-manifest.json
+```
