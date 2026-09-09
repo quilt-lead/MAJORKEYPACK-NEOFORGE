@@ -18,7 +18,6 @@ jobs:
 build-installer:
 runs-on: windows-latest
 
-```
 steps:
 
   # ------------------------------------------------------
@@ -309,4 +308,3 @@ steps:
         modpack-manifest.json
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
