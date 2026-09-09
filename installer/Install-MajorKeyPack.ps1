@@ -1,12 +1,21 @@
-﻿```powershell
+﻿param(
+[string]$InstallDirectory = "$env:APPDATA\MajorKeyPack"
+)
+
 $ErrorActionPreference = "Stop"
 
 # ============================================================
+
 # MAJOR KEY PACK - NEOFORGE INSTALLER
+
 # ============================================================
 
 $MinecraftDirectory = Join-Path $env:APPDATA ".minecraft"
-$VersionsDirectory = Join-Path $MinecraftDirectory "versions"
+$VersionsDirectory  = Join-Path $MinecraftDirectory "versions"
+$ModsDirectory      = Join-Path $MinecraftDirectory "mods"
+$TempDirectory      = Join-Path $env:TEMP "MajorKeyPack"
+
+$GitHubRaw = "https://raw.githubusercontent.com/quilt-lead/MAJORKEYPACK-NEOFORGE/main"
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
@@ -15,261 +24,379 @@ Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
 # ------------------------------------------------------------
-# Check Minecraft directory
+
+# Prepare directories
+
 # ------------------------------------------------------------
 
-if (-not (Test-Path $MinecraftDirectory)) {
-    Write-Host "Minecraft installation was not found." -ForegroundColor Red
-    Write-Host ""
-    Write-Host "Expected:" -ForegroundColor Yellow
-    Write-Host $MinecraftDirectory
-    Write-Host ""
-    Read-Host "Press Enter to close"
-    exit 1
+if (Test-Path $TempDirectory) {
+Remove-Item $TempDirectory -Recurse -Force
 }
 
-# ------------------------------------------------------------
-# Check versions directory
-# ------------------------------------------------------------
-
-if (-not (Test-Path $VersionsDirectory)) {
-    Write-Host "Minecraft versions directory was not found." -ForegroundColor Red
-    Write-Host ""
-    Read-Host "Press Enter to close"
-    exit 1
-}
+New-Item -Path $TempDirectory -ItemType Directory -Force | Out-Null
+New-Item -Path $ModsDirectory -ItemType Directory -Force | Out-Null
+New-Item -Path $InstallDirectory -ItemType Directory -Force | Out-Null
 
 # ------------------------------------------------------------
-# Detect NeoForge
+
+# Locate manifest
+
 #
-# Do NOT assume a folder such as:
-#     1.21.1-neoforge-*
-#
-# Modern NeoForge installations can use:
-#     neoforge-21.11.45
-#
-# ------------------------------------------------------------
 
-Write-Host "Checking for NeoForge..." -ForegroundColor Cyan
+# The launcher extracts both the installer and manifest into
 
-$NeoForgeVersions = Get-ChildItem `
-    $VersionsDirectory `
-    -Directory `
-    -ErrorAction SilentlyContinue |
-    Where-Object {
-        $_.Name -like "neoforge-*"
-    }
+# the same temporary directory, so use the local manifest first.
 
-if (-not $NeoForgeVersions) {
-    Write-Host ""
-    Write-Host "NeoForge was not detected." -ForegroundColor Red
-    Write-Host ""
-    Write-Host "Install NeoForge for the required Minecraft version and" -ForegroundColor Yellow
-    Write-Host "run this installer again." -ForegroundColor Yellow
-    Write-Host ""
+# When running the PS1 directly from the repository, this also
 
-    Start-Process "https://neoforged.net/"
-
-    Read-Host "Press Enter to close"
-    exit 1
-}
-
-# Use the first detected NeoForge installation
-$NeoForgeVersion = $NeoForgeVersions |
-    Select-Object -First 1
-
-$NeoForgePath = $NeoForgeVersion.FullName
-
-Write-Host ""
-Write-Host "NeoForge detected:" -ForegroundColor Green
-Write-Host "  $($NeoForgeVersion.Name)" -ForegroundColor Green
-Write-Host ""
+# allows the root manifest to be copied manually if desired.
 
 # ------------------------------------------------------------
-# Verify NeoForge JSON
-# ------------------------------------------------------------
 
-$NeoForgeJson = Join-Path $NeoForgePath "$($NeoForgeVersion.Name).json"
+$LocalManifest = Join-Path $PSScriptRoot "modpack-manifest.json"
+$ManifestPath  = Join-Path $TempDirectory "manifest.json"
 
-if (Test-Path $NeoForgeJson) {
-    Write-Host "NeoForge profile verified." -ForegroundColor Green
+if (Test-Path $LocalManifest) {
+Copy-Item $LocalManifest $ManifestPath -Force
 }
 else {
-    Write-Host "Warning: NeoForge JSON profile was not found." -ForegroundColor Yellow
-    Write-Host "Expected:" -ForegroundColor Yellow
-    Write-Host "  $NeoForgeJson" -ForegroundColor Yellow
-    Write-Host ""
+Write-Host "Downloading modpack manifest..." -ForegroundColor Yellow
+
+```
+Invoke-WebRequest `
+    -Uri "$GitHubRaw/modpack-manifest.json" `
+    -OutFile $ManifestPath `
+    -UseBasicParsing
+```
+
+}
+
+if (!(Test-Path $ManifestPath)) {
+throw "Could not obtain modpack-manifest.json."
 }
 
 # ------------------------------------------------------------
-# Locate Minecraft instance mods folder
-# ------------------------------------------------------------
 
-$ModsDirectory = Join-Path $MinecraftDirectory "mods"
-
-if (-not (Test-Path $ModsDirectory)) {
-    Write-Host "Creating Minecraft mods directory..." -ForegroundColor Cyan
-
-    New-Item `
-        -ItemType Directory `
-        -Path $ModsDirectory `
-        -Force | Out-Null
-}
+# Read manifest
 
 # ------------------------------------------------------------
-# Embedded installer resources
-# ------------------------------------------------------------
-
-$ScriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Definition
-
-$ManifestPath = Join-Path $ScriptDirectory "..\modpack-manifest.json"
-
-if (-not (Test-Path $ManifestPath)) {
-    $ManifestPath = Join-Path $ScriptDirectory "modpack-manifest.json"
-}
-
-if (-not (Test-Path $ManifestPath)) {
-    Write-Host ""
-    Write-Host "modpack-manifest.json was not found." -ForegroundColor Red
-    Write-Host ""
-    Write-Host "Expected location:" -ForegroundColor Yellow
-    Write-Host $ManifestPath
-    Write-Host ""
-
-    Read-Host "Press Enter to close"
-    exit 1
-}
-
-# ------------------------------------------------------------
-# Load manifest
-# ------------------------------------------------------------
-
-Write-Host "Loading modpack manifest..." -ForegroundColor Cyan
 
 try {
-    $Manifest = Get-Content `
-        $ManifestPath `
-        -Raw `
-        -Encoding UTF8 |
-        ConvertFrom-Json
+$Manifest = Get-Content $ManifestPath -Raw | ConvertFrom-Json
 }
 catch {
-    Write-Host ""
-    Write-Host "Could not read modpack-manifest.json." -ForegroundColor Red
-    Write-Host $_.Exception.Message -ForegroundColor Red
-    Write-Host ""
-
-    Read-Host "Press Enter to close"
-    exit 1
+throw "modpack-manifest.json is not valid JSON. $($_.Exception.Message)"
 }
 
 # ------------------------------------------------------------
-# Validate Minecraft version
+
+# Validate pack
+
 # ------------------------------------------------------------
 
-if ($Manifest.minecraft) {
-    Write-Host ""
-    Write-Host "Minecraft version: $($Manifest.minecraft)" -ForegroundColor Green
+if ([string]::IsNullOrWhiteSpace($Manifest.minecraft)) {
+throw "Manifest is missing the Minecraft version."
 }
 
-if ($Manifest.loader) {
-    Write-Host "Loader: $($Manifest.loader)" -ForegroundColor Green
+if ($Manifest.minecraft -ne "1.21.1") {
+throw "This installer requires Minecraft 1.21.1. Manifest specifies $($Manifest.minecraft)."
 }
 
-# ------------------------------------------------------------
-# Determine server directory
-# ------------------------------------------------------------
-
-$ServerDirectory = Join-Path $MinecraftDirectory "MajorKeyPack"
-
-if (-not (Test-Path $ServerDirectory)) {
-    Write-Host ""
-    Write-Host "Creating Major Key Pack directory..." -ForegroundColor Cyan
-
-    New-Item `
-        -ItemType Directory `
-        -Path $ServerDirectory `
-        -Force | Out-Null
+if ([string]::IsNullOrWhiteSpace($Manifest.loader)) {
+throw "Manifest is missing the mod loader."
 }
 
-# ------------------------------------------------------------
-# Server mods
-# ------------------------------------------------------------
+if ($Manifest.loader -ne "NeoForge") {
+throw "This installer requires NeoForge. Manifest specifies $($Manifest.loader)."
+}
 
-$ServerModsDirectory = Join-Path $ServerDirectory "mods"
+if ($null -eq $Manifest.mods) {
+throw "Manifest does not contain a 'mods' array."
+}
 
-if (-not (Test-Path $ServerModsDirectory)) {
-    New-Item `
-        -ItemType Directory `
-        -Path $ServerModsDirectory `
-        -Force | Out-Null
+$Mods = @($Manifest.mods)
+
+if ($Mods.Count -eq 0) {
+throw "The manifest contains no mods."
 }
 
 # ------------------------------------------------------------
-# Client mods
+
+# Locate Minecraft
+
+# ------------------------------------------------------------
+
+if (!(Test-Path $MinecraftDirectory)) {
+throw "Minecraft directory was not found: $MinecraftDirectory"
+}
+
+if (!(Test-Path $VersionsDirectory)) {
+Start-Process "https://neoforged.net/"
+throw "Minecraft versions directory was not found. Install Minecraft and NeoForge 1.21.1 first."
+}
+
+# ------------------------------------------------------------
+
+# Locate NeoForge
+
 #
-# clientMods are intentionally kept separate from serverMods.
-# They belong on the player's client and are NOT installed into
-# the server mods directory.
+
+# Expected installation format:
+
+#
+
+# .minecraft\versions\neoforge-21.11.45
+
+#
+
+# We intentionally detect any neoforge-* version rather than
+
+# assuming a specific NeoForge build number.
+
 # ------------------------------------------------------------
 
-$ClientModsDirectory = Join-Path $MinecraftDirectory "mods"
+$NeoForgeVersions = @(
+Get-ChildItem `        -Path $VersionsDirectory`
+-Directory `
+-ErrorAction SilentlyContinue |
+Where-Object {
+$_.Name -like "neoforge-*"
+} |
+Sort-Object LastWriteTime -Descending
+)
 
-# ------------------------------------------------------------
-# Display manifest contents
-# ------------------------------------------------------------
-
-Write-Host ""
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "             MODPACK CONTENT" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host ""
-
-if ($Manifest.serverMods) {
-    $ServerModCount = @($Manifest.serverMods).Count
-
-    Write-Host "Server mods: $ServerModCount" -ForegroundColor Green
+if ($NeoForgeVersions.Count -eq 0) {
+Start-Process "https://neoforged.net/"
+throw "NeoForge was not found. Install NeoForge for Minecraft 1.21.1 first."
 }
 
-if ($Manifest.clientMods) {
-    $ClientModCount = @($Manifest.clientMods).Count
+$NeoForgeVersion = $NeoForgeVersions | Select-Object -First 1
+$NeoForgePath = $NeoForgeVersion.FullName
 
-    Write-Host "Client mods: $ClientModCount" -ForegroundColor Green
+$NeoForgeJson = Join-Path `    $NeoForgePath`
+"$($NeoForgeVersion.Name).json"
+
+if (!(Test-Path $NeoForgeJson)) {
+throw "NeoForge installation appears incomplete. Missing: $NeoForgeJson"
 }
 
+Write-Host "Minecraft:      $($Manifest.minecraft)" -ForegroundColor Green
+Write-Host "Loader:         $($Manifest.loader)" -ForegroundColor Green
+Write-Host "NeoForge:       $($NeoForgeVersion.Name)" -ForegroundColor Green
+Write-Host "Mods in pack:   $($Mods.Count)" -ForegroundColor Green
 Write-Host ""
 
 # ------------------------------------------------------------
-# Installation note
-# ------------------------------------------------------------
 
-Write-Host "NeoForge is installed and ready." -ForegroundColor Green
-Write-Host ""
-Write-Host "Detected installation:" -ForegroundColor Cyan
-Write-Host "  $($NeoForgeVersion.Name)" -ForegroundColor White
-Write-Host ""
-
-Write-Host "Minecraft directory:" -ForegroundColor Cyan
-Write-Host "  $MinecraftDirectory" -ForegroundColor White
-Write-Host ""
-
-Write-Host "Mods directory:" -ForegroundColor Cyan
-Write-Host "  $ModsDirectory" -ForegroundColor White
-Write-Host ""
+# Remove duplicate manifest entries
 
 # ------------------------------------------------------------
-# NOTE
-#
-# The actual mod download/update logic should remain below this
-# point if it already exists in the original installer.
-#
-# This file currently performs the corrected NeoForge detection
-# and manifest loading without making assumptions about the
-# installed NeoForge folder name.
+
+$Mods = @(
+$Mods |
+Group-Object filename |
+ForEach-Object {
+$_.Group | Select-Object -First 1
+}
+)
+
 # ------------------------------------------------------------
 
-Write-Host "NeoForge detection completed successfully." -ForegroundColor Green
+# Install mods
+
+# ------------------------------------------------------------
+
+$InstalledCount = 0
+$SkippedCount   = 0
+
+foreach ($Mod in $Mods) {
+
+```
+if ([string]::IsNullOrWhiteSpace($Mod.filename)) {
+    throw "A mod entry is missing 'filename'."
+}
+
+if ([string]::IsNullOrWhiteSpace($Mod.url)) {
+    throw "Mod '$($Mod.filename)' is missing 'url'."
+}
+
+if ([string]::IsNullOrWhiteSpace($Mod.sha256)) {
+    throw "Mod '$($Mod.filename)' is missing 'sha256'."
+}
+
+if ($null -eq $Mod.size) {
+    throw "Mod '$($Mod.filename)' is missing 'size'."
+}
+
+$Destination = Join-Path $ModsDirectory $Mod.filename
+
+# --------------------------------------------------------
+# Check existing file
+# --------------------------------------------------------
+
+if (Test-Path $Destination) {
+
+    $ExistingFile = Get-Item $Destination
+
+    if ($ExistingFile.Length -eq [int64]$Mod.size) {
+
+        $ExistingHash = (
+            Get-FileHash `
+                -Path $Destination `
+                -Algorithm SHA256
+        ).Hash.ToLower()
+
+        if ($ExistingHash -eq $Mod.sha256.ToLower()) {
+
+            Write-Host "[OK]     $($Mod.filename)" -ForegroundColor Green
+
+            $SkippedCount++
+            continue
+        }
+    }
+
+    Write-Host "[UPDATE] $($Mod.filename)" -ForegroundColor Yellow
+
+    Remove-Item $Destination -Force
+}
+else {
+    Write-Host "[GET]    $($Mod.filename)" -ForegroundColor Cyan
+}
+
+# --------------------------------------------------------
+# Download
+# --------------------------------------------------------
+
+try {
+    curl.exe `
+        -L `
+        --fail `
+        --silent `
+        --show-error `
+        --output "$Destination" `
+        "$($Mod.url)"
+}
+catch {
+    if (Test-Path $Destination) {
+        Remove-Item $Destination -Force
+    }
+
+    throw "Failed to download $($Mod.filename): $($_.Exception.Message)"
+}
+
+if (!(Test-Path $Destination)) {
+    throw "Download failed: $($Mod.filename)"
+}
+
+# --------------------------------------------------------
+# Verify file size
+# --------------------------------------------------------
+
+$File = Get-Item $Destination
+
+if ($File.Length -ne [int64]$Mod.size) {
+
+    $ActualSize = $File.Length
+
+    Remove-Item $Destination -Force
+
+    throw @"
+```
+
+File size verification failed for:
+
+$($Mod.filename)
+
+Expected: $($Mod.size) bytes
+Actual:   $ActualSize bytes
+"@
+}
+
+```
+# --------------------------------------------------------
+# Verify SHA-256
+# --------------------------------------------------------
+
+$Hash = (
+    Get-FileHash `
+        -Path $Destination `
+        -Algorithm SHA256
+).Hash.ToLower()
+
+if ($Hash -ne $Mod.sha256.ToLower()) {
+
+    Remove-Item $Destination -Force
+
+    throw @"
+```
+
+SHA-256 verification failed for:
+
+$($Mod.filename)
+
+Expected:
+$($Mod.sha256)
+
+Actual:
+$Hash
+"@
+}
+
+```
+Write-Host "[DONE]   $($Mod.filename)" -ForegroundColor Green
+
+$InstalledCount++
+```
+
+}
+
+# ------------------------------------------------------------
+
+# Write installation record
+
+# ------------------------------------------------------------
+
+$InstallRecord = [PSCustomObject]@{
+name       = $Manifest.name
+version    = $Manifest.version
+minecraft  = $Manifest.minecraft
+loader     = $Manifest.loader
+neoforge   = $NeoForgeVersion.Name
+mods       = $Mods.Count
+installed  = (Get-Date).ToString("o")
+}
+
+$InstallRecordPath = Join-Path `    $InstallDirectory`
+"major-key-pack.json"
+
+$InstallRecord |
+ConvertTo-Json -Depth 10 |
+Set-Content `        -Path $InstallRecordPath`
+-Encoding UTF8
+
+# ------------------------------------------------------------
+
+# Complete
+
+# ------------------------------------------------------------
+
+Write-Host ""
+Write-Host "========================================" -ForegroundColor Green
+Write-Host "       INSTALLATION COMPLETE" -ForegroundColor Green
+Write-Host "========================================" -ForegroundColor Green
+Write-Host ""
+Write-Host "Pack:             $($Manifest.name)"
+Write-Host "Minecraft:        $($Manifest.minecraft)"
+Write-Host "NeoForge:         $($NeoForgeVersion.Name)"
+Write-Host "Mods verified:    $($Mods.Count)"
+Write-Host "New downloads:    $InstalledCount"
+Write-Host "Already installed:$SkippedCount"
+Write-Host ""
+Write-Host "Mods installed to:"
+Write-Host "$ModsDirectory"
+Write-Host ""
+Write-Host "Installation record:"
+Write-Host "$InstallRecordPath"
 Write-Host ""
 
 Read-Host "Press Enter to close"
-```
