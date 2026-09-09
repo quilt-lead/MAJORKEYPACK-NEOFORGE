@@ -1,238 +1,197 @@
 ﻿name: Build Major Key Pack NeoForge Installer
 
 on:
-push:
-branches:
-- main
-paths:
-- "installer/**"
-- "modpack-manifest.json"
-- ".github/workflows/**"
-
-workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "installer/**"
+      - "modpack-manifest.json"
+      - ".github/workflows/**"
+  workflow_dispatch:
 
 permissions:
-contents: write
+  contents: write
 
 jobs:
-build-installer:
-runs-on: windows-latest
+  build-installer:
+    runs-on: windows-latest
 
-```
-steps:
-  - name: Checkout repository
-    uses: actions/checkout@v4
-    with:
-      fetch-depth: 0
-      fetch-tags: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
-  - name: Determine release version
-    id: version
-    shell: pwsh
-    run: |
-      git fetch --tags --force
+      - name: Determine release version
+        id: version
+        shell: pwsh
+        run: |
+          git fetch --tags --force
 
-      $tags = @(
-        git tag --list "v*" |
-          Where-Object {
-            $_ -match "^v\d+$"
-          } |
-          ForEach-Object {
-            [int]$_.Substring(1)
+          $tags = @(
+            git tag --list "v*" |
+              Where-Object { $_ -match "^v\d+$" } |
+              ForEach-Object { [int]$_.Substring(1) }
+          )
+
+          if ($tags.Count -eq 0) {
+            $next = 1
           }
-      )
+          else {
+            $next = ($tags | Measure-Object -Maximum).Maximum + 1
+          }
 
-      if ($tags.Count -eq 0) {
-        $next = 1
-      }
-      else {
-        $next = ($tags | Measure-Object -Maximum).Maximum + 1
-      }
+          $version = "v$next"
 
-      $version = "v$next"
+          Write-Host "Next release version: $version"
 
-      Write-Host "Next release version: $version"
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "number=$next" >> $env:GITHUB_OUTPUT
 
-      "version=$version" >> $env:GITHUB_OUTPUT
-      "number=$next" >> $env:GITHUB_OUTPUT
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
 
-  - name: Setup .NET
-    uses: actions/setup-dotnet@v4
-    with:
-      dotnet-version: "8.0.x"
+      - name: Prepare build directory
+        shell: pwsh
+        run: |
+          if (Test-Path "launcher-build") {
+            Remove-Item "launcher-build" -Recurse -Force
+          }
 
-  - name: Prepare build directory
-    shell: pwsh
-    run: |
-      if (Test-Path "launcher-build") {
-        Remove-Item "launcher-build" -Recurse -Force
-      }
+          New-Item -ItemType Directory -Path "launcher-build" -Force | Out-Null
 
-      New-Item `
-        -ItemType Directory `
-        -Path "launcher-build" `
-        -Force | Out-Null
+      - name: Copy installer resources
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "installer\Install-MajorKeyPack.ps1")) {
+            throw "installer\Install-MajorKeyPack.ps1 was not found."
+          }
 
-  - name: Copy installer resources
-    shell: pwsh
-    run: |
-      if (-not (Test-Path "installer\Install-MajorKeyPack.ps1")) {
-        throw "installer\Install-MajorKeyPack.ps1 was not found."
-      }
+          if (-not (Test-Path "modpack-manifest.json")) {
+            throw "modpack-manifest.json was not found."
+          }
 
-      if (-not (Test-Path "modpack-manifest.json")) {
-        throw "modpack-manifest.json was not found."
-      }
+          Copy-Item `
+            "installer\Install-MajorKeyPack.ps1" `
+            "launcher-build\Install-MajorKeyPack.ps1" `
+            -Force
 
-      Copy-Item `
-        "installer\Install-MajorKeyPack.ps1" `
-        "launcher-build\Install-MajorKeyPack.ps1" `
-        -Force
+          Copy-Item `
+            "modpack-manifest.json" `
+            "launcher-build\modpack-manifest.json" `
+            -Force
 
-      Copy-Item `
-        "modpack-manifest.json" `
-        "launcher-build\modpack-manifest.json" `
-        -Force
+      - name: Validate manifest
+        shell: pwsh
+        run: |
+          $manifest = Get-Content "modpack-manifest.json" -Raw | ConvertFrom-Json
 
-  - name: Validate manifest
-    shell: pwsh
-    run: |
-      $manifest = Get-Content `
-        "modpack-manifest.json" `
-        -Raw |
-        ConvertFrom-Json
+          if ($manifest.minecraft -ne "1.21.1") {
+            throw "Manifest Minecraft version is not 1.21.1."
+          }
 
-      if ($manifest.minecraft -ne "1.21.1") {
-        throw "Manifest Minecraft version is not 1.21.1."
-      }
+          if ($manifest.loader -ne "NeoForge") {
+            throw "Manifest loader is not NeoForge."
+          }
 
-      if ($manifest.loader -ne "NeoForge") {
-        throw "Manifest loader is not NeoForge."
-      }
+          Write-Host "Minecraft: $($manifest.minecraft)"
+          Write-Host "Loader:    $($manifest.loader)"
+          Write-Host "Manifest validation passed."
 
-      Write-Host "Minecraft: $($manifest.minecraft)"
-      Write-Host "Loader:    $($manifest.loader)"
-      Write-Host "Manifest validation passed."
+      - name: Create launcher project
+        shell: pwsh
+        run: |
+          @'
+          <Project Sdk="Microsoft.NET.Sdk">
+            <PropertyGroup>
+              <OutputType>WinExe</OutputType>
+              <TargetFramework>net8.0-windows</TargetFramework>
+              <UseWindowsForms>true</UseWindowsForms>
+              <Nullable>enable</Nullable>
+              <ImplicitUsings>enable</ImplicitUsings>
+              <PublishSingleFile>true</PublishSingleFile>
+              <SelfContained>true</SelfContained>
+              <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+              <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+              <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+            </PropertyGroup>
 
-  - name: Create launcher project
-    shell: pwsh
-    run: |
-      @'
-      <Project Sdk="Microsoft.NET.Sdk">
+            <ItemGroup>
+              <EmbeddedResource Include="Install-MajorKeyPack.ps1" />
+              <EmbeddedResource Include="modpack-manifest.json" />
+            </ItemGroup>
+          </Project>
+          '@ | Set-Content "launcher-build\MajorKeyPack-Installer.csproj" -Encoding UTF8
 
-        <PropertyGroup>
-          <OutputType>WinExe</OutputType>
-          <TargetFramework>net8.0-windows</TargetFramework>
-          <UseWindowsForms>true</UseWindowsForms>
-          <Nullable>enable</Nullable>
-          <ImplicitUsings>enable</ImplicitUsings>
-          <PublishSingleFile>true</PublishSingleFile>
-          <SelfContained>true</SelfContained>
-          <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-          <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-          <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
-        </PropertyGroup>
+      - name: Create launcher source
+        shell: pwsh
+        run: |
+          $programCs = @'
+          using System;
+          using System.Diagnostics;
+          using System.IO;
+          using System.Net.Http;
+          using System.Reflection;
+          using System.Text.Json;
+          using System.Threading.Tasks;
+          using System.Windows.Forms;
 
-        <ItemGroup>
-          <EmbeddedResource Include="Install-MajorKeyPack.ps1" />
-          <EmbeddedResource Include="modpack-manifest.json" />
-        </ItemGroup>
-
-      </Project>
-      '@ | Set-Content `
-        "launcher-build\MajorKeyPack-Installer.csproj" `
-        -Encoding UTF8
-
-  - name: Create launcher source
-    shell: pwsh
-    run: |
-      $programCs = @'
-      using System;
-      using System.Diagnostics;
-      using System.IO;
-      using System.Net.Http;
-      using System.Reflection;
-      using System.Text.Json;
-      using System.Threading.Tasks;
-      using System.Windows.Forms;
-
-      internal static class Program
-      {
-          private const string CurrentVersion =
-              "__CURRENT_VERSION__";
-
-          private const string GitHubOwner =
-              "quilt-lead";
-
-          private const string GitHubRepository =
-              "MAJORKEYPACK-NEOFORGE";
-
-          private const string InstallerScriptResource =
-              "Install-MajorKeyPack.ps1";
-
-          private const string ManifestResource =
-              "modpack-manifest.json";
-
-          [STAThread]
-          private static int Main()
+          internal static class Program
           {
-              try
+              private const string CurrentVersion = "__CURRENT_VERSION__";
+              private const string GitHubOwner = "quilt-lead";
+              private const string GitHubRepository = "MAJORKEYPACK-NEOFORGE";
+              private const string InstallerScriptResource = "Install-MajorKeyPack.ps1";
+              private const string ManifestResource = "modpack-manifest.json";
+
+              [STAThread]
+              private static int Main()
               {
-                  ApplicationConfiguration.Initialize();
-
-                  bool updateFound = false;
-
                   try
                   {
-                      updateFound =
-                          CheckForUpdateAsync()
-                              .GetAwaiter()
-                              .GetResult();
-                  }
-                  catch
-                  {
-                      // Continue with installation if GitHub
-                      // cannot be reached.
-                  }
+                      ApplicationConfiguration.Initialize();
 
-                  if (updateFound)
-                  {
-                      return 0;
-                  }
+                      bool updateFound = false;
 
-                  string tempDirectory =
-                      Path.Combine(
+                      try
+                      {
+                          updateFound = CheckForUpdateAsync().GetAwaiter().GetResult();
+                      }
+                      catch
+                      {
+                      }
+
+                      if (updateFound)
+                      {
+                          return 0;
+                      }
+
+                      string tempDirectory = Path.Combine(
                           Path.GetTempPath(),
                           "MajorKeyPack",
                           Guid.NewGuid().ToString("N")
                       );
 
-                  Directory.CreateDirectory(tempDirectory);
+                      Directory.CreateDirectory(tempDirectory);
 
-                  string scriptPath =
-                      Path.Combine(
+                      string scriptPath = Path.Combine(
                           tempDirectory,
                           "Install-MajorKeyPack.ps1"
                       );
 
-                  string manifestPath =
-                      Path.Combine(
+                      string manifestPath = Path.Combine(
                           tempDirectory,
                           "modpack-manifest.json"
                       );
 
-                  ExtractResource(
-                      InstallerScriptResource,
-                      scriptPath
-                  );
+                      ExtractResource(InstallerScriptResource, scriptPath);
+                      ExtractResource(ManifestResource, manifestPath);
 
-                  ExtractResource(
-                      ManifestResource,
-                      manifestPath
-                  );
-
-                  ProcessStartInfo psi =
-                      new ProcessStartInfo
+                      ProcessStartInfo psi = new ProcessStartInfo
                       {
                           FileName = "powershell.exe",
                           Arguments =
@@ -244,130 +203,114 @@ steps:
                           WorkingDirectory = tempDirectory
                       };
 
-                  using Process? process =
-                      Process.Start(psi);
+                      using Process? process = Process.Start(psi);
 
-                  if (process == null)
-                  {
-                      throw new Exception(
-                          "Could not start PowerShell."
-                      );
+                      if (process == null)
+                      {
+                          throw new Exception("Could not start PowerShell.");
+                      }
+
+                      process.WaitForExit();
+
+                      return process.ExitCode;
                   }
+                  catch (Exception ex)
+                  {
+                      MessageBox.Show(
+                          ex.Message,
+                          "Major Key Pack NeoForge Installer",
+                          MessageBoxButtons.OK,
+                          MessageBoxIcon.Error
+                      );
 
-                  process.WaitForExit();
-
-                  return process.ExitCode;
+                      return 1;
+                  }
               }
-              catch (Exception ex)
+
+              private static async Task<bool> CheckForUpdateAsync()
               {
-                  MessageBox.Show(
-                      ex.Message,
-                      "Major Key Pack NeoForge Installer",
-                      MessageBoxButtons.OK,
-                      MessageBoxIcon.Error
+                  int currentVersion = ParseVersion(CurrentVersion);
+
+                  using HttpClient client = new HttpClient();
+
+                  client.DefaultRequestHeaders.UserAgent.ParseAdd(
+                      "MajorKeyPack-NeoForge-Installer"
                   );
 
-                  return 1;
-              }
-          }
+                  string apiUrl =
+                      $"https://api.github.com/repos/" +
+                      $"{GitHubOwner}/{GitHubRepository}/releases/latest";
 
-          private static async Task<bool>
-              CheckForUpdateAsync()
-          {
-              int currentVersion =
-                  ParseVersion(CurrentVersion);
+                  string json = await client.GetStringAsync(apiUrl);
 
-              using HttpClient client =
-                  new HttpClient();
+                  using JsonDocument document = JsonDocument.Parse(json);
 
-              client.DefaultRequestHeaders.UserAgent.ParseAdd(
-                  "MajorKeyPack-NeoForge-Installer"
-              );
-
-              string apiUrl =
-                  $"https://api.github.com/repos/" +
-                  $"{GitHubOwner}/{GitHubRepository}/releases/latest";
-
-              string json =
-                  await client.GetStringAsync(apiUrl);
-
-              using JsonDocument document =
-                  JsonDocument.Parse(json);
-
-              if (!document.RootElement.TryGetProperty(
-                      "tag_name",
-                      out JsonElement tagElement))
-              {
-                  return false;
-              }
-
-              string? latestTag =
-                  tagElement.GetString();
-
-              if (string.IsNullOrWhiteSpace(latestTag))
-              {
-                  return false;
-              }
-
-              int latestVersion =
-                  ParseVersion(latestTag);
-
-              if (latestVersion <= currentVersion)
-              {
-                  return false;
-              }
-
-              if (!document.RootElement.TryGetProperty(
-                      "assets",
-                      out JsonElement assets))
-              {
-                  return false;
-              }
-
-              string? downloadUrl = null;
-
-              foreach (
-                  JsonElement asset
-                  in assets.EnumerateArray())
-              {
-                  if (!asset.TryGetProperty(
-                          "name",
-                          out JsonElement nameElement))
+                  if (!document.RootElement.TryGetProperty(
+                          "tag_name",
+                          out JsonElement tagElement))
                   {
-                      continue;
+                      return false;
                   }
 
-                  string? name =
-                      nameElement.GetString();
+                  string? latestTag = tagElement.GetString();
 
-                  if (!string.Equals(
-                          name,
-                          "MajorKeyPack-Installer.exe",
-                          StringComparison.OrdinalIgnoreCase))
+                  if (string.IsNullOrWhiteSpace(latestTag))
                   {
-                      continue;
+                      return false;
                   }
 
-                  if (asset.TryGetProperty(
-                          "browser_download_url",
-                          out JsonElement urlElement))
+                  int latestVersion = ParseVersion(latestTag);
+
+                  if (latestVersion <= currentVersion)
                   {
-                      downloadUrl =
-                          urlElement.GetString();
+                      return false;
                   }
 
-                  break;
-              }
+                  if (!document.RootElement.TryGetProperty(
+                          "assets",
+                          out JsonElement assets))
+                  {
+                      return false;
+                  }
 
-              if (string.IsNullOrWhiteSpace(downloadUrl))
-              {
-                  return false;
-              }
+                  string? downloadUrl = null;
 
-              DialogResult result =
-                  MessageBox.Show(
-                      $"A newer version of Major Key Pack " +
-                      $"NeoForge is available.\n\n" +
+                  foreach (JsonElement asset in assets.EnumerateArray())
+                  {
+                      if (!asset.TryGetProperty(
+                              "name",
+                              out JsonElement nameElement))
+                      {
+                          continue;
+                      }
+
+                      string? name = nameElement.GetString();
+
+                      if (!string.Equals(
+                              name,
+                              "MajorKeyPack-Installer.exe",
+                              StringComparison.OrdinalIgnoreCase))
+                      {
+                          continue;
+                      }
+
+                      if (asset.TryGetProperty(
+                              "browser_download_url",
+                              out JsonElement urlElement))
+                      {
+                          downloadUrl = urlElement.GetString();
+                      }
+
+                      break;
+                  }
+
+                  if (string.IsNullOrWhiteSpace(downloadUrl))
+                  {
+                      return false;
+                  }
+
+                  DialogResult result = MessageBox.Show(
+                      $"A newer version of Major Key Pack NeoForge is available.\n\n" +
                       $"Current version: {CurrentVersion}\n" +
                       $"Latest version:  {latestTag}\n\n" +
                       $"Would you like to update now?",
@@ -376,220 +319,193 @@ steps:
                       MessageBoxIcon.Information
                   );
 
-              if (result != DialogResult.Yes)
-              {
-                  return false;
-              }
+                  if (result != DialogResult.Yes)
+                  {
+                      return false;
+                  }
 
-              string tempExe =
-                  Path.Combine(
+                  string tempExe = Path.Combine(
                       Path.GetTempPath(),
                       $"MajorKeyPack-Installer-{latestTag}.exe"
                   );
 
-              if (File.Exists(tempExe))
-              {
-                  File.Delete(tempExe);
-              }
-
-              using HttpResponseMessage response =
-                  await client.GetAsync(downloadUrl);
-
-              response.EnsureSuccessStatusCode();
-
-              await using Stream input =
-                  await response.Content.ReadAsStreamAsync();
-
-              await using FileStream output =
-                  File.Create(tempExe);
-
-              await input.CopyToAsync(output);
-
-              await output.FlushAsync();
-
-              output.Close();
-
-              Process.Start(
-                  new ProcessStartInfo
+                  if (File.Exists(tempExe))
                   {
-                      FileName = tempExe,
-                      UseShellExecute = true
+                      File.Delete(tempExe);
                   }
-              );
 
-              return true;
-          }
+                  using HttpResponseMessage response =
+                      await client.GetAsync(downloadUrl);
 
-          private static int ParseVersion(
-              string version)
-          {
-              if (string.IsNullOrWhiteSpace(version))
-              {
-                  return 0;
+                  response.EnsureSuccessStatusCode();
+
+                  await using Stream input =
+                      await response.Content.ReadAsStreamAsync();
+
+                  await using FileStream output =
+                      File.Create(tempExe);
+
+                  await input.CopyToAsync(output);
+                  await output.FlushAsync();
+
+                  output.Close();
+
+                  Process.Start(
+                      new ProcessStartInfo
+                      {
+                          FileName = tempExe,
+                          UseShellExecute = true
+                      }
+                  );
+
+                  return true;
               }
 
-              version = version.Trim();
-
-              if (version.StartsWith(
-                      "v",
-                      StringComparison.OrdinalIgnoreCase))
+              private static int ParseVersion(string version)
               {
-                  version =
-                      version.Substring(1);
-              }
+                  if (string.IsNullOrWhiteSpace(version))
+                  {
+                      return 0;
+                  }
 
-              if (int.TryParse(
-                      version,
-                      out int number))
-              {
-                  return number;
-              }
+                  version = version.Trim();
 
-              return 0;
-          }
-
-          private static void ExtractResource(
-              string resourceName,
-              string destination)
-          {
-              Assembly assembly =
-                  Assembly.GetExecutingAssembly();
-
-              string? actualResource = null;
-
-              foreach (
-                  string name
-                  in assembly.GetManifestResourceNames())
-              {
-                  if (name.EndsWith(
-                          resourceName,
+                  if (version.StartsWith(
+                          "v",
                           StringComparison.OrdinalIgnoreCase))
                   {
-                      actualResource = name;
-                      break;
+                      version = version.Substring(1);
                   }
+
+                  return int.TryParse(version, out int number)
+                      ? number
+                      : 0;
               }
 
-              if (actualResource == null)
+              private static void ExtractResource(
+                  string resourceName,
+                  string destination)
               {
-                  throw new Exception(
-                      $"Embedded resource not found: " +
-                      $"{resourceName}"
-                  );
+                  Assembly assembly = Assembly.GetExecutingAssembly();
+
+                  string? actualResource = null;
+
+                  foreach (
+                      string name
+                      in assembly.GetManifestResourceNames())
+                  {
+                      if (name.EndsWith(
+                              resourceName,
+                              StringComparison.OrdinalIgnoreCase))
+                      {
+                          actualResource = name;
+                          break;
+                      }
+                  }
+
+                  if (actualResource == null)
+                  {
+                      throw new Exception(
+                          $"Embedded resource not found: {resourceName}"
+                      );
+                  }
+
+                  using Stream? input =
+                      assembly.GetManifestResourceStream(actualResource);
+
+                  if (input == null)
+                  {
+                      throw new Exception(
+                          $"Could not open resource: {resourceName}"
+                      );
+                  }
+
+                  using FileStream output = File.Create(destination);
+
+                  input.CopyTo(output);
               }
 
-              using Stream? input =
-                  assembly.GetManifestResourceStream(
-                      actualResource
-                  );
-
-              if (input == null)
+              private static string Quote(string value)
               {
-                  throw new Exception(
-                      $"Could not open resource: " +
-                      $"{resourceName}"
-                  );
+                  return "\"" +
+                      value.Replace("\"", "\\\"") +
+                      "\"";
               }
-
-              using FileStream output =
-                  File.Create(destination);
-
-              input.CopyTo(output);
           }
+          '@
 
-          private static string Quote(
-              string value)
-          {
-              return "\"" +
-                  value.Replace(
-                      "\"",
-                      "\\\""
-                  ) +
-                  "\"";
-          }
-      }
-      '@
-
-      $programCs =
-          $programCs.Replace(
+          $programCs = $programCs.Replace(
               "__CURRENT_VERSION__",
               "v${{ steps.version.outputs.number }}"
           )
 
-      $programCs |
-          Set-Content `
+          $programCs | Set-Content `
             "launcher-build\Program.cs" `
             -Encoding UTF8
 
-  - name: Build installer
-    shell: pwsh
-    run: |
-      dotnet publish `
-        "launcher-build\MajorKeyPack-Installer.csproj" `
-        -c Release `
-        -r win-x64 `
-        --self-contained true `
-        -p:PublishSingleFile=true `
-        -p:IncludeNativeLibrariesForSelfExtract=true `
-        -p:EnableCompressionInSingleFile=true `
-        -o "build"
+      - name: Build installer
+        shell: pwsh
+        run: |
+          dotnet publish `
+            "launcher-build\MajorKeyPack-Installer.csproj" `
+            -c Release `
+            -r win-x64 `
+            --self-contained true `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -p:EnableCompressionInSingleFile=true `
+            -o "build"
 
-  - name: Rename installer
-    shell: pwsh
-    run: |
-      $exe = Get-ChildItem `
-        "build" `
-        -Filter "*.exe" `
-        -File |
-        Select-Object -First 1
+      - name: Rename installer
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem "build" -Filter "*.exe" -File |
+            Select-Object -First 1
 
-      if ($null -eq $exe) {
-        throw "Installer EXE was not produced."
-      }
+          if ($null -eq $exe) {
+            throw "Installer EXE was not produced."
+          }
 
-      if ($exe.Name -ne "MajorKeyPack-Installer.exe") {
-        Rename-Item `
-          $exe.FullName `
-          "MajorKeyPack-Installer.exe" `
-          -Force
-      }
+          if ($exe.Name -ne "MajorKeyPack-Installer.exe") {
+            Rename-Item `
+              $exe.FullName `
+              "MajorKeyPack-Installer.exe" `
+              -Force
+          }
 
-  - name: Verify installer
-    shell: pwsh
-    run: |
-      if (-not (Test-Path "build\MajorKeyPack-Installer.exe")) {
-        throw "MajorKeyPack-Installer.exe was not produced."
-      }
+      - name: Verify installer
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "build\MajorKeyPack-Installer.exe")) {
+            throw "MajorKeyPack-Installer.exe was not produced."
+          }
 
-      $size = (
-        Get-Item "build\MajorKeyPack-Installer.exe"
-      ).Length
+          $size = (
+            Get-Item "build\MajorKeyPack-Installer.exe"
+          ).Length
 
-      Write-Host "Installer created successfully."
-      Write-Host "Size: $size bytes"
+          Write-Host "Installer created successfully."
+          Write-Host "Size: $size bytes"
 
-  - name: Create installer ZIP
-    shell: pwsh
-    run: |
-      if (Test-Path "MajorKeyPack-Installer.zip") {
-        Remove-Item `
-          "MajorKeyPack-Installer.zip" `
-          -Force
-      }
+      - name: Create installer ZIP
+        shell: pwsh
+        run: |
+          if (Test-Path "MajorKeyPack-Installer.zip") {
+            Remove-Item "MajorKeyPack-Installer.zip" -Force
+          }
 
-      Compress-Archive `
-        -Path "build\MajorKeyPack-Installer.exe" `
-        -DestinationPath "MajorKeyPack-Installer.zip"
+          Compress-Archive `
+            -Path "build\MajorKeyPack-Installer.exe" `
+            -DestinationPath "MajorKeyPack-Installer.zip"
 
-  - name: Create GitHub Release
-    uses: softprops/action-gh-release@v2
-    with:
-      tag_name: "${{ steps.version.outputs.version }}"
-      name: "Major Key Pack NeoForge ${{ steps.version.outputs.version }}"
-      generate_release_notes: true
-      make_latest: true
-      files: |
-        MajorKeyPack-Installer.zip
-        build/MajorKeyPack-Installer.exe
-        modpack-manifest.json
-```
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "${{ steps.version.outputs.version }}"
+          name: "Major Key Pack NeoForge ${{ steps.version.outputs.version }}"
+          generate_release_notes: true
+          make_latest: true
+          files: |
+            MajorKeyPack-Installer.zip
+            build/MajorKeyPack-Installer.exe
+            modpack-manifest.json
