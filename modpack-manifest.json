@@ -1,324 +1,324 @@
 ﻿{
-    "minecraft":  "1.20.1",
-    "loader":  "Forge",
+    "minecraft":  "1.21.1",
+    "loader":  "NeoForge",
     "mods":  [
                  {
-                     "filename":  "aether-1.20.1-1.5.2-neoforge.jar",
-                     "size":  39746319,
-                     "sha256":  "5cb64ab1f27e78e8338fe67f9c766578904aad9bc1f8bcc90f306ea52aea3fc5",
-                     "url":  "https://mediafilez.forgecdn.net/files/6134/920/aether-1.20.1-1.5.2-neoforge.jar"
+                     "filename":  "aether-1.21.1-1.5.10-neoforge.jar",
+                     "size":  40223909,
+                     "sha256":  "b19386301560a017a458e9790a7b59999e270f93010def0b61e7cbe4c8630dbf",
+                     "url":  "https://mediafilez.forgecdn.net/files/7043/502/aether-1.21.1-1.5.10-neoforge.jar"
                  },
                  {
-                     "filename":  "bellsandwhistles-0.1-1.20.1.jar",
-                     "size":  3085020,
-                     "sha256":  "4031d46cca8dd5d521d97181eff0664ff9f9280769b2daa93d4308a238e95f25",
-                     "url":  "https://mediafilez.forgecdn.net/files/4719/73/bellsandwhistles-0.1-1.20.1.jar"
+                     "filename":  "architectury-13.0.11-neoforge.jar",
+                     "size":  584734,
+                     "sha256":  "9cc92f2c09533fc5482c60f993bd891c655a0e32b637037cdcb7c2b23adedeeb",
+                     "url":  "https://mediafilez.forgecdn.net/files/8492/726/architectury-13.0.11-neoforge.jar"
                  },
                  {
-                     "filename":  "BiomesOPlenty-forge-1.20.1-19.0.0.96.jar",
-                     "size":  22381010,
-                     "sha256":  "330f482487ac3135557b6e898d7e1ae5330321e9cfd5ba63e13a16cf2e8d8b98",
-                     "url":  "https://mediafilez.forgecdn.net/files/6364/65/BiomesOPlenty-forge-1.20.1-19.0.0.96.jar"
+                     "filename":  "bellsandwhistles-0.4.7-1.21.1.jar",
+                     "size":  193619,
+                     "sha256":  "a438cf2ea3a05120e12342484f1e12ca11526fbf4195d259ce1d7df8a9b3ffca",
+                     "url":  "https://cdn.modrinth.com/data/gJ5afkVv/versions/w0mifib8/bellsandwhistles-0.4.7-1.21.1.jar?mr_download_reason=standalone"
                  },
                  {
-                     "filename":  "clockwork-0.5.6.jar",
-                     "size":  11021061,
-                     "sha256":  "a7a7f946eb9edbe63d281a47b710c8958cd4b6b8dbbb73165fcc73d53fa07093",
-                     "url":  "https://mediafilez.forgecdn.net/files/8017/5/clockwork-0.5.6.jar"
+                     "filename":  "BiomesOPlenty-neoforge-1.21.1-21.1.0.14.jar",
+                     "size":  22338156,
+                     "sha256":  "5f3c8d752c2e0464eca8c9527d8ffe498129fd37a2fe86a266b64c98371763b1",
+                     "url":  "https://cdn.modrinth.com/data/HXF82T3G/versions/BtZKRp69/BiomesOPlenty-neoforge-1.21.1-21.1.0.14.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
-                     "filename":  "create-1.20.1-6.0.8.jar",
-                     "size":  19170905,
-                     "sha256":  "6fbb910c367dbce8e4fc7e5bf64b6edd4de980906ed00af8e47e4af843c0d9b0",
-                     "url":  "https://mediafilez.forgecdn.net/files/7178/761/create-1.20.1-6.0.8.jar"
+                     "filename":  "clockwork-neoforge-1.21.1-1.1.4.jar",
+                     "size":  2270954,
+                     "sha256":  "e23698bf604d58d6f868b94c5b559bb43bfa7fb69e159dc38a47a7eafa497647",
+                     "url":  "https://cdn.modrinth.com/data/h3OPQqBm/versions/evGdRgyV/clockwork-neoforge-1.21.1-1.1.4.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
-                     "filename":  "create-enchantment-industry-2.5.2.jar",
-                     "size":  1652553,
-                     "sha256":  "a0133d6a3e5a1e0fe76bdbd0e9aa42262a3dc841c47fc6215aa232ed0ceeea62",
-                     "url":  "https://mediafilez.forgecdn.net/files/8678/495/create-enchantment-industry-2.5.2.jar"
+                     "filename":  "create-1.21.1-6.0.10.jar",
+                     "size":  19123767,
+                     "sha256":  "ef87fe5709f1ba1f5b8bb20a2925b5afb4669e178fd6d8bf10c167759eefe37a",
+                     "url":  "https://cdn.modrinth.com/data/LNytGWDc/versions/UjX6dr61/create-1.21.1-6.0.10.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1"
                  },
                  {
-                     "filename":  "create-gunsmithing-1.20.1-1.4.4.jar",
-                     "size":  1833188,
-                     "sha256":  "f4b314b496c662451ce6c526af386c7070116b25e740dbeebe70cdbc8c94330d",
-                     "url":  "https://mediafilez.forgecdn.net/files/8371/323/create-gunsmithing-1.20.1-1.4.4.jar"
+                     "filename":  "create-aeronautics-bundled-1.21.1-1.3.2.jar",
+                     "size":  33123131,
+                     "sha256":  "a3f330d4757640f8715d991a43eedb826e4d0e51558d859c843ae6693bd35f1e",
+                     "url":  "https://mediafilez.forgecdn.net/files/8763/471/create-aeronautics-bundled-1.21.1-1.3.2.jar"
                  },
                  {
-                     "filename":  "createaddition-1.20.1-1.3.3.jar",
-                     "size":  1577313,
-                     "sha256":  "9bf3ae15d86ec95d128542caf10e4b5498e49ca02f725b9302d6daecd5eae1db",
-                     "url":  "https://mediafilez.forgecdn.net/files/7208/610/createaddition-1.20.1-1.3.3.jar"
+                     "filename":  "create-central-kitchen-2.6.0.jar",
+                     "size":  488390,
+                     "sha256":  "36df9749ca8a994c3b52284554307b47b990a18e43de347527726167614994cb",
+                     "url":  "https://cdn.modrinth.com/data/btq68HMO/versions/1mQSm4Yb/create-central-kitchen-2.6.0.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
-                     "filename":  "createbigcannons-5.11.4-mc.1.20.1-forge.jar",
-                     "size":  4058306,
-                     "sha256":  "11845f0d79a9014977f667a57b14d0527928bee8b66bc6b50bedcc29ee81878a",
-                     "url":  "https://mediafilez.forgecdn.net/files/8169/547/createbigcannons-5.11.4-mc.1.20.1-forge.jar"
+                     "filename":  "create-enchantment-industry-2.4.2.jar",
+                     "size":  1283517,
+                     "sha256":  "81f192bb53888e01f87a82eaac2f261c93715f2221dbcf5d8a8d414f912f75ef",
+                     "url":  "https://cdn.modrinth.com/data/JWGBpFUP/versions/qUpvzZ83/create-enchantment-industry-2.4.2.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
-                     "filename":  "createdeco-2.0.3-1.20.1-forge.jar",
-                     "size":  3509013,
-                     "sha256":  "7d6dd0094d18d6bab64fcd7de680ea736015d1a1ffc472d3fe03122bc7aa0864",
-                     "url":  "https://mediafilez.forgecdn.net/files/6373/226/createdeco-2.0.3-1.20.1-forge.jar"
+                     "filename":  "create-gunsmithing-1.21.1-1.4.9.jar",
+                     "size":  1819221,
+                     "sha256":  "d9e00c7e9cc5dec11455d42dd0f6d78418ce2213c4740ca8bec6b1e0e73adf1d",
+                     "url":  "https://cdn.modrinth.com/data/7KCNsGPM/versions/AmBZCjMo/create-gunsmithing-1.21.1-1.4.9.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
-                     "filename":  "createdieselgenerators-1.20.1-1.3.12.jar",
-                     "size":  3128610,
-                     "sha256":  "808e87b98ea9d42a43096a113a7fa1a89c65bee95608855c6cfe2914d6f1f642",
-                     "url":  "https://mediafilez.forgecdn.net/files/7932/785/createdieselgenerators-1.20.1-1.3.12.jar"
+                     "filename":  "createaddition-1.5.11.jar",
+                     "size":  1623047,
+                     "sha256":  "e9f597d3a057a05ce5636a3152f65180e362b8ff6a03d6702ef622619c2d15fd",
+                     "url":  "https://cdn.modrinth.com/data/kU1G12Nn/versions/3ptU8Nq9/createaddition-1.5.11.jar?mr_download_reason=standalone"
                  },
                  {
-                     "filename":  "CreateDragonsPlus-1.11.8.jar",
-                     "size":  953963,
-                     "sha256":  "7ba069b7a70070112fff519d60308a4f2176238175941365be61472e0a2779e0",
-                     "url":  "https://mediafilez.forgecdn.net/files/8810/578/CreateDragonsPlus-1.11.8.jar"
+                     "filename":  "createbigcannons-5.11.7+mc.1.21.1.jar",
+                     "size":  3771506,
+                     "sha256":  "ea017ab94637032d039899d88404838d173fa0e6286657cae6a6c3af459e87ca",
+                     "url":  "https://cdn.modrinth.com/data/GWp4jCJj/versions/bOiDu0LS/createbigcannons-5.11.7%2Bmc.1.21.1.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
-                     "filename":  "create_central_kitchen-1.20.1-for-create-6.0.8-1.5.1.jar",
-                     "size":  1499795,
-                     "sha256":  "133492121aaf465c3ac965ecbf22586f6f6056a7ff066a54f74b68bff9b5bff4",
-                     "url":  "https://mediafilez.forgecdn.net/files/8760/859/create_central_kitchen-1.20.1-for-create-6.0.8-1.5.1.jar"
+                     "filename":  "createdeco-2.1.3.jar",
+                     "size":  3328498,
+                     "sha256":  "edacf1ad0bd6b9f1667d711650dc0cde604356d91caca7ca1ec428c2f9400c6e",
+                     "url":  "https://cdn.modrinth.com/data/sMvUb4Rb/versions/qrcMVoBD/createdeco-2.1.3.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
-                     "filename":  "create_connected-1.2.3-mc1.20.1-all.jar",
-                     "size":  6791072,
-                     "sha256":  "5f584f118f2bda3dfeed8b8fc9198ea143c6988e2f6f04eb63f42c0da8b50e63",
-                     "url":  "https://mediafilez.forgecdn.net/files/8290/615/create_connected-1.2.3-mc1.20.1-all.jar"
+                     "filename":  "createdieselgenerators-1.21.1-1.3.14.jar",
+                     "size":  3143118,
+                     "sha256":  "038d7f9173fe7f792b77054ab98e9543e04630825610a05b036329d30d02329c",
+                     "url":  "https://cdn.modrinth.com/data/ZM3tt6p1/versions/Kijd1iDy/createdieselgenerators-1.21.1-1.3.14.jar?mr_download_reason=standalone"
                  },
                  {
-                     "filename":  "create_power_loader-2.0.3-mc1.20.1.jar",
-                     "size":  227962,
-                     "sha256":  "749b9cf51715f3db110f026db3fb2d004a4dc6b5301691ae53b8196a5dff6766",
-                     "url":  "https://mediafilez.forgecdn.net/files/6549/987/create_power_loader-2.0.3-mc1.20.1.jar"
+                     "filename":  "CreateDragonsPlus-1.11.8b.jar",
+                     "size":  1048120,
+                     "sha256":  "f2b5c106241d5d9b0b33ab41ff1f6d145b92038e7ffde3d9b07b37639f065445",
+                     "url":  "https://cdn.modrinth.com/data/dzb1a5WV/versions/G8QQJPtF/CreateDragonsPlus-1.11.8b.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
-                     "filename":  "curios-forge-5.14.1+1.20.1.jar",
-                     "size":  398066,
-                     "sha256":  "1e817919a35b37cf30524aaec73f0ca5130452f23f168f844854df282eb8e51f",
-                     "url":  "https://mediafilez.forgecdn.net/files/6418/456/curios-forge-5.14.1%2B1.20.1.jar"
+                     "filename":  "create_connected-1.3.3-mc1.21.1.jar",
+                     "size":  6786783,
+                     "sha256":  "0c5eb9ffb5c8d71e6e2a39023feb85c51adfb10d38949bc47c4abbd53b351a4f",
+                     "url":  "https://cdn.modrinth.com/data/Vg5TIO6d/versions/Xe7EqzfQ/create_connected-1.3.3-mc1.21.1.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
-                     "filename":  "delightfulcreators-1.1.9.jar",
-                     "size":  414596,
-                     "sha256":  "a3420dbe5c0863fcb264795e94bbfbbd4eb945e05da342121c30e003e530fbc2",
-                     "url":  "https://mediafilez.forgecdn.net/files/8530/749/delightfulcreators-1.1.9.jar"
+                     "filename":  "create_power_loader-2.0.5-mc1.21.1.jar",
+                     "size":  442369,
+                     "sha256":  "69fb0433dcba1597e7fbc06b2731ebd441f8ed99e20d8ec798d852d6865d1bd7",
+                     "url":  "https://cdn.modrinth.com/data/wPQ6GgFE/versions/3Y4r0ItR/create_power_loader-2.0.5-mc1.21.1.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
-                     "filename":  "dragonlib-forge-1.20.1-beta-3.0.28.jar",
-                     "size":  2619695,
-                     "sha256":  "1894e875a248e8b5527c3e6806af75cbb797ab8888ed0b0c7a5b186fe661c7bb",
-                     "url":  "https://mediafilez.forgecdn.net/files/8176/492/dragonlib-forge-1.20.1-beta-3.0.28.jar"
+                     "filename":  "curios-neoforge-9.4.0+1.21.1.jar",
+                     "size":  399005,
+                     "sha256":  "397a377f973ee23c06af744820d6912156888007531daa33dd572bf2f51342ac",
+                     "url":  "https://cdn.modrinth.com/data/vvuO3ImH/versions/aOzmr3vR/curios-neoforge-9.4.0%2B1.21.1.jar?mr_download_reason=standalone"
                  },
                  {
-                     "filename":  "embeddium-0.3.30+mc1.20.1.jar",
-                     "size":  1320429,
-                     "sha256":  "c77e936051ddf48d4eb3a42014ea6fa1bd3c5bb98a06d1f1e9c0c8db42647a0f",
-                     "url":  "https://mediafilez.forgecdn.net/files/5630/140/embeddium-0.3.30%2Bmc1.20.1.jar"
+                     "filename":  "delightfulcreators-1.2.1.jar",
+                     "size":  413017,
+                     "sha256":  "a639782d829bac212567b0bb07bbcc3f2d98f2a3d1e37d87111bcfccf1765aa8",
+                     "url":  "delightfulcreators-1.2.1.jar"
                  },
                  {
-                     "filename":  "eureka-1201-1.6.3.jar",
-                     "size":  462827,
-                     "sha256":  "1d59778581a533d2bb7702a3d403fb37eaddb94aa786ebf3f4ab889dded82c55",
-                     "url":  "https://mediafilez.forgecdn.net/files/7979/379/eureka-1201-1.6.3.jar"
+                     "filename":  "dragonlib-neoforge-1.21.1-beta-3.0.28.jar",
+                     "size":  2107270,
+                     "sha256":  "ba127947220504d1410716e422ef6a9a387d818a922ad5fdb3be044f9f7556f7",
+                     "url":  "https://cdn.modrinth.com/data/sbIsGaOV/versions/x376YU9w/dragonlib-neoforge-1.21.1-beta-3.0.28.jar?mr_download_reason=standalone"
                  },
                  {
-                     "filename":  "FarmersDelight-1.20.1-1.3.4.jar",
-                     "size":  3311051,
-                     "sha256":  "34f03eb671ea1ca579b00c98e4541404cb96d1a292014aed9cc5eb45ad8afbce",
-                     "url":  "https://mediafilez.forgecdn.net/files/8765/179/FarmersDelight-1.20.1-1.3.4.jar"
+                     "filename":  "FarmersDelight-1.21.1-1.3.4.jar",
+                     "size":  3160490,
+                     "sha256":  "139ad7696462c89c03eea463f805abffa552526c5dadaadae221dd9624cb197c",
+                     "url":  "https://mediafilez.forgecdn.net/files/8765/184/FarmersDelight-1.21.1-1.3.4.jar"
                  },
                  {
-                     "filename":  "flansmod-1.20.1-0.4.316.jar",
-                     "size":  2162737,
-                     "sha256":  "7facc31b1374e6afb67e92c11660f20c912ab4626bdaa28ddce09cb0b01c501e",
-                     "url":  "https://mediafilez.forgecdn.net/files/6263/691/flansmod-1.20.1-0.4.316.jar"
+                     "filename":  "geckolib-neoforge-1.21.1-4.9.2.jar",
+                     "size":  630584,
+                     "sha256":  "5e548466af9ab6aca7a91a7c7d4dc0dc8bc385e22958aed5da0e7bebd0fa3fba",
+                     "url":  "https://cdn.modrinth.com/data/8BmcQJ2H/versions/tPkJmim6/geckolib-neoforge-1.21.1-4.9.2.jar?mr_download_reason=standalone"
                  },
                  {
-                     "filename":  "geckolib-forge-1.20.1-4.8.4.jar",
-                     "size":  1038209,
-                     "sha256":  "c04abba4fd354dd8c0e8a732f1f05f4dca893d2e1d962b2ab128bbd411478747",
-                     "url":  "https://mediafilez.forgecdn.net/files/8285/794/geckolib-forge-1.20.1-4.8.4.jar"
+                     "filename":  "GlitchCore-neoforge-1.21.1-2.1.0.2.jar",
+                     "size":  90717,
+                     "sha256":  "d9ea421e7449a35cf3adc41c9f740156342b7b17a08b1be843660608af7b60f9",
+                     "url":  "https://mediafilez.forgecdn.net/files/8109/792/GlitchCore-neoforge-1.21.1-2.1.0.2.jar"
                  },
                  {
-                     "filename":  "GlitchCore-forge-1.20.1-0.0.1.1.jar",
-                     "size":  87550,
-                     "sha256":  "e42a8b513da08a910c133caeafad9fc2fcc22fdaaa2eb3e2516e9112a5a0db61",
-                     "url":  "https://mediafilez.forgecdn.net/files/5787/839/GlitchCore-forge-1.20.1-0.0.1.1.jar"
+                     "filename":  "gravestone-neoforge-1.21.1-1.0.40.jar",
+                     "size":  322082,
+                     "sha256":  "204be9ccb8632a56a87aee9aab4c7874d0f6749f566c07f5dd420d24e24dc8b0",
+                     "url":  "https://cdn.modrinth.com/data/RYtXKJPr/versions/rMGJpjaM/gravestone-neoforge-1.21.1-1.0.40.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
-                     "filename":  "hourglass-1.20-1.2.1.1.jar",
-                     "size":  235134,
-                     "sha256":  "29d3c6813792b2733fa1264a4a732aead67741b7fe9555d7a5e229717d9ffa3c",
-                     "url":  "https://mediafilez.forgecdn.net/files/4834/578/hourglass-1.20-1.2.1.1.jar"
+                     "filename":  "hourglass-1.21-1.3.0.0-beta1.jar",
+                     "size":  224451,
+                     "sha256":  "89f0eb655f0e6262775f1007f1ea9d92580dff7b7a167885d8f36df9658e6f9d",
+                     "url":  "https://mediafilez.forgecdn.net/files/8624/77/hourglass-1.21-1.3.0.0-beta1.jar"
                  },
                  {
-                     "filename":  "ImmersiveEngineering-1.20.1-10.1.0-171.jar",
-                     "size":  12123365,
-                     "sha256":  "bbb04345b8263b1de026521500e28ceba207470e0dd78c9f022331d7fbca42d2",
-                     "url":  "https://mediafilez.forgecdn.net/files/5224/387/ImmersiveEngineering-1.20.1-10.1.0-171.jar"
+                     "filename":  "ImmersiveEngineering-1.21.1-12.4.2-194.jar",
+                     "size":  14232121,
+                     "sha256":  "45942985a4a4aebf265b8e22a0c54a96208637471f36f2532ff5d4911322debc",
+                     "url":  "https://cdn.modrinth.com/data/tIm2nV03/versions/uNRARSH2/ImmersiveEngineering-1.21.1-12.4.2-194.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
-                     "filename":  "ImmersivePetroleum-1.20.1-4.3.1-36b.jar",
-                     "size":  1975671,
-                     "sha256":  "cec000b892ae56452c54471a6411ee8f7afcec9b37eb7a3fb0319cf015983173",
-                     "url":  "https://mediafilez.forgecdn.net/files/8499/79/ImmersivePetroleum-1.20.1-4.3.1-36b.jar"
+                     "filename":  "ImmersivePetroleum-1.21.1-4.5.0-39.jar",
+                     "size":  2005502,
+                     "sha256":  "c1bfef3290dd8c2c68519155e395059766f5d258a52d5e08faf63eb627312e8b",
+                     "url":  "https://mediafilez.forgecdn.net/files/8420/142/ImmersivePetroleum-1.21.1-4.5.0-39.jar"
                  },
                  {
-                     "filename":  "immersive_aircraft-1.3.3+1.20.1-forge.jar",
-                     "size":  2391382,
-                     "sha256":  "d1f7cfeed3ac2cf69472ae756eb9189dad04ab21b8afbd443c82f40e51bbf065",
-                     "url":  "https://mediafilez.forgecdn.net/files/6742/170/immersive_aircraft-1.3.3%2B1.20.1-forge.jar"
+                     "filename":  "immersive_aircraft-1.4.3+1.21.1-neoforge.jar",
+                     "size":  2444626,
+                     "sha256":  "4dc4b4d5909a929c91b710f84e1746880a95078a904045543b4d4b9f9f261980",
+                     "url":  "https://cdn.modrinth.com/data/x3HZvrj6/versions/lEyfKM50/immersive_aircraft-1.4.3%2B1.21.1-neoforge.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
-                     "filename":  "immersive_machinery-0.2.0+1.20.1-forge.jar",
-                     "size":  899304,
-                     "sha256":  "b19dbe62974f70891704ee418feb40cc259ff0ff63c943a4657d09d5b4b06344",
-                     "url":  "https://mediafilez.forgecdn.net/files/6492/547/immersive_machinery-0.2.0%2B1.20.1-forge.jar"
+                     "filename":  "immersive_machinery-0.2.0+1.21.1-neoforge.jar",
+                     "size":  903235,
+                     "sha256":  "470dfa22f21f9fe4e78f0090581a5af5c1dbada9c1159bc1af59c2f633fec1fd",
+                     "url":  "https://mediafilez.forgecdn.net/files/6495/135/immersive_machinery-0.2.0%2B1.21.1-neoforge.jar"
                  },
                  {
-                     "filename":  "invtweaks-1.20.1-1.2.2.jar",
-                     "size":  75049,
-                     "sha256":  "54ba6fd7d5e4b9a9dadf6876153b99a94b4997f8d4ee0e46c9c58ea5c8c95802",
-                     "url":  "https://mediafilez.forgecdn.net/files/6816/947/invtweaks-1.20.1-1.2.2.jar"
+                     "filename":  "invtweaks-1.21.1-1.2.0.jar",
+                     "size":  74866,
+                     "sha256":  "1ff13a1f6a33fd881b178033c4f97088108469dc6807e5fb7d1b44a64d88d26e",
+                     "url":  "https://cdn.modrinth.com/data/uqnMI1kq/versions/tcTciTmQ/invtweaks-1.21.1-1.2.0.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
-                     "filename":  "irons_lib-1.20.1-2.1.0.jar",
-                     "size":  428969,
-                     "sha256":  "db4c7cc853c0ffb1d36a0f19af22c224a8608b2a55c747adc70fb44455baf097",
-                     "url":  "https://mediafilez.forgecdn.net/files/8364/892/irons_lib-1.20.1-2.1.0.jar"
+                     "filename":  "irons_lib-1.21.1-2.1.0.jar",
+                     "size":  406284,
+                     "sha256":  "3d0ad1003d6edeaad2500b9922267b4192d2c603cdd846fda339b168f4deff72",
+                     "url":  "https://mediafilez.forgecdn.net/files/8364/894/irons_lib-1.21.1-2.1.0.jar"
                  },
                  {
-                     "filename":  "irons_spellbooks-1.20.1-3.16.3.jar",
-                     "size":  15570397,
-                     "sha256":  "54b5aaa52887c38f570fbd820288171234d8541c17a5e953f9271189fdd480fb",
-                     "url":  "https://mediafilez.forgecdn.net/files/8680/180/irons_spellbooks-1.20.1-3.16.3.jar"
+                     "filename":  "irons_spellbooks-1.21.1-3.16.3.jar",
+                     "size":  13890045,
+                     "sha256":  "55a290db9b966e0c5d2f5c051d50775f3db6375cdb52730c4da528bcf5d5daa0",
+                     "url":  "https://cdn.modrinth.com/data/s4OWxYQQ/versions/slKLosTb/irons_spellbooks-1.21.1-3.16.3.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1"
                  },
                  {
-                     "filename":  "jacks-backpacks-forge-1.20.1-1.0.0.jar",
-                     "size":  38145,
-                     "sha256":  "5fa11ab9d0c58bbf254eaab188bf7b4bac203a41e141cc980fc18cebd0d1cb1c",
-                     "url":  "https://mediafilez.forgecdn.net/files/8555/81/jacks-backpacks-forge-1.20.1-1.0.0.jar"
+                     "filename":  "jei-1.21.1-neoforge-19.53.0.426.jar",
+                     "size":  1847607,
+                     "sha256":  "d76b62fd38acc119de5d64c0f5b13e2965fcd0f85079ca4620b74a9a342c017d",
+                     "url":  "https://cdn.modrinth.com/data/u6dRKJwZ/versions/WXSjjcqV/jei-1.21.1-neoforge-19.53.0.426.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1"
                  },
                  {
-                     "filename":  "jacks-gravestones-neoforge-1.20.1-1.0.1.jar",
-                     "size":  15287,
-                     "sha256":  "a8f9ffe05e818fd82238feb65b46f3aaff07734bef65ac126b3c8bc4654a72dc",
-                     "url":  "https://mediafilez.forgecdn.net/files/8573/556/jacks-gravestones-neoforge-1.20.1-1.0.1.jar"
+                     "filename":  "knightlib-neoforge-1.21.1-1.6.1.jar",
+                     "size":  716314,
+                     "sha256":  "f9cf072095d2ed69bd03960a20ec3b285e1c4aa6c4931e9deda82db2e8d8c4f6",
+                     "url":  "https://mediafilez.forgecdn.net/files/8400/701/knightlib-neoforge-1.21.1-1.6.1.jar"
                  },
                  {
-                     "filename":  "jei-1.20.1-forge-15.58.0.209.jar",
-                     "size":  1821883,
-                     "sha256":  "e39f3794233d16455217984592744fa8eb350a5f898f1002ed721659b77fdd97",
-                     "url":  "https://mediafilez.forgecdn.net/files/8820/520/jei-1.20.1-forge-15.58.0.209.jar"
+                     "filename":  "kotlinforforge-5.12.0-all.jar",
+                     "size":  7279276,
+                     "sha256":  "095aed94f21b4e55895b21ea957750ae3ab829fbcfc6d3c66a3489f5f1128d46",
+                     "url":  "https://mediafilez.forgecdn.net/files/8335/665/kotlinforforge-5.12.0-all.jar"
                  },
                  {
-                     "filename":  "kotlinforforge-4.12.0-all.jar",
-                     "size":  7442998,
-                     "sha256":  "6a66c6a68ec09f8717cdbf06883394f0ee24d7cd826b7134a0f81839e8e720ae",
-                     "url":  "https://mediafilez.forgecdn.net/files/7291/67/kotlinforforge-4.12.0-all.jar"
+                     "filename":  "lithostitched-1.6.0-neoforge-1.21.1.jar",
+                     "size":  787739,
+                     "sha256":  "14827b86cfba6d8bf34dcae7e60c1c8e5080441659f517c045d3e388b827277c",
+                     "url":  "https://cdn.modrinth.com/data/XaDC71GB/versions/u0UUKAE1/lithostitched-1.6.0-neoforge-1.21.1.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1"
                  },
                  {
-                     "filename":  "lithostitched-forge-1.20.1-1.4.11.jar",
-                     "size":  476347,
-                     "sha256":  "c19a5a36c0e6cb3782cf7ca5b9648fb1bce5fc41fd737bed423a1f4971bccf75",
-                     "url":  "https://mediafilez.forgecdn.net/files/6742/615/lithostitched-forge-1.20.1-1.4.11.jar"
+                     "filename":  "littlelogistics-mc1.21.1-v1.21.1.1-beta.2.jar",
+                     "size":  2450273,
+                     "sha256":  "eb319c0540aaaa9463bb4a3574f0bd9749f767b81427b708b43d9cadd14b2644",
+                     "url":  "https://mediafilez.forgecdn.net/files/8483/624/littlelogistics-mc1.21.1-v1.21.1.1-beta.2.jar"
                  },
                  {
-                     "filename":  "LW 0.42-1.20.1-Create-6.0.8-ALPHA.jar",
-                     "size":  3677857,
-                     "sha256":  "5a85cf382f5c72ca7442195e5f1b4814c3a822c109d6c3d42aec17eab7f3948a",
-                     "url":  "https://mediafilez.forgecdn.net/files/7221/835/LW%200.42-1.20.1-Create-6.0.8-ALPHA.jar"
+                     "filename":  "Mekanism-1.21.1-10.7.19.85.jar",
+                     "size":  11976009,
+                     "sha256":  "004dbc9f3106f4d192aeaa1ee1190dd16ec9ca8059ed3d093b80034f4c574f43",
+                     "url":  "https://cdn.modrinth.com/data/Ce6I4WUE/versions/5KzzycBT/Mekanism-1.21.1-10.7.19.85.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1"
                  },
                  {
-                     "filename":  "Mekanism-1.20.1-10.4.16.80.jar",
-                     "size":  12558456,
-                     "sha256":  "3b0d191fa4a45e662f9725991d76a30192f30186abb2ba694b873b5f7b9358d2",
-                     "url":  "https://mediafilez.forgecdn.net/files/6552/911/Mekanism-1.20.1-10.4.16.80.jar"
+                     "filename":  "ntgl-1.21.1-3.2.0.jar",
+                     "size":  3965533,
+                     "sha256":  "38c3a93426c44195b7cdb0773b2d4554496bcc57f994f19779714e03b0bf0122",
+                     "url":  "https://mediafilez.forgecdn.net/files/8585/353/ntgl-1.21.1-3.2.0.jar"
                  },
                  {
-                     "filename":  "ntgl-1.20.1-3.1.2.jar",
-                     "size":  4016064,
-                     "sha256":  "5a4320d6271158a5a8fd7014208f451f2ac71af6c05634c5680eadb725ca6670",
-                     "url":  "https://mediafilez.forgecdn.net/files/8371/299/ntgl-1.20.1-3.1.2.jar"
+                     "filename":  "owo-lib-neoforge-0.12.15.5-beta.1+1.21.jar",
+                     "size":  1221583,
+                     "sha256":  "de6ed336bd80154b7241a7b3276694befc1c94550add8bcdfe7f82e5172fd13d",
+                     "url":  "https://mediafilez.forgecdn.net/files/6785/734/owo-lib-neoforge-0.12.15.5-beta.1%2B1.21.jar"
                  },
                  {
-                     "filename":  "pantographsandwires-forge-1.20.1-beta-0.2.3-C6.jar",
-                     "size":  2433556,
-                     "sha256":  "9818e37178d7dec656e1aaecb03d675aaaa6c01b0c12f0cd3d0e9e02fb7f47f4",
-                     "url":  "https://mediafilez.forgecdn.net/files/8223/790/pantographsandwires-forge-1.20.1-beta-0.2.3-C6.jar"
+                     "filename":  "player-animation-lib-forge-2.0.1+1.21.1.jar",
+                     "size":  203160,
+                     "sha256":  "15ef231ca57ad2a237a3760dd9aa17b34926fc6e8bf07564434969534c70aa3e",
+                     "url":  "https://cdn.modrinth.com/data/gedNE4y2/versions/q60QWuOK/player-animation-lib-forge-2.0.1%2B1.21.1.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1"
                  },
                  {
-                     "filename":  "player-animation-lib-forge-1.0.2-rc1+1.20.jar",
-                     "size":  181437,
-                     "sha256":  "90d9965cb9efdbda29fdc5610be3914cf7008bf5c392ff34f7ab25f96a852691",
-                     "url":  "https://mediafilez.forgecdn.net/files/4587/214/player-animation-lib-forge-1.0.2-rc1%2B1.20.jar"
+                     "filename":  "PlayerAnimationLibNeoforge-1.1.5+mc.1.21.1.jar",
+                     "size":  1157594,
+                     "sha256":  "89460dad80da8bd7fe803e1599aee5dd07a4e28b75d4853a056c846ff838b639",
+                     "url":  "https://mediafilez.forgecdn.net/files/8454/212/PlayerAnimationLibNeoforge-1.1.5%2Bmc.1.21.1.jar"
                  },
                  {
-                     "filename":  "pneumaticcraft-repressurized-6.0.23+mc1.20.1.jar",
-                     "size":  10790934,
-                     "sha256":  "8d5117f18a3f80eb6670cfb04f0a42a103195972bfdf429d2181587958ec4c38",
-                     "url":  "https://mediafilez.forgecdn.net/files/8411/196/pneumaticcraft-repressurized-6.0.23%2Bmc1.20.1.jar"
+                     "filename":  "pneumaticcraft-repressurized-8.2.23+mc1.21.1.jar",
+                     "size":  11884697,
+                     "sha256":  "647ce20d52cf139f3b693b9b4c4753966a95a6dafc82d9e538ae4ae5b0249f9c",
+                     "url":  "https://mediafilez.forgecdn.net/files/8519/226/pneumaticcraft-repressurized-8.2.23%2Bmc1.21.1.jar"
                  },
                  {
-                     "filename":  "railcraft-reborn-1.20.1-1.1.11.jar",
-                     "size":  5255381,
-                     "sha256":  "a859a6f75069097dc052a74fdba0624571a23a429ba3ec4624168b33716bc1f2",
-                     "url":  "https://mediafilez.forgecdn.net/files/8044/82/railcraft-reborn-1.20.1-1.1.11.jar"
+                     "filename":  "railcraft-reborn-1.21.1-1.2.10.jar",
+                     "size":  5290986,
+                     "sha256":  "7de3dfeac277da57f9897822824332c99e53b9d36956143b38c0966f39144328",
+                     "url":  "https://mediafilez.forgecdn.net/files/7393/678/railcraft-reborn-1.21.1-1.2.10.jar"
                  },
                  {
-                     "filename":  "ritchiesprojectilelib-2.1.1-mc.1.20.1-forge.jar",
-                     "size":  78625,
-                     "sha256":  "5531ec454792f98993fa29d55f8810444ba3e9ef8f04331c5811b84ec8d0c3dc",
-                     "url":  "https://mediafilez.forgecdn.net/files/7292/523/ritchiesprojectilelib-2.1.1-mc.1.20.1-forge.jar"
+                     "filename":  "railways-0.3.0-beta.2+neoforge-mc1.21.1.jar",
+                     "size":  18728584,
+                     "sha256":  "64b74ddad661deae1cfe7e8334cfa3d39bb8ef7b761f83595ba0476c4a9bb1d5",
+                     "url":  "https://mediafilez.forgecdn.net/files/8522/154/railways-0.3.0-beta.2%2Bneoforge-mc1.21.1.jar"
                  },
                  {
-                     "filename":  "sorttochests-1.0.4.jar",
-                     "size":  37774,
-                     "sha256":  "76c5489aaf90f96a283c4dab85949cabd0326201ec7e2258d10e08981c285763",
-                     "url":  "https://mediafilez.forgecdn.net/files/8485/325/sorttochests-1.0.4.jar"
+                     "filename":  "ritchiesprojectilelib-2.1.2-mc.1.21.1-neoforge.jar",
+                     "size":  76369,
+                     "sha256":  "cc509060833736fb650aa4c36b1ce33a7eeeb9ca6e9f8e80a7c951c9e7487b24",
+                     "url":  "https://mediafilez.forgecdn.net/files/7587/771/ritchiesprojectilelib-2.1.2-mc.1.21.1-neoforge.jar"
                  },
                  {
-                     "filename":  "Steam_Rails-1.7.3+forge-mc1.20.1.jar",
-                     "size":  17042037,
-                     "sha256":  "0e98b72472ff78464f6e69025bb47f942e7f66a976382fbb87ceff765a8b00cf",
-                     "url":  "https://mediafilez.forgecdn.net/files/8745/475/Steam_Rails-1.7.3%2Bforge-mc1.20.1.jar"
+                     "filename":  "sable-neoforge-1.21.1-2.0.5.jar",
+                     "size":  12986136,
+                     "sha256":  "c8710f85bc780bbf523e6726ceaaf76dd0b8c61479db497b382c6bb34317e7ab",
+                     "url":  "https://cdn.modrinth.com/data/T9PomCSv/versions/U678xqle/sable-neoforge-1.21.1-2.0.5.jar?mr_download_reason=standalone"
                  },
                  {
-                     "filename":  "tectonic-3.0.17-forge-1.20.1.jar",
-                     "size":  322575,
-                     "sha256":  "c6de479b27cf090510de3f029918afc9fe17226981bd703e0002f7a25f4d8969",
-                     "url":  "https://mediafilez.forgecdn.net/files/7197/834/tectonic-3.0.17-forge-1.20.1.jar"
+                     "filename":  "tectonic-3.0.26-neoforge-21.1.jar",
+                     "size":  461675,
+                     "sha256":  "36aa9b4a8c399c9943460a7a58d91402b6d671c10ab11b099c2ee1d75af232ea",
+                     "url":  "https://cdn.modrinth.com/data/lWDHr9jE/versions/vNrkxC3z/tectonic-3.0.26-neoforge-21.1.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
-                     "filename":  "TerraBlender-forge-1.20.1-3.0.1.10.jar",
-                     "size":  107532,
-                     "sha256":  "c109016f46ca9bdae69976bf080bbf2e8e5968cb66c0a78845f8ca6af5dbbeb1",
-                     "url":  "https://mediafilez.forgecdn.net/files/6290/448/TerraBlender-forge-1.20.1-3.0.1.10.jar"
+                     "filename":  "TerraBlender-neoforge-1.21.1-4.1.0.0.jar",
+                     "size":  114727,
+                     "sha256":  "4ced618e9e130d8d6c177294d741965eaf6a266b422e28731c1c3f5d57ca5e26",
+                     "url":  "https://mediafilez.forgecdn.net/files/5660/767/TerraBlender-neoforge-1.21.1-4.1.0.0.jar"
                  },
                  {
-                     "filename":  "tfmg-1.0.2f.jar",
-                     "size":  5343749,
-                     "sha256":  "a789d1519fd4033334d0e217b252c557095b8007922247bfe53ee9db4f76a63d",
-                     "url":  "https://mediafilez.forgecdn.net/files/7344/584/tfmg-1.0.2f.jar"
+                     "filename":  "tfmg-1.2.0.jar",
+                     "size":  4924243,
+                     "sha256":  "fc824a91cfe22e137c9014ed608ee9bf35f16490d2162b687666332c6eb3a555",
+                     "url":  "https://cdn.modrinth.com/data/USgVjXsk/versions/uDi14nbt/tfmg-1.2.0.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
-                     "filename":  "valkyrienskies-120-2.4.11.jar",
-                     "size":  27752937,
-                     "sha256":  "f99f24de62015451a047f90484cf9d25970cac350105b581c22b2d5247ebfd53",
-                     "url":  "https://mediafilez.forgecdn.net/files/7906/689/valkyrienskies-120-2.4.11.jar"
+                     "filename":  "tracks-neoforge-1.21.1-1.0.1.jar",
+                     "size":  166455,
+                     "sha256":  "b126b2522a129c13ebec6491b8602726bad9a3df201cf906468ba583796125c8",
+                     "url":  "https://mediafilez.forgecdn.net/files/7968/280/tracks-neoforge-1.21.1-1.0.1.jar"
                  },
                  {
-                     "filename":  "xaerominimap-forge-1.20.1-26.4.2.jar",
-                     "size":  2195245,
-                     "sha256":  "8143f332ed20a61a518692b42c793e021b6bd2d0d9d61cf3938fb9cfa07eb59c",
-                     "url":  "https://mediafilez.forgecdn.net/files/8449/808/xaerominimap-forge-1.20.1-26.4.2.jar"
+                     "filename":  "xaerominimap-neoforge-1.21.1-26.4.2.jar",
+                     "size":  2185409,
+                     "sha256":  "b722bcf794288f0ed51165cd1f057fc4505e20abbc723b2e17e900426e443603",
+                     "url":  "https://mediafilez.forgecdn.net/files/8449/819/xaerominimap-neoforge-1.21.1-26.4.2.jar"
                  },
                  {
-                     "filename":  "[1.20.1] SecurityCraft v1.10.0.1.jar",
-                     "size":  4648724,
-                     "sha256":  "db2f56d0b37006e0de24d53fe94a38d9fd1d10eadf384a719a37c8d15bbb88dc",
-                     "url":  "https://mediafilez.forgecdn.net/files/6490/260/%5B1.20.1%5D%20SecurityCraft%20v1.10.0.1.jar"
+                     "filename":  "[1.21.1] SecurityCraft v1.10.2.1.jar",
+                     "size":  5193371,
+                     "sha256":  "75ac9e73c60caf58df7069f167dbacc00a640e1418207dff654f56a5fdb5f229",
+                     "url":  "https://mediafilez.forgecdn.net/files/8336/498/%5B1.21.1%5D%20SecurityCraft%20v1.10.2.1.jar"
                  }
              ]
 }
