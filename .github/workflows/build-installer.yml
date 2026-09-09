@@ -20,20 +20,11 @@ runs-on: windows-latest
 
 ```
 steps:
-
-  # ---------------------------------------------------------------
-  # CHECKOUT
-  # ---------------------------------------------------------------
-
   - name: Checkout repository
     uses: actions/checkout@v4
     with:
       fetch-depth: 0
       fetch-tags: true
-
-  # ---------------------------------------------------------------
-  # DETERMINE NEXT VERSION
-  # ---------------------------------------------------------------
 
   - name: Determine release version
     id: version
@@ -65,18 +56,10 @@ steps:
       "version=$version" >> $env:GITHUB_OUTPUT
       "number=$next" >> $env:GITHUB_OUTPUT
 
-  # ---------------------------------------------------------------
-  # SET UP .NET
-  # ---------------------------------------------------------------
-
   - name: Setup .NET
     uses: actions/setup-dotnet@v4
     with:
       dotnet-version: "8.0.x"
-
-  # ---------------------------------------------------------------
-  # CREATE BUILD DIRECTORY
-  # ---------------------------------------------------------------
 
   - name: Prepare build directory
     shell: pwsh
@@ -85,15 +68,15 @@ steps:
         Remove-Item "launcher-build" -Recurse -Force
       }
 
+      if (Test-Path "build") {
+        Remove-Item "build" -Recurse -Force
+      }
+
       New-Item `
         -ItemType Directory `
         -Path "launcher-build" `
         -Force |
         Out-Null
-
-  # ---------------------------------------------------------------
-  # COPY NEOFORGE INSTALLER FILES
-  # ---------------------------------------------------------------
 
   - name: Copy installer resources
     shell: pwsh
@@ -115,10 +98,6 @@ steps:
         "modpack-manifest.json" `
         "launcher-build\modpack-manifest.json" `
         -Force
-
-  # ---------------------------------------------------------------
-  # VALIDATE NEOFORGE MANIFEST
-  # ---------------------------------------------------------------
 
   - name: Validate NeoForge manifest
     shell: pwsh
@@ -176,10 +155,6 @@ steps:
 
       Write-Host "NeoForge manifest validation passed."
 
-  # ---------------------------------------------------------------
-  # CREATE C# PROJECT
-  # ---------------------------------------------------------------
-
   - name: Create launcher project
     shell: pwsh
     run: |
@@ -192,17 +167,14 @@ steps:
           <UseWindowsForms>true</UseWindowsForms>
           <Nullable>enable</Nullable>
           <ImplicitUsings>enable</ImplicitUsings>
-
           <PublishSingleFile>true</PublishSingleFile>
           <SelfContained>true</SelfContained>
           <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-
           <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
           <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
         </PropertyGroup>
 
         <ItemGroup>
-
           <EmbeddedResource Include="Install-MajorKeyPack.ps1">
             <LogicalName>Install-MajorKeyPack.ps1</LogicalName>
           </EmbeddedResource>
@@ -210,7 +182,6 @@ steps:
           <EmbeddedResource Include="modpack-manifest.json">
             <LogicalName>modpack-manifest.json</LogicalName>
           </EmbeddedResource>
-
         </ItemGroup>
 
       </Project>
@@ -218,14 +189,9 @@ steps:
         "launcher-build\MajorKeyPack-Installer.csproj" `
         -Encoding UTF8
 
-  # ---------------------------------------------------------------
-  # CREATE NEOFORGE LAUNCHER SOURCE
-  # ---------------------------------------------------------------
-
   - name: Create launcher source
     shell: pwsh
     run: |
-
       $programCs = @'
       using System;
       using System.Diagnostics;
@@ -271,11 +237,8 @@ steps:
                   }
                   catch
                   {
-                      /*
-                       * GitHub update checking is optional.
-                       * If GitHub is unavailable, continue
-                       * with the embedded NeoForge installer.
-                       */
+                      // GitHub update checking is optional.
+                      // Continue with the embedded installer.
                   }
 
                   if (updateFound)
@@ -610,10 +573,6 @@ steps:
             "launcher-build\Program.cs" `
             -Encoding UTF8
 
-  # ---------------------------------------------------------------
-  # BUILD
-  # ---------------------------------------------------------------
-
   - name: Build NeoForge installer
     shell: pwsh
     run: |
@@ -626,10 +585,6 @@ steps:
         -p:IncludeNativeLibrariesForSelfExtract=true `
         -p:EnableCompressionInSingleFile=true `
         -o "build"
-
-  # ---------------------------------------------------------------
-  # RENAME EXE
-  # ---------------------------------------------------------------
 
   - name: Rename installer
     shell: pwsh
@@ -651,11 +606,9 @@ steps:
           -Force
       }
 
-      Write-Host "Installer: build\MajorKeyPack-Installer.exe"
-
-  # ---------------------------------------------------------------
-  # CREATE ZIP
-  # ---------------------------------------------------------------
+      Write-Host ""
+      Write-Host "Installer built successfully:"
+      Write-Host "build\MajorKeyPack-Installer.exe"
 
   - name: Create installer ZIP
     shell: pwsh
@@ -670,10 +623,6 @@ steps:
         -Path "build\MajorKeyPack-Installer.exe" `
         -DestinationPath "MajorKeyPack-Installer.zip" `
         -CompressionLevel Optimal
-
-  # ---------------------------------------------------------------
-  # CREATE GITHUB RELEASE
-  # ---------------------------------------------------------------
 
   - name: Create GitHub Release
     uses: softprops/action-gh-release@v2
