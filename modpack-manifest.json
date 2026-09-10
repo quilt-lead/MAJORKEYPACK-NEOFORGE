@@ -105,6 +105,12 @@
                      "url":  "https://cdn.modrinth.com/data/wPQ6GgFE/versions/3Y4r0ItR/create_power_loader-2.0.5-mc1.21.1.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
+                     "filename":  "create_submarine-2.2.4.jar",
+                     "size":  1869296,
+                     "sha256":  "87a20bb20ae3c90e6838073d3a84839e251c8794f409ade8cab79f51d1de0c66",
+                     "url":  "https://mediafilez.forgecdn.net/files/8268/622/create_submarine-2.2.4.jar"
+                 },
+                 {
                      "filename":  "curios-neoforge-9.4.0+1.21.1.jar",
                      "size":  399005,
                      "sha256":  "397a377f973ee23c06af744820d6912156888007531daa33dd572bf2f51342ac",
@@ -283,6 +289,12 @@
                      "size":  12986136,
                      "sha256":  "c8710f85bc780bbf523e6726ceaaf76dd0b8c61479db497b382c6bb34317e7ab",
                      "url":  "https://cdn.modrinth.com/data/T9PomCSv/versions/U678xqle/sable-neoforge-1.21.1-2.0.5.jar?mr_download_reason=standalone"
+                 },
+                 {
+                     "filename":  "sablefloaters-1.0.0.jar",
+                     "size":  32777,
+                     "sha256":  "7086df8b3bca25c38d3db493ea9f999ee623e84b0056d3163cd8784bd701e643",
+                     "url":  "https://cdn.modrinth.com/data/kjqs1O8F/versions/6xKshAWI/sablefloaters-1.0.0.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
                      "filename":  "tectonic-3.0.26-neoforge-21.1.jar",
