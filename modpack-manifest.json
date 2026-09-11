@@ -321,6 +321,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/7968/280/tracks-neoforge-1.21.1-1.0.1.jar"
                  },
                  {
+                     "filename":  "waterworks-1.2.0 - preview.jar",
+                     "size":  3636730,
+                     "sha256":  "7ba7926162e32bbf2c41cd63ac918795aff0fcacca40ef483c3b1beb0fc8649e",
+                     "url":  "https://mediafilez.forgecdn.net/files/8851/591/waterworks-1.2.0%20-%20preview.jar"
+                 },
+                 {
                      "filename":  "xaerominimap-neoforge-1.21.1-26.4.2.jar",
                      "size":  2185409,
                      "sha256":  "b722bcf794288f0ed51165cd1f057fc4505e20abbc723b2e17e900426e443603",
