@@ -321,6 +321,12 @@
                      "url":  "https://cdn.modrinth.com/data/TyCTlI4b/versions/AhPnzNtJ/sophisticatedbackpacks-1.21.1-3.26.3.2158.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
+                     "filename":  "sophisticatedcore-1.21.1-1.5.1.2341.jar",
+                     "size":  1785221,
+                     "sha256":  "f627b497fc0a2b50da9f20b77e13073df9245718660259d8f559aa184c4418a1",
+                     "url":  "https://cdn.modrinth.com/data/nmoqTijg/versions/PXl6rB3q/sophisticatedcore-1.21.1-1.5.1.2341.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1"
+                 },
+                 {
                      "filename":  "tectonic-3.0.26-neoforge-21.1.jar",
                      "size":  461675,
                      "sha256":  "36aa9b4a8c399c9943460a7a58d91402b6d671c10ab11b099c2ee1d75af232ea",
