@@ -10,8 +10,6 @@ using System.Windows.Forms;
 internal static class Program
 {
 private const string CurrentVersion = "**CURRENT_VERSION**";
-
-```
 private const string GitHubOwner = "quilt-lead";
 private const string GitHubRepository = "MAJORKEYPACK-NEOFORGE";
 
@@ -288,6 +286,6 @@ private static string Quote(string value)
            value.Replace("\"", "\\\"") +
            "\"";
 }
-```
 
 }
+
