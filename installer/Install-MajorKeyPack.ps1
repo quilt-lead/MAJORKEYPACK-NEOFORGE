@@ -1,10 +1,22 @@
 ﻿```powershell
 param(
-    [string]$InstallDirectory = "$env:APPDATA\MajorKeyPack",
+    [string]$InstallDirectory = "",
     [string]$ManifestPath = ""
 )
 
 $ErrorActionPreference = "Stop"
+
+# ========================================
+# DEFAULT DIRECTORIES
+# ========================================
+
+if ([string]::IsNullOrWhiteSpace($InstallDirectory)) {
+    $InstallDirectory = Join-Path $env:APPDATA "MajorKeyPack"
+}
+
+# ========================================
+# REPOSITORY
+# ========================================
 
 $Repository = "quilt-lead/MAJORKEYPACK-NEOFORGE"
 $Raw = "https://raw.githubusercontent.com/$Repository/main"
@@ -12,10 +24,17 @@ $Raw = "https://raw.githubusercontent.com/$Repository/main"
 # Official NeoForge website
 $NeoForgePage = "https://neoforged.net/"
 
+# ========================================
+# MINECRAFT DIRECTORIES
+# ========================================
+
 $MinecraftDirectory = Join-Path $env:APPDATA ".minecraft"
 $ModsDirectory = Join-Path $MinecraftDirectory "mods"
 
-# Always use a unique temp directory
+# ========================================
+# TEMP DIRECTORY
+# ========================================
+
 $TempDirectory = Join-Path `
     $env:TEMP `
     ("MajorKeyPack-" + [guid]::NewGuid().ToString("N"))
@@ -33,8 +52,9 @@ try {
     # ========================================
 
     if (!(Test-Path -LiteralPath $MinecraftDirectory)) {
+
         throw `
-            "Minecraft Java Edition was not found.`n" +
+            "Minecraft Java Edition was not found.`n`n" +
             "Please install Minecraft Java Edition first."
     }
 
@@ -47,30 +67,37 @@ try {
     # ========================================
 
     Write-Host "Checking NeoForge installation..."
+    Write-Host ""
 
     $NeoForgeVersionsDirectory =
         Join-Path `
             $MinecraftDirectory `
             "versions"
 
+    # ----------------------------------------
+    # Versions directory does not exist
+    # ----------------------------------------
+
     if (!(Test-Path -LiteralPath $NeoForgeVersionsDirectory)) {
 
-        Write-Host ""
-        Write-Host "NeoForge is not installed." `
+        Write-Host "NeoForge was not found." `
             -ForegroundColor Yellow
 
         Write-Host ""
-        Write-Host "Opening the official NeoForge website..."
-        Write-Host $NeoForgePage
-        Write-Host ""
+        Write-Host "Opening the official NeoForge website..." `
+            -ForegroundColor Yellow
 
         Start-Process $NeoForgePage
 
         throw `
-            "NeoForge was not found.`n`n" +
-            "The official NeoForge website has been opened in your browser.`n" +
-            "Install NeoForge for Minecraft 1.21.1, then run this installer again."
+            "NeoForge is required for Major Key Pack.`n`n" +
+            "The official NeoForge website has been opened in your browser.`n`n" +
+            "Install NeoForge for Minecraft 1.21.1, then run the Major Key Pack installer again."
     }
+
+    # ----------------------------------------
+    # Find NeoForge installations
+    # ----------------------------------------
 
     $NeoForgeVersions =
         Get-ChildItem `
@@ -81,24 +108,30 @@ try {
         } |
         Sort-Object Name -Descending
 
+    # ----------------------------------------
+    # No NeoForge installation found
+    # ----------------------------------------
+
     if (!$NeoForgeVersions) {
 
-        Write-Host ""
-        Write-Host "NeoForge is not installed." `
+        Write-Host "NeoForge was not found." `
             -ForegroundColor Yellow
 
         Write-Host ""
-        Write-Host "Opening the official NeoForge website..."
-        Write-Host $NeoForgePage
-        Write-Host ""
+        Write-Host "Opening the official NeoForge website..." `
+            -ForegroundColor Yellow
 
         Start-Process $NeoForgePage
 
         throw `
-            "NeoForge was not found.`n`n" +
-            "The official NeoForge website has been opened in your browser.`n" +
-            "Install NeoForge for Minecraft 1.21.1, then run this installer again."
+            "NeoForge is required for Major Key Pack.`n`n" +
+            "The official NeoForge website has been opened in your browser.`n`n" +
+            "Install NeoForge for Minecraft 1.21.1, then run the Major Key Pack installer again."
     }
+
+    # ========================================
+    # SELECT NEWEST NEOFORGE
+    # ========================================
 
     $NeoForge =
         $NeoForgeVersions |
@@ -110,8 +143,9 @@ try {
             "$($NeoForge.Name).json"
 
     if (!(Test-Path -LiteralPath $NeoForgeJson)) {
+
         throw `
-            "NeoForge installation appears incomplete.`n" +
+            "NeoForge installation appears incomplete.`n`n" +
             "Missing:`n$NeoForgeJson"
     }
 
@@ -162,7 +196,6 @@ try {
         Write-Host `
             "Using bundled modpack manifest..." `
             -ForegroundColor Green
-
     }
     else {
 
@@ -179,9 +212,19 @@ try {
             -UseBasicParsing
     }
 
+    # ========================================
+    # VERIFY MANIFEST EXISTS
+    # ========================================
+
     if (!(Test-Path -LiteralPath $ManifestPath)) {
-        throw "Failed to obtain modpack manifest."
+
+        throw `
+            "Failed to obtain modpack manifest."
     }
+
+    # ========================================
+    # READ MANIFEST
+    # ========================================
 
     try {
 
@@ -190,52 +233,71 @@ try {
                 -LiteralPath $ManifestPath `
                 -Raw |
             ConvertFrom-Json
-
     }
     catch {
 
         throw `
-            "The modpack manifest is not valid JSON.`n" +
+            "The modpack manifest is not valid JSON.`n`n" +
             $_.Exception.Message
     }
 
     # ========================================
-    # VALIDATE MANIFEST
+    # VALIDATE MINECRAFT VERSION
     # ========================================
 
     if ($Manifest.minecraft -ne "1.21.1") {
+
         throw `
-            "Wrong Minecraft version in manifest.`n" +
+            "Wrong Minecraft version in manifest.`n`n" +
             "Expected: 1.21.1`n" +
             "Found: $($Manifest.minecraft)"
     }
 
+    # ========================================
+    # VALIDATE LOADER
+    # ========================================
+
     if ($Manifest.loader -ne "NeoForge") {
+
         throw `
-            "Wrong loader in manifest.`n" +
+            "Wrong loader in manifest.`n`n" +
             "Expected: NeoForge`n" +
             "Found: $($Manifest.loader)"
     }
 
+    # ========================================
+    # VALIDATE MOD ARRAY
+    # ========================================
+
     if ($null -eq $Manifest.mods) {
-        throw "The manifest does not contain a mods array."
+
+        throw `
+            "The manifest does not contain a mods array."
     }
 
     $Mods = @($Manifest.mods)
 
     if ($Mods.Count -eq 0) {
-        throw "The manifest contains no mods."
+
+        throw `
+            "The manifest contains no mods."
     }
+
+    # ========================================
+    # MODPACK INFORMATION
+    # ========================================
 
     Write-Host ""
     Write-Host "========================================"
     Write-Host "        MODPACK INFORMATION"
     Write-Host "========================================"
     Write-Host ""
+
     Write-Host "Pack:      $($Manifest.name)"
     Write-Host "Version:   $($Manifest.version)"
     Write-Host "Minecraft: $($Manifest.minecraft)"
     Write-Host "Loader:    $($Manifest.loader)"
+    Write-Host "NeoForge:  $($NeoForge.Name)"
     Write-Host "Mods:      $($Mods.Count)"
     Write-Host ""
 
@@ -249,24 +311,37 @@ try {
 
         $Completed++
 
+        # ====================================
+        # VALIDATE MOD ENTRY
+        # ====================================
+
         if ([string]::IsNullOrWhiteSpace($Mod.filename)) {
-            throw "A mod entry is missing its filename."
+
+            throw `
+                "A mod entry is missing its filename."
         }
 
         if ([string]::IsNullOrWhiteSpace($Mod.url)) {
+
             throw `
                 "Mod '$($Mod.filename)' is missing its download URL."
         }
 
         if ([string]::IsNullOrWhiteSpace($Mod.sha256)) {
+
             throw `
                 "Mod '$($Mod.filename)' is missing its SHA256."
         }
 
         if ($null -eq $Mod.size) {
+
             throw `
                 "Mod '$($Mod.filename)' is missing its file size."
         }
+
+        # ====================================
+        # FILE PATHS
+        # ====================================
 
         $Destination =
             Join-Path `
@@ -281,14 +356,15 @@ try {
         Write-Host ""
         Write-Host "[$Completed/$($Mods.Count)] $($Mod.filename)"
 
-        # ========================================
-        # EXISTING FILE CHECK
-        # ========================================
+        # ====================================
+        # CHECK EXISTING FILE
+        # ====================================
 
         if (Test-Path -LiteralPath $Destination) {
 
             $ExistingFile =
-                Get-Item -LiteralPath $Destination
+                Get-Item `
+                    -LiteralPath $Destination
 
             if (
                 $ExistingFile.Length `
@@ -336,7 +412,7 @@ try {
         }
 
         # ========================================
-        # DOWNLOAD
+        # DOWNLOAD MOD
         # ========================================
 
         Write-Host "Downloading..."
@@ -347,16 +423,16 @@ try {
                 -Uri $Mod.url `
                 -OutFile $TempFile `
                 -UseBasicParsing
-
         }
         catch {
 
             throw `
-                "Download failed: $($Mod.filename)`n" +
+                "Download failed: $($Mod.filename)`n`n" +
                 $_.Exception.Message
         }
 
         if (!(Test-Path -LiteralPath $TempFile)) {
+
             throw `
                 "Download failed: $($Mod.filename)"
         }
@@ -368,7 +444,8 @@ try {
         Write-Host "Checking file size..."
 
         $File =
-            Get-Item -LiteralPath $TempFile
+            Get-Item `
+                -LiteralPath $TempFile
 
         if (
             $File.Length `
@@ -384,7 +461,7 @@ try {
                 -Force
 
             throw `
-                "Size mismatch: $($Mod.filename)`n" +
+                "Size mismatch: $($Mod.filename)`n`n" +
                 "Expected: $($Mod.size)`n" +
                 "Actual: $ActualSize"
         }
@@ -413,7 +490,7 @@ try {
                 -Force
 
             throw `
-                "SHA256 mismatch: $($Mod.filename)`n" +
+                "SHA256 mismatch: $($Mod.filename)`n`n" +
                 "Expected: $($Mod.sha256)`n" +
                 "Actual: $Hash"
         }
@@ -441,6 +518,7 @@ try {
             -Force
 
         if (!(Test-Path -LiteralPath $Destination)) {
+
             throw `
                 "Installation failed: $($Mod.filename)"
         }
@@ -504,18 +582,23 @@ try {
         -ForegroundColor Green
 
     Write-Host ""
+
     Write-Host "Minecraft: 1.21.1"
     Write-Host "Loader:    NeoForge"
     Write-Host "NeoForge:  $($NeoForge.Name)"
     Write-Host "Mods:      $($Mods.Count)"
-    Write-Host ""
-    Write-Host "Mods location:"
-    Write-Host $ModsDirectory
-    Write-Host ""
-    Write-Host "Install record:"
-    Write-Host $RecordPath
+
     Write-Host ""
 
+    Write-Host "Mods location:"
+    Write-Host $ModsDirectory
+
+    Write-Host ""
+
+    Write-Host "Install record:"
+    Write-Host $RecordPath
+
+    Write-Host ""
 }
 catch {
 
@@ -536,10 +619,32 @@ catch {
         -ForegroundColor Red
 
     Write-Host ""
+
     Write-Host "The installer did not complete." `
         -ForegroundColor Red
 
     Write-Host ""
+}
+
+# ========================================
+# CLEANUP
+# ========================================
+
+if (
+    (Test-Path -LiteralPath $TempDirectory)
+) {
+
+    try {
+
+        Remove-Item `
+            -LiteralPath $TempDirectory `
+            -Recurse `
+            -Force `
+            -ErrorAction SilentlyContinue
+    }
+    catch {
+        # Ignore cleanup failures
+    }
 }
 
 Write-Host ""

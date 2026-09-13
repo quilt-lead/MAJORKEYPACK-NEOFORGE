@@ -1,0 +1,5 @@
+
+# Local C# test builds
+installer/MajorKeyPackLauncher/bin/
+installer/MajorKeyPackLauncher/obj/
+
