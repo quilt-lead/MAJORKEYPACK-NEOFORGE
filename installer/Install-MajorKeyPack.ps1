@@ -323,7 +323,7 @@ try {
 
             Invoke-WebRequest `
                 -Uri $Mod.url `
-                -OutFile -LiteralPath $TempFile `
+                -OutFile $($TempFile) `
                 -UseBasicParsing
 
         }
