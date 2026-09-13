@@ -6,6 +6,7 @@
 $ErrorActionPreference = "Stop"
 
 $Repository = "quilt-lead/MAJORKEYPACK-NEOFORGE"
+$NeoForgeDownloadUrl = "https://neoforged.net/"
 $Raw = "https://raw.githubusercontent.com/$Repository/main"
 
 $MinecraftDirectory = Join-Path $env:APPDATA ".minecraft"
@@ -50,6 +51,7 @@ try {
             "versions"
 
     if (!(Test-Path -LiteralPath $NeoForgeVersionsDirectory)) {
+        Start-Process $NeoForgeDownloadUrl
         throw `
             "The Minecraft versions directory was not found.`n" +
             "Please install NeoForge 1.21.1 first."
@@ -65,9 +67,10 @@ try {
         Sort-Object Name -Descending
 
     if (!$NeoForgeVersions) {
+        Start-Process $NeoForgeDownloadUrl
         throw `
             "NeoForge was not found.`n" +
-            "Please install NeoForge 21.11.45 for Minecraft 1.21.1 first."
+            "Please install NeoForge 21.1.250 for Minecraft 1.21.1 first."
     }
 
     $NeoForge =
