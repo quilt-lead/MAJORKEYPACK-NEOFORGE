@@ -324,7 +324,7 @@ try {
             Invoke-WebRequest `
                 -Uri $Mod.url `
                 -OutFile $($TempFile) `
-                -UseBasicParsing
+                -UseBasicParsing `
                 -ErrorAction Stop
 
         }
