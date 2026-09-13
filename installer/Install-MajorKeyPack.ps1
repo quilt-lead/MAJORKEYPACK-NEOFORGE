@@ -325,6 +325,7 @@ try {
                 -Uri $Mod.url `
                 -OutFile $($TempFile) `
                 -UseBasicParsing
+                -ErrorAction Stop
 
         }
         catch {
@@ -334,9 +335,9 @@ try {
                 $_.Exception.Message
         }
 
-        if (!(Test-Path -LiteralPath $TempFile)) {
+        if (!(Test-Path -LiteralPath $TempFile -PathType Leaf)) {
             throw `
-                "Download failed: $($Mod.filename)"
+                "Download failed to realize file: $($Mod.filename)"
         }
 
         # ========================================
