@@ -1,4 +1,5 @@
-﻿param(
+﻿```powershell
+param(
     [string]$InstallDirectory = "$env:APPDATA\MajorKeyPack",
     [string]$ManifestPath = ""
 )
@@ -7,6 +8,9 @@ $ErrorActionPreference = "Stop"
 
 $Repository = "quilt-lead/MAJORKEYPACK-NEOFORGE"
 $Raw = "https://raw.githubusercontent.com/$Repository/main"
+
+# Official NeoForge website
+$NeoForgePage = "https://neoforged.net/"
 
 $MinecraftDirectory = Join-Path $env:APPDATA ".minecraft"
 $ModsDirectory = Join-Path $MinecraftDirectory "mods"
@@ -50,9 +54,22 @@ try {
             "versions"
 
     if (!(Test-Path -LiteralPath $NeoForgeVersionsDirectory)) {
+
+        Write-Host ""
+        Write-Host "NeoForge is not installed." `
+            -ForegroundColor Yellow
+
+        Write-Host ""
+        Write-Host "Opening the official NeoForge website..."
+        Write-Host $NeoForgePage
+        Write-Host ""
+
+        Start-Process $NeoForgePage
+
         throw `
-            "The Minecraft versions directory was not found.`n" +
-            "Please install NeoForge 1.21.1 first."
+            "NeoForge was not found.`n`n" +
+            "The official NeoForge website has been opened in your browser.`n" +
+            "Install NeoForge for Minecraft 1.21.1, then run this installer again."
     }
 
     $NeoForgeVersions =
@@ -65,9 +82,22 @@ try {
         Sort-Object Name -Descending
 
     if (!$NeoForgeVersions) {
+
+        Write-Host ""
+        Write-Host "NeoForge is not installed." `
+            -ForegroundColor Yellow
+
+        Write-Host ""
+        Write-Host "Opening the official NeoForge website..."
+        Write-Host $NeoForgePage
+        Write-Host ""
+
+        Start-Process $NeoForgePage
+
         throw `
-            "NeoForge was not found.`n" +
-            "Please install NeoForge 21.11.45 for Minecraft 1.21.1 first."
+            "NeoForge was not found.`n`n" +
+            "The official NeoForge website has been opened in your browser.`n" +
+            "Install NeoForge for Minecraft 1.21.1, then run this installer again."
     }
 
     $NeoForge =
@@ -238,11 +268,6 @@ try {
                 "Mod '$($Mod.filename)' is missing its file size."
         }
 
-        # IMPORTANT:
-        # Use Join-Path to construct the complete filename.
-        # All file operations below use -LiteralPath so
-        # [ ] characters are NEVER treated as wildcards.
-
         $Destination =
             Join-Path `
                 $ModsDirectory `
@@ -403,7 +428,6 @@ try {
 
         Write-Host "Installing..."
 
-        # If an old file exists, remove it literally.
         if (Test-Path -LiteralPath $Destination) {
 
             Remove-Item `
@@ -411,7 +435,6 @@ try {
                 -Force
         }
 
-        # Move verified file into mods folder.
         Move-Item `
             -LiteralPath $TempFile `
             -Destination $Destination `
@@ -522,3 +545,4 @@ catch {
 Write-Host ""
 Write-Host "Press Enter to close..."
 Read-Host
+```
