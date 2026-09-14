@@ -345,10 +345,10 @@
                      "url":  "https://mediafilez.forgecdn.net/files/5660/767/TerraBlender-neoforge-1.21.1-4.1.0.0.jar"
                  },
                  {
-                     "filename":  "tfmg-1.2.0.jar",
-                     "size":  4924243,
-                     "sha256":  "fc824a91cfe22e137c9014ed608ee9bf35f16490d2162b687666332c6eb3a555",
-                     "url":  "https://cdn.modrinth.com/data/USgVjXsk/versions/uDi14nbt/tfmg-1.2.0.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
+                     "filename":  "tfmg-1.2.2.jar",
+                     "size":  4986234,
+                     "sha256":  "31829296de219302dd5678e310b22767a455cf582fcc40e48c0b7c6c2b426bdd",
+                     "url":  "https://mediafilez.forgecdn.net/files/8205/648/tfmg-1.2.2.jar"
                  },
                  {
                      "filename":  "tracks-neoforge-1.21.1-1.0.1.jar",
