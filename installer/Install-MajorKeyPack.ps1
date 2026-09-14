@@ -319,24 +319,46 @@ try {
 
         Write-Host "Downloading..."
 
+        $TestFile = Join-Path $TempDirectory '[1.21.1] SecurityCraft v1.10.2.1.jar'
+
+        Write-Host "TestFile: [$TestFile]"
+
+        'TEST' | Set-Content -LiteralPath $TestFile
+
+        Write-Host "Created: $(Test-Path -LiteralPath $TestFile -PathType Leaf)"
+
+        Remove-Item -LiteralPath $TestFile
+
+
         try {
 
             Invoke-WebRequest `
                 -Uri $Mod.url `
-                -OutFile $TempFile `
-                -UseBasicParsing
+                -OutFile $($TempFile) `
+                -UseBasicParsing `
+                -ErrorAction Stop
 
         }
         catch {
+
+            Write-Host "================ DOWNLOAD ERROR ================"
+            Write-Host "Filename: [$($Mod.filename)]"
+            Write-Host "URL:      [$($Mod.url)]"
+            Write-Host "TempDir:  [$TempDirectory]"
+            Write-Host "TempFile: [$TempFile]"
+            Write-Host "Exception type: $($_.Exception.GetType().FullName)"
+            Write-Host "Message: $($_.Exception.Message)"
+            Write-Host "Inner: $($_.Exception.InnerException)"
+            Write-Host "==============================================="
 
             throw `
                 "Download failed: $($Mod.filename)`n" +
                 $_.Exception.Message
         }
 
-        if (!(Test-Path -LiteralPath $TempFile)) {
+        if (!(Test-Path -LiteralPath $TempFile -PathType Leaf)) {
             throw `
-                "Download failed: $($Mod.filename)"
+                "Download failed to realize file: $($Mod.filename)"
         }
 
         # ========================================
