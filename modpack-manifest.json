@@ -279,10 +279,10 @@
                      "url":  "https://mediafilez.forgecdn.net/files/8519/226/pneumaticcraft-repressurized-8.2.23%2Bmc1.21.1.jar"
                  },
                  {
-                     "filename":  "powergrid-mc1.21.1-0.6.2.jar",
-                     "size":  5738480,
-                     "sha256":  "e40d67a874431925d502af88e85064883c67936cfd689033d7df560cffcf19e7",
-                     "url":  "https://cdn.modrinth.com/data/eWiBLJ9R/versions/jCkPHjmP/powergrid-mc1.21.1-0.6.2.jar?mr_download_reason=standalone"
+                     "filename":  "powergrid-mc1.21.1-0.6.1.jar",
+                     "size":  7965088,
+                     "sha256":  "b2835c36af6794a963737c617b5f9dd6b41aba5078d418c88847193fbcf702e5",
+                     "url":  "https://cdn.modrinth.com/data/eWiBLJ9R/versions/ip4gJrgx/powergrid-mc1.21.1-0.6.1.jar?mr_download_reason=standalone"
                  },
                  {
                      "filename":  "railcraft-reborn-1.21.1-1.2.10.jar",
