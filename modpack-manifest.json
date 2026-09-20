@@ -33,6 +33,12 @@
                      "url":  "https://cdn.modrinth.com/data/h3OPQqBm/versions/evGdRgyV/clockwork-neoforge-1.21.1-1.1.4.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
+                     "filename":  "copycats-3.0.9+mc.1.21.1-neoforge.jar",
+                     "size":  1799381,
+                     "sha256":  "d1efdd8688af6603dff9425299ac4547ef56a7d5cfee757716ead7853276694e",
+                     "url":  "https://cdn.modrinth.com/data/UT2M39wf/versions/bPYeUWZx/copycats-3.0.9%2Bmc.1.21.1-neoforge.jar?mr_download_reason=standalone"
+                 },
+                 {
                      "filename":  "create-1.21.1-6.0.10.jar",
                      "size":  19123767,
                      "sha256":  "ef87fe5709f1ba1f5b8bb20a2925b5afb4669e178fd6d8bf10c167759eefe37a",
