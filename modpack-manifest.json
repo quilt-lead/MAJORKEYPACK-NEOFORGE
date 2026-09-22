@@ -357,10 +357,10 @@
                      "url":  "https://mediafilez.forgecdn.net/files/8205/648/tfmg-1.2.2.jar"
                  },
                  {
-                     "filename":  "tracks-neoforge-1.21.1-1.0.1.jar",
-                     "size":  166455,
-                     "sha256":  "b126b2522a129c13ebec6491b8602726bad9a3df201cf906468ba583796125c8",
-                     "url":  "https://mediafilez.forgecdn.net/files/7968/280/tracks-neoforge-1.21.1-1.0.1.jar"
+                     "filename":  "tracks_plus-1.0.5.jar",
+                     "size":  610174,
+                     "sha256":  "b2a8cb466cfce2cbf0078e713ae0500c332aed95b4e1819d17e3539282d8515b",
+                     "url":  "https://cdn.modrinth.com/data/E8eHF2Yl/versions/cju2ayQC/tracks_plus-1.0.5.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
                      "filename":  "xaerominimap-neoforge-1.21.1-26.4.2.jar",
