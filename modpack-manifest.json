@@ -135,12 +135,6 @@
                      "url":  "https://chatgpt.com/backend-api/estuary/content?id=file_000000002e0481f59a5f747a761de9f0\u0026fn=creosotefix-1.21.1-neoforge-1.0.2.jar\u0026cd=attachment\u0026ts=497332\u0026p=fs\u0026cid=1\u0026sig=61e47510a293ab9a5763d5010324b75b9a4d375f7faaa7eed0dccccd9bac043d\u0026v=0"
                  },
                  {
-                     "filename":  "creosotepath-1.1.0.jar",
-                     "size":  3369,
-                     "sha256":  "9a5f3fb94051ac035c770b3ad15f9f8ca347cfbbf27ee437d74e455a2324b630",
-                     "url":  "https://cdn.modrinth.com/data/yhWkH1NS/versions/uZ5zLm5K/creosotepath-1.1.0.jar?mr_download_reason=standalone\u0026mr_game_version=1.20.1\u0026mr_loader=forge"
-                 },
-                 {
                      "filename":  "curios-neoforge-9.4.0+1.21.1.jar",
                      "size":  399005,
                      "sha256":  "397a377f973ee23c06af744820d6912156888007531daa33dd572bf2f51342ac",
