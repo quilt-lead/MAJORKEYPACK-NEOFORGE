@@ -129,10 +129,10 @@
                      "url":  "https://mediafilez.forgecdn.net/files/8268/622/create_submarine-2.2.4.jar"
                  },
                  {
-                     "filename":  "creosotefix-1.21.1-neoforge-1.0.2.jar",
-                     "size":  807,
-                     "sha256":  "71f8ee62ff2ed35995a25b652e9b020c642a42613c4de53afa8ad0a05be884b4",
-                     "url":  "https://chatgpt.com/backend-api/estuary/content?id=file_000000002e0481f59a5f747a761de9f0\u0026fn=creosotefix-1.21.1-neoforge-1.0.2.jar\u0026cd=attachment\u0026ts=497332\u0026p=fs\u0026cid=1\u0026sig=61e47510a293ab9a5763d5010324b75b9a4d375f7faaa7eed0dccccd9bac043d\u0026v=0"
+                     "filename":  "creosotepatch-1.0.0.jar",
+                     "size":  3351,
+                     "sha256":  "e61958d70fbb1f917c31ababe703924108e26ec3f6813867ce2cfd4ef3287b4f",
+                     "url":  "https://release-assets.githubusercontent.com/github-production-release-asset/1389381416/955c007e-2ac8-4432-a36a-5ead31bfc256?sp=r\u0026sv=2018-11-09\u0026sr=b\u0026spr=https\u0026se=2026-09-26T17%3A02%3A22Z\u0026rscd=attachment%3B+filename%3Dcreosotepatch-1.0.0.jar\u0026rsct=application%2Foctet-stream\u0026skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0\u0026sktid=398a6654-997b-47e9-b12b-9515b896b4de\u0026skt=2026-09-26T16%3A02%3A01Z\u0026ske=2026-09-26T17%3A02%3A22Z\u0026sks=b\u0026skv=2018-11-09\u0026sig=%2Bfm%2Bv6j7pLTrp%2FcPENGOmPJ5nCLCHwyPi4vTj8Sgb9o%3D\u0026jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc5MDQzOTcxOSwibmJmIjoxNzkwNDM5NDE5LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.0XcJvmFTQzE7dLnF_xBG0MbA-bTDB4m33_t_rGvZ5Wk\u0026response-content-disposition=attachment%3B%20filename%3Dcreosotepatch-1.0.0.jar\u0026response-content-type=application%2Foctet-stream"
                  },
                  {
                      "filename":  "curios-neoforge-9.4.0+1.21.1.jar",
