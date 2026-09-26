@@ -129,6 +129,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/8268/622/create_submarine-2.2.4.jar"
                  },
                  {
+                     "filename":  "creosotepath-1.1.0.jar",
+                     "size":  3369,
+                     "sha256":  "9a5f3fb94051ac035c770b3ad15f9f8ca347cfbbf27ee437d74e455a2324b630",
+                     "url":  "https://cdn.modrinth.com/data/yhWkH1NS/versions/uZ5zLm5K/creosotepath-1.1.0.jar?mr_download_reason=standalone\u0026mr_game_version=1.20.1\u0026mr_loader=forge"
+                 },
+                 {
                      "filename":  "curios-neoforge-9.4.0+1.21.1.jar",
                      "size":  399005,
                      "sha256":  "397a377f973ee23c06af744820d6912156888007531daa33dd572bf2f51342ac",
