@@ -129,6 +129,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/8268/622/create_submarine-2.2.4.jar"
                  },
                  {
+                     "filename":  "creosotepatch-1.0.0.jar",
+                     "size":  3687,
+                     "sha256":  "8da7e2bcb888c2585b07a1398549892a8891efc5692737ee399de4d73de4c323",
+                     "url":  "https://github.com/quilt-lead/CreosotePatch-NeoForge/releases/download/v1.0.0/creosotepatch-1.0.0.jar"
+                 },
+                 {
                      "filename":  "curios-neoforge-9.4.0+1.21.1.jar",
                      "size":  399005,
                      "sha256":  "397a377f973ee23c06af744820d6912156888007531daa33dd572bf2f51342ac",
