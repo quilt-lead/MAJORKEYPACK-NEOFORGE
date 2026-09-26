@@ -129,6 +129,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/8268/622/create_submarine-2.2.4.jar"
                  },
                  {
+                     "filename":  "creosotefix-1.21.1-neoforge-1.0.0.jar",
+                     "size":  2482,
+                     "sha256":  "c8fb8a04d3eae1862c47e08e2949b22b27b17b43e8ea088d57d31136f3279652",
+                     "url":  "1"
+                 },
+                 {
                      "filename":  "creosotepath-1.1.0.jar",
                      "size":  3369,
                      "sha256":  "9a5f3fb94051ac035c770b3ad15f9f8ca347cfbbf27ee437d74e455a2324b630",
