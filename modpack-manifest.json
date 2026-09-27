@@ -189,6 +189,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/8109/792/GlitchCore-neoforge-1.21.1-2.1.0.2.jar"
                  },
                  {
+                     "filename":  "GnKinetics-1.21.1-1.0m.jar",
+                     "size":  560814,
+                     "sha256":  "9f5e699b59282464aad038b88f89634b080fbee23a1e5dab5b7d954b4f10893b",
+                     "url":  "https://cdn.modrinth.com/data/gEWECBVL/versions/qr9hMBnj/GnKinetics-1.21.1-1.0m.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
+                 },
+                 {
                      "filename":  "gravestone-neoforge-1.21.1-1.0.40.jar",
                      "size":  322082,
                      "sha256":  "204be9ccb8632a56a87aee9aab4c7874d0f6749f566c07f5dd420d24e24dc8b0",
