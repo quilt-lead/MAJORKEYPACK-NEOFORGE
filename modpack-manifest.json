@@ -279,6 +279,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/8335/665/kotlinforforge-5.12.0-all.jar"
                  },
                  {
+                     "filename":  "ldlib2-neoforge-1.21.1-2.2.17-all.jar",
+                     "size":  6420002,
+                     "sha256":  "858b9fdaa792aabf9bf7cb622634fdfba6a3ea80019443abbd127d5e2bfe85eb",
+                     "url":  "https://cdn.modrinth.com/data/B1CBVXHX/versions/eFcwlxhy/ldlib2-neoforge-1.21.1-2.2.17-all.jar?mr_download_reason=standalone"
+                 },
+                 {
                      "filename":  "lithostitched-1.6.0-neoforge-1.21.1.jar",
                      "size":  787739,
                      "sha256":  "14827b86cfba6d8bf34dcae7e60c1c8e5080441659f517c045d3e388b827277c",
