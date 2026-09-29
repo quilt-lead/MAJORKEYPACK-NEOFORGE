@@ -363,6 +363,12 @@
                      "url":  "https://cdn.modrinth.com/data/T9PomCSv/versions/U678xqle/sable-neoforge-1.21.1-2.0.5.jar?mr_download_reason=standalone"
                  },
                  {
+                     "filename":  "sable-photomancy-1.0.1.jar",
+                     "size":  1607474,
+                     "sha256":  "1d0805f537f27ce3160488331755497417514a3dfb30d5ca3fdca1b000e7e920",
+                     "url":  "https://cdn.modrinth.com/data/hNGBYvQN/versions/hwxjOCxE/sable-photomancy-1.0.1.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
+                 },
+                 {
                      "filename":  "sablefloaters-1.0.0.jar",
                      "size":  32777,
                      "sha256":  "7086df8b3bca25c38d3db493ea9f999ee623e84b0056d3163cd8784bd701e643",
