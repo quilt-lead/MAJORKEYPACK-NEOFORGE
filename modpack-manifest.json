@@ -387,6 +387,12 @@
                      "url":  "https://cdn.modrinth.com/data/nCNay0Nd/versions/iSxCOK0l/searchlights-1.3.1.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
+                     "filename":  "sheetspatch-1.0.0.jar",
+                     "size":  4684,
+                     "sha256":  "41cb4ef1e9f25f4c77f76f9220d1d408e89f4a827b7f174fa4bfa32f7eeeeb86",
+                     "url":  "https://release-assets.githubusercontent.com/github-production-release-asset/1399320565/741c9576-4091-409b-b2e1-c2fc8f1c95c1?sp=r\u0026sv=2018-11-09\u0026sr=b\u0026spr=https\u0026se=2026-10-01T07%3A19%3A45Z\u0026rscd=attachment%3B+filename%3Dsheetspatch-1.0.0.jar\u0026rsct=application%2Foctet-stream\u0026skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0\u0026sktid=398a6654-997b-47e9-b12b-9515b896b4de\u0026skt=2026-10-01T06%3A19%3A22Z\u0026ske=2026-10-01T07%3A19%3A45Z\u0026sks=b\u0026skv=2018-11-09\u0026sig=8gktRzc0G%2F0KO8XKVDQ2e9V1uEHbNwUnlvsnyK%2Fw5Hw%3D\u0026jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc5MDgzNzI2NSwibmJmIjoxNzkwODM2OTY1LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.VXq1PuQMvWeAE93plyFizAzeADjYkC4rBPm0RKMzINU\u0026response-content-disposition=attachment%3B%20filename%3Dsheetspatch-1.0.0.jar\u0026response-content-type=application%2Foctet-stream"
+                 },
+                 {
                      "filename":  "sophisticatedbackpacks-1.21.1-3.26.3.2158.jar",
                      "size":  1251706,
                      "sha256":  "3690359cc3bb2aa43e40db6ca047ca7d5feda5141c8b9fd647c4355678e971e2",
