@@ -15,6 +15,12 @@
                      "url":  "https://mediafilez.forgecdn.net/files/8492/726/architectury-13.0.11-neoforge.jar"
                  },
                  {
+                     "filename":  "azimuth-1.4.10.jar",
+                     "size":  143818,
+                     "sha256":  "e9f56d10a6ae56c8d02d2e9e1668c7b70d545d8e20cf4972f0710e9b01989d8a",
+                     "url":  "https://cdn.modrinth.com/data/RpH8tmT1/versions/dxtZVosY/azimuth-1.4.10.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
+                 },
+                 {
                      "filename":  "bellsandwhistles-0.4.7-1.21.1.jar",
                      "size":  193619,
                      "sha256":  "a438cf2ea3a05120e12342484f1e12ca11526fbf4195d259ce1d7df8a9b3ffca",
@@ -429,6 +435,12 @@
                      "url":  "https://cdn.modrinth.com/data/nmoqTijg/versions/PXl6rB3q/sophisticatedcore-1.21.1-1.5.1.2341.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1"
                  },
                  {
+                     "filename":  "struts-1.3.1.jar",
+                     "size":  216678,
+                     "sha256":  "21002a8b6881a3d08da74f03f29ab23551db50d755d7e75b8b94847511d9a863",
+                     "url":  "https://cdn.modrinth.com/data/sHO3MhQx/versions/BOTN7zzN/struts-1.3.1.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
+                 },
+                 {
                      "filename":  "tectonic-3.0.26-neoforge-21.1.jar",
                      "size":  461675,
                      "sha256":  "36aa9b4a8c399c9943460a7a58d91402b6d671c10ab11b099c2ee1d75af232ea",
@@ -441,10 +453,10 @@
                      "url":  "https://mediafilez.forgecdn.net/files/5660/767/TerraBlender-neoforge-1.21.1-4.1.0.0.jar"
                  },
                  {
-                     "filename":  "tfmg-1.2.2.jar",
-                     "size":  4986234,
-                     "sha256":  "31829296de219302dd5678e310b22767a455cf582fcc40e48c0b7c6c2b426bdd",
-                     "url":  "https://mediafilez.forgecdn.net/files/8205/648/tfmg-1.2.2.jar"
+                     "filename":  "tfmg-1.21.1-1.3.2-community.jar",
+                     "size":  5534973,
+                     "sha256":  "f39ece31188c62f2045bbb2b58f98e8d15ed6c32538b40a679cfc3edead78496",
+                     "url":  "https://cdn.modrinth.com/data/hC1xYvnS/versions/Kw93Pv7B/tfmg-1.21.1-1.3.2-community.jar?mr_download_reason=standalone"
                  },
                  {
                      "filename":  "tracks_plus-1.0.5.jar",
@@ -463,6 +475,12 @@
                      "size":  2185409,
                      "sha256":  "b722bcf794288f0ed51165cd1f057fc4505e20abbc723b2e17e900426e443603",
                      "url":  "https://mediafilez.forgecdn.net/files/8449/819/xaerominimap-neoforge-1.21.1-26.4.2.jar"
+                 },
+                 {
+                     "filename":  "Zeta-1.1-40.jar",
+                     "size":  763725,
+                     "sha256":  "4f17d1a2b9fd6d18ddb7697aa451db7fb154053b8648f79de279ae0d7e68a2fa",
+                     "url":  "https://cdn.modrinth.com/data/MVARlG2f/versions/9GjNW2Gf/Zeta-1.1-40.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
                      "filename":  "[1.21.1] SecurityCraft v1.10.2.1.jar",
