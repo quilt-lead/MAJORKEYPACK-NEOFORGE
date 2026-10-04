@@ -357,10 +357,10 @@
                      "url":  "https://mediafilez.forgecdn.net/files/8519/226/pneumaticcraft-repressurized-8.2.23%2Bmc1.21.1.jar"
                  },
                  {
-                     "filename":  "powergrid-mc1.21.1-0.5.4.jar",
-                     "size":  6117871,
-                     "sha256":  "513d54ab406ba424db45581539d8dc344c4ba0ffa3d30416649cd4332c49b970",
-                     "url":  "https://cdn.modrinth.com/data/eWiBLJ9R/versions/bli22EIb/powergrid-mc1.21.1-0.5.4.jar?mr_download_reason=standalone"
+                     "filename":  "powergrid-mc1.21.1-0.6.2.jar",
+                     "size":  5738480,
+                     "sha256":  "e40d67a874431925d502af88e85064883c67936cfd689033d7df560cffcf19e7",
+                     "url":  "https://cdn.modrinth.com/data/eWiBLJ9R/versions/jCkPHjmP/powergrid-mc1.21.1-0.6.2.jar?mr_download_reason=standalone"
                  },
                  {
                      "filename":  "Quark-4.1-486.jar",
