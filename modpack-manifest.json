@@ -123,10 +123,10 @@
                      "url":  "https://cdn.modrinth.com/data/wPQ6GgFE/versions/3Y4r0ItR/create_power_loader-2.0.5-mc1.21.1.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
-                     "filename":  "create_submarine-2.2.4.jar",
-                     "size":  1869296,
-                     "sha256":  "87a20bb20ae3c90e6838073d3a84839e251c8794f409ade8cab79f51d1de0c66",
-                     "url":  "https://mediafilez.forgecdn.net/files/8268/622/create_submarine-2.2.4.jar"
+                     "filename":  "create_submarine-3.3.0.jar",
+                     "size":  8109785,
+                     "sha256":  "99709e004c8a7a36cb3439c0200ffd0c8ff5d7ca4fb77d49f76395d803864ba1",
+                     "url":  "https://cdn.modrinth.com/data/mva5q4qZ/versions/8CV1LRTl/create_submarine-3.3.0.jar?mr_download_reason=standalone"
                  },
                  {
                      "filename":  "creosotepatch-1.0.0.jar",
