@@ -141,6 +141,12 @@
                      "url":  "https://cdn.modrinth.com/data/mva5q4qZ/versions/8CV1LRTl/create_submarine-3.3.0.jar?mr_download_reason=standalone"
                  },
                  {
+                     "filename":  "creosotefix-1.21.1-neoforge-1.0.2.jar",
+                     "size":  807,
+                     "sha256":  "71f8ee62ff2ed35995a25b652e9b020c642a42613c4de53afa8ad0a05be884b4",
+                     "url":  "https://chatgpt.com/backend-api/estuary/content?id=file_000000002e0481f59a5f747a761de9f0\u0026fn=creosotefix-1.21.1-neoforge-1.0.2.jar\u0026cd=attachment\u0026ts=497332\u0026p=fs\u0026cid=1\u0026sig=61e47510a293ab9a5763d5010324b75b9a4d375f7faaa7eed0dccccd9bac043d\u0026v=0"
+                 },
+                 {
                      "filename":  "creosotepatch-1.0.0.jar",
                      "size":  3687,
                      "sha256":  "8da7e2bcb888c2585b07a1398549892a8891efc5692737ee399de4d73de4c323",
@@ -453,16 +459,16 @@
                      "url":  "https://mediafilez.forgecdn.net/files/5660/767/TerraBlender-neoforge-1.21.1-4.1.0.0.jar"
                  },
                  {
-                     "filename":  "tfmg-1.21.1-1.3.0-community.jar",
-                     "size":  5427511,
-                     "sha256":  "fd83147d19059bcd70458c574624712c23a146631cfa0845463e4623de48fea7",
-                     "url":  "https://cdn.modrinth.com/data/hC1xYvnS/versions/oJp3qBnO/tfmg-1.21.1-1.3.0-community.jar?mr_download_reason=standalone"
+                     "filename":  "tfmg-1.21.1-1.3.2-community.jar",
+                     "size":  5534973,
+                     "sha256":  "f39ece31188c62f2045bbb2b58f98e8d15ed6c32538b40a679cfc3edead78496",
+                     "url":  "https://cdn.modrinth.com/data/hC1xYvnS/versions/Kw93Pv7B/tfmg-1.21.1-1.3.2-community.jar?mr_download_reason=standalone"
                  },
                  {
-                     "filename":  "tracks_plus-1.0.5.jar",
-                     "size":  610174,
-                     "sha256":  "b2a8cb466cfce2cbf0078e713ae0500c332aed95b4e1819d17e3539282d8515b",
-                     "url":  "https://cdn.modrinth.com/data/E8eHF2Yl/versions/cju2ayQC/tracks_plus-1.0.5.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
+                     "filename":  "tracks_plus-1.0.6b7.jar",
+                     "size":  613537,
+                     "sha256":  "97a4891caf7defc84a0e57e88d3db829ddee4c1966b22ba2e9a02ae548503627",
+                     "url":  "https://cdn.modrinth.com/data/E8eHF2Yl/versions/qUDRhHla/tracks_plus-1.0.6b7.jar?mr_download_reason=standalone\u0026mr_game_version=1.21.1\u0026mr_loader=neoforge"
                  },
                  {
                      "filename":  "VS-Sable-HoseConnectors-0.1.8-1.21.1.jar",
